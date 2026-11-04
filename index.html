@@ -45,6 +45,14 @@
             font-size: 32px; color: cyan; font-weight: bold;
             text-shadow: 3px 3px 0px black; margin-bottom: 20px;
         }
+        #texto-abertura {
+            max-width: 90vw;
+            min-height: 1.4em;
+            color: yellow;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 2px 2px black;
+        }
         .botao-menu {
             background-color: #0055ff; color: white;
             border: 3px solid white; padding: 15px 30px;
@@ -250,6 +258,7 @@
 
     <div id="tela-titulo">
         <div id="titulo-jogo">Mini Lojinha de Kromer<br>[BIG SHOT EDITION!]</div>
+        <div id="texto-abertura"></div>
         <button class="botao-menu" onclick="entrarNoJogo()">JOGAR</button>
         <button class="botao-menu" onclick="abrirSubTela('tela-config')">CONFIGURAÇÕES</button>
         <button class="botao-menu" onclick="abrirSubTela('tela-creditos')">CRÉDITOS</button>
@@ -322,6 +331,33 @@
     <script>
         const itensKPS = [{ nome: "BIG SHOT [Specil]" }, { nome: "PIPIS DE ESTIMAÇÃO" }, { nome: "[HYPERLINK Bloqueado]" }, { nome: "TESOURA PARA [Cordinhas malucas]" }, { nome: "ESTÁTUA DE [KROMER PURÍSSIMO]" }];
         const itensKPC = [{ nome: "CLIQUE PARA [Grande negócio]" }, { nome: "MOUSE SEM [Especificações]" }, { nome: "CONTAINER PARA [Objeto Em Formato De Coração]!" }, { nome: "SEGREDO PARA [Vendas]" }, { nome: "CHAVE DO [Porão escuro]" }];
+        const falasAbertura = [
+            "OLÁ, [VISITANTE VALIOSO]! VOCÊ CHEGOU NA HORA CERTA!",
+            "ENTRE, ENTRE! A [LOJA] ESTÁ ABERTA!",
+            "UM [BIG SHOT] COMO VOCÊ ESTAVA SENDO ESPERADO!",
+            "SEJA BEM-VINDO À SUA PRÓXIMA [MÁ DECISÃO]!",
+            "VOCÊ TEM CARA DE QUEM PRECISA DE MAIS [KROMER]!",
+            "APROXIME-SE, [CLIENTE]! OS [NEGÓCIOS] ESTÃO FERVENDO!",
+            "A SUA JORNADA PARA A [RIQUEZA QUESTIONÁVEL] COMEÇA AQUI!",
+            "OLÁ! O BOTÃO [JOGAR] NÃO VAI CLICAR SOZINHO!",
+            "ENTRE AGORA! NÃO PRECISA LER AS [LETRAS PEQUENAS]!",
+            "HOJE É UM ÓTIMO DIA PARA FAZER UM [ACORDO]!",
+            "A [FORTUNA] ESTÁ A UM CLIQUE DE DISTÂNCIA! MAIS OU MENOS!",
+            "BEM-VINDO! SUA CARTEIRA ESTÁ PRONTA PARA [SOFRER]?",
+            "VOCÊ CHEGOU! AGORA SÓ FALTA TER [DINHEIRO]!",
+            "VENHA CONHECER A [LOJA] COM AS MELHORES OFERTAS DUVIDOSAS!",
+            "OLÁ, [CLIENTE]! EU SABIA QUE VOCÊ IA APARECER!",
+            "PREPARE-SE PARA VIRAR UM [BIG SHOT] EM TEMPO RECORDE... MAIS OU MENOS!",
+            "AQUI TEM [KROMER], [PIPIS] E ZERO GARANTIAS!",
+            "FICHA LIMPA, BOLSOS VAZIOS? VOCÊ ESTÁ NO LUGAR CERTO!",
+            "NÃO SEJA TÍMIDO! OS [BOTÕES] NÃO MORDEM!",
+            "SEU FUTURO É BRILHANTE! E MINHA [COMISSÃO] TAMBÉM!",
+            "A [LOJA] ABRIU SÓ PARA VOCÊ! (NÃO É VERDADE, MAS ENTRE!)",
+            "OLÁ! VOCÊ PARECE PRONTO PARA UMA [OPORTUNIDADE ÚNICA]!",
+            "FAÇA COMO UM [PROFISSIONAL]: CLIQUE PRIMEIRO, PERGUNTE DEPOIS!",
+            "BEM-VINDO AO LUGAR ONDE TODO CLIQUE VIRA [KROMER]!",
+            "VOCÊ ESTÁ A UM [JOGAR] DE UMA GRANDE [NEGOCIAÇÃO]!"
+        ];
         const falasSpamton = ["HEHEHEHE!! VOCÊ QUER MAIS [Kromer]?!", "[Acordo de vida inteira]?? APENAS HOJE POR [Preço Inacreditável]!!!", "NÃO TEM DINHEIRO? QUE TRISTEZA! [Compre] ALGO!", "EU TENHO O QUE VOCÊ PRECISA! [NEGÓCIOS FERVENDO]!!!", "SEJA UM [Big Shot]! COMPRE AGORA!", "KRIS? VOCÊ ESTÁ AI? ENTÃO COMPRE MAIS HAHAHAHA!!!", "Mike...", "KRIS! NÃO OUÇA O QUE DIZEM NA [TV]!", "COMPRE!! NÃO TEM [Kromer]? COMPRE MAIS!", "OLÁ, [Cliente Valioso]!"];
         const falasSucessoComprar = ["OBRIGADO, [COMPRADOR SATISFEITO]!!", "UM TRABALHO [Espetacular]!! ACORDO FEITO!", "PRA_ZER EM FAZER NEGÓCIOS COM VOCÊ!!", "ISSO VAI DEIXAR SEU [Kromer] FERVENDO!!!"];
         const falasFaltaDinheiro = ["FALTA [DINHEIRO]! VOLTE QUANDO FOR UM [BIG SHOT]!", "NÃO TEM [Kromer]? QUE TRISTEZA RE_AL HAHAHA!", "VOLTE COM OS BOLSOS CHEIOS DE [Dinheiro Rápido]!"];
@@ -331,6 +367,38 @@
         const spriteFrames = ["spamton_sprite_frame1.png", "spamton_sprite_frame2.png"];
 
         const kromerLabel = document.getElementById("kromer");
+        const textoAbertura = document.getElementById("texto-abertura");
+        textoAbertura.textContent = falasAbertura[Math.floor(Math.random() * falasAbertura.length)];
+        const preferenciaMovimentoReduzido = window.matchMedia("(prefers-reduced-motion: reduce)");
+        const periodoInclinacao = Math.random() * 1800 + 1800;
+        const periodoEscala = Math.random() * 2600 + 2200;
+        let inicioAnimacaoTexto = performance.now();
+        let quadroAnimacaoTexto;
+        function animarTextoAbertura(tempoAtual) {
+            if (preferenciaMovimentoReduzido.matches) {
+                cancelAnimationFrame(quadroAnimacaoTexto);
+                textoAbertura.style.transform = "none";
+                return;
+            }
+
+            const tempoDecorrido = tempoAtual - inicioAnimacaoTexto;
+            const inclinacao = Math.sin(2 * Math.PI * tempoDecorrido / periodoInclinacao) * 5;
+            const escala = 1 + Math.sin(2 * Math.PI * tempoDecorrido / periodoEscala) * 0.2;
+            textoAbertura.style.transform = `scale(${escala}) rotate(${inclinacao}deg)`;
+            quadroAnimacaoTexto = requestAnimationFrame(animarTextoAbertura);
+        }
+        preferenciaMovimentoReduzido.addEventListener("change", function() {
+            cancelAnimationFrame(quadroAnimacaoTexto);
+            inicioAnimacaoTexto = performance.now();
+            if (preferenciaMovimentoReduzido.matches) {
+                textoAbertura.style.transform = "none";
+            } else {
+                quadroAnimacaoTexto = requestAnimationFrame(animarTextoAbertura);
+            }
+        });
+        if (!preferenciaMovimentoReduzido.matches) {
+            quadroAnimacaoTexto = requestAnimationFrame(animarTextoAbertura);
+        }
         const painelMelhorias = document.getElementById("painel-melhorias");
         const falaSpamtonDiv = document.getElementById("fala-spamton");
         const botaoKPS = document.getElementById("botao-kps");
@@ -513,7 +581,7 @@
         function dispararSomFriend() { if (!risadasMutadas) { const sf = new Audio('friend_laugh.mp3'); sf.volume = 0.6; sf.play().catch(function() {}); } }
         function dispararSomLancer() { if (!risadasMutadas) { const sl = new Audio('lancer_laugh.mp3'); sl.volume = 0.6; sl.play().catch(function() {}); } }
         function dispararSomPink() { if (!risadasMutadas) { const sp = new Audio('pink_laugh.mp3'); sp.volume = 0.6; sp.play().catch(function() {}); } }
-        function dispararSomGaster() { const sg = new Audio('gaster.mp3'); sg.volume = 0.8; sg.play().catch(function() {}); }
+        function dispararSomGaster() { if (risadasMutadas) return; const sg = new Audio('gaster.mp3'); sg.volume = 0.8; sg.play().catch(function() {}); }
         function dispararSomMorte() { const sm = new Audio('death.mp3'); sm.volume = 1.0; sm.play().catch(function() {}); }
 
         function criarParticulaFisica() {
