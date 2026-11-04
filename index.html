@@ -99,6 +99,15 @@
             align-items: center; justify-content: center; gap: 20px;
             backdrop-filter: blur(4px);
         }
+        #tela-config-pausa {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: rgba(0, 17, 136, 0.55);
+            z-index: 99999985;
+            display: none; flex-direction: column;
+            align-items: center; justify-content: center; gap: 20px;
+            backdrop-filter: blur(4px);
+        }
         #area-jogo {
             display: none; width: 100%; height: 100vh; position: relative; image-rendering: pixelated;
             background-image: url('loja_background.png');
@@ -249,8 +258,8 @@
 
     <div id="tela-config" class="sub-tela">
         <h2 style="color: cyan; text-shadow: 2px 2px black;">PAINEL DE CONFIGURAÇÕES</h2>
-        <button id="cfg-musica" class="botao-menu" onclick="alternarMusicaNativa()">MÚSICA: ON</button>
-        <button id="cfg-risadas" class="botao-menu" onclick="alternarMutarRisadas()">RISADAS: ON</button>
+        <button id="cfg-musica" class="botao-menu cfg-musica" onclick="alternarMusicaNativa()">MÚSICA: ON</button>
+        <button id="cfg-risadas" class="botao-menu cfg-risadas" onclick="alternarMutarRisadas()">RISADAS: ON</button>
         <button id="cfg-reset" class="botao-menu" style="background-color: #a00;" onclick="deletarProgressoManual()">DELETAR PROGRESSO</button>
         <button class="botao-menu" style="background-color: #444; margin-top: 20px;" onclick="fecharSubTela('tela-config')">VOLTAR</button>
     </div>
@@ -270,8 +279,15 @@
     <div id="tela-pausa">
         <div id="titulo-jogo" style="color: cyan;">MENU RÁPIDO</div>
         <button class="botao-menu" onclick="retomarJogoDaPausa()">RETOMAR</button>
-        <button class="botao-menu" onclick="abrirSubTela('tela-config')">CONFIGURAÇÕES</button>
+        <button class="botao-menu" onclick="abrirConfiguracoesDaPausa()">CONFIGURAÇÕES</button>
         <button class="botao-menu" onclick="menuPrincipalReloadCompleto()">MENU PRINCIPAL</button>
+    </div>
+    <div id="tela-config-pausa">
+        <h2 style="color: cyan; text-shadow: 2px 2px black;">PAINEL DE CONFIGURAÇÕES</h2>
+        <button class="botao-menu cfg-musica" onclick="alternarMusicaNativa()">MÚSICA: ON</button>
+        <button class="botao-menu cfg-risadas" onclick="alternarMutarRisadas()">RISADAS: ON</button>
+        <button class="botao-menu" style="background-color: #a00;" onclick="deletarProgressoManual()">DELETAR PROGRESSO</button>
+        <button class="botao-menu" style="background-color: #444; margin-top: 20px;" onclick="fecharConfiguracoesDaPausa()">VOLTAR</button>
     </div>
     <div id="area-jogo">
         <div id="telefone_p">
@@ -364,13 +380,33 @@
             }
         }
         function abrirMenuDePausaOpa() { if (!cheatDetectado) document.getElementById("tela-pausa").style.display = "flex"; }
-        function retomarJogoDaPausa() { document.getElementById("tela-pausa").style.display = "none"; }
+        function retomarJogoDaPausa() {
+            document.getElementById("tela-pausa").style.display = "none";
+            document.getElementById("tela-config-pausa").style.display = "none";
+        }
+        function abrirConfiguracoesDaPausa() {
+            document.getElementById("tela-pausa").style.display = "none";
+            document.getElementById("tela-config-pausa").style.display = "flex";
+        }
+        function fecharConfiguracoesDaPausa() {
+            document.getElementById("tela-config-pausa").style.display = "none";
+            document.getElementById("tela-pausa").style.display = "flex";
+        }
         function menuPrincipalReloadCompleto() { salvarDadosNoNavegador(); location.reload(); }
+
+        function atualizarRotulosConfiguracao() {
+            document.querySelectorAll(".cfg-risadas").forEach(function(botao) {
+                botao.textContent = risadasMutadas ? "RISADAS: OFF" : "RISADAS: ON";
+            });
+            document.querySelectorAll(".cfg-musica").forEach(function(botao) {
+                botao.textContent = musicaHabilitada ? "MÚSICA: ON" : "MÚSICA: OFF";
+            });
+        }
 
         function alternarMutarRisadas() {
             if (cheatDetectado) return;
             risadasMutadas = !risadasMutadas;
-            document.getElementById("cfg-risadas").textContent = risadasMutadas ? "RISADAS: OFF" : "RISADAS: ON";
+            atualizarRotulosConfiguracao();
             localStorage.setItem("cfg_save_risadas", risadasMutadas);
         }
     </script>
@@ -378,14 +414,14 @@
         function alternarMusicaNativa() {
             if (cheatDetectado) return;
             musicaHabilitada = !musicaHabilitada;
-            document.getElementById("cfg-musica").textContent = musicaHabilitada ? "MÚSICA: ON" : "MÚSICA: OFF";
+            atualizarRotulosConfiguracao();
             localStorage.setItem("cfg_save_musica", musicaHabilitada);
             if (document.getElementById("area-jogo").style.display === "block") {
                 if (musicaHabilitada) { musicaNativa.volume = 0.3; musicaNativa.play().catch(function() {}); }
                 else { musicaNativa.pause(); }
             }
         }
-        document.getElementById("cfg-musica").textContent = musicaHabilitada ? "MÚSICA: ON" : "MÚSICA: OFF";
+        atualizarRotulosConfiguracao();
 
         function cliqueNoTelefone() {
             if (telaDeMorteVisivel === true) {
@@ -750,11 +786,11 @@
             }
             if (localStorage.getItem("cfg_save_risadas") !== null) {
                 risadasMutadas = localStorage.getItem("cfg_save_risadas") === "true";
-                document.getElementById("cfg-risadas").textContent = risadasMutadas ? "RISADAS: OFF" : "RISADAS: ON";
+                atualizarRotulosConfiguracao();
             }
             if (localStorage.getItem("cfg_save_musica") !== null) {
                 musicaHabilitada = localStorage.getItem("cfg_save_musica") === "true";
-                document.getElementById("cfg-musica").textContent = musicaHabilitada ? "MÚSICA: ON" : "MÚSICA: OFF";
+                atualizarRotulosConfiguracao();
             }
         }
 
