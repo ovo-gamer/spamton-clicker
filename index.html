@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Lojinha de Kromer [BIG SHOT EDITION!]</title>
+    <style>
+        body {
+            background-color: #555;
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+            margin: 0; padding: 0;
+            overflow: hidden;
+            height: 100vh; width: 100vw;
+        }
+        #filtro-tinta-vermelha {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: rgba(255, 0, 0, 0);
+            z-index: 99999998 !important;
+            pointer-events: none;
+            mix-blend-mode: color;
+            transition: background-color 1s linear;
+        }
+        #filtro-tinta-preto-e-branco {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            backdrop-filter: grayscale(0%);
+            z-index: 99999997 !important;
+            pointer-events: none;
+            transition: backdrop-filter 0.5s ease-in-out;
+        }
+    </style>
+    <style>
+        #tela-titulo {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #0022aa;
+            z-index: 99999990;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 20px;
+        }
+        #titulo-jogo {
+            font-size: 32px; color: cyan; font-weight: bold;
+            text-shadow: 3px 3px 0px black; margin-bottom: 20px;
+        }
+        .botao-menu {
+            background-color: #0055ff; color: white;
+            border: 3px solid white; padding: 15px 30px;
+            font-size: 20px; cursor: pointer;
+            font-family: 'Courier New', monospace; font-weight: bold;
+            min-width: 280px; box-shadow: 4px 4px 0px black;
+            text-shadow: 2px 2px 0px #000; transition: background-color 0.2s;
+        }
+        .botao-menu:hover { background-color: #0033cc; }
+        .sub-tela {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #001188; z-index: 99999995;
+            display: none; flex-direction: column;
+            align-items: center; justify-content: center; gap: 20px;
+        }
+        .menu-scroll {
+            width: 80%;
+            max-width: 600px;
+            max-height: 40vh;
+            overflow-y: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            border: 2px solid white;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .menu-scroll p {
+            font-size: 18px;
+            color: white;
+            text-shadow: 1px 1px black;
+            margin: 10px 0;
+            line-height: 1.4;
+        }
+        .menu-scroll .topico-cyan {
+            font-size: 24px;
+            color: cyan;
+            font-weight: bold;
+            text-shadow: 2px 2px black;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            display: block;
+        }
+    </style>
+    <style>
+        #tela-pausa {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: rgba(0, 17, 136, 0.55);
+            z-index: 99999980;
+            display: none; flex-direction: column;
+            align-items: center; justify-content: center; gap: 20px;
+            backdrop-filter: blur(4px);
+        }
+        #area-jogo {
+            display: none; width: 100%; height: 100vh; position: relative; image-rendering: pixelated;
+            background-image: url('loja_background.png');
+            background-size: cover; background-position: center; background-repeat: no-repeat;
+            z-index: 1;
+        }
+        .fundo-camada-alt {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('loja_background_alt.png');
+            background-size: cover; background-position: center; background-repeat: no-repeat;
+            z-index: 2;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease-in-out !important;
+        }
+        #area-jogo::before {
+            content: ""; position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0); z-index: 0;
+        }
+        .container {
+            position: relative; width: 100%; height: 100vh;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 3 !important;
+            background: transparent !important;
+        }
+    </style>
+    <style>
+        #fala-spamton {
+            color: yellow; font-size: 22px; margin-bottom: 5px;
+            text-shadow: 2px 2px black; height: 45px; font-weight: bold;
+        }
+        #kromer {
+            font-size: 48px; color: cyan; font-weight: bold;
+            text-shadow: 3px 3px black; margin: 10px 0;
+        }
+        #painel-melhorias {
+            font-size: 18px; color: white; text-shadow: 1px 1px black; margin-top: 5px;
+        }
+        #sprite-spamton {
+            margin: 15px auto; display: block; image-rendering: pixelated;
+            cursor: pointer; transition: transform 0.05s ease; user-select: none;
+            width: 120px; height: auto; position: relative; z-index: 9999990 !important;
+        }
+        #sprite-spamton:active { transform: scale(0.92); }
+        .spamton-ataque-frenetico {
+            z-index: 9999999 !important;
+            animation: rushEVibrarOpa 0.5s linear forwards !important;
+        }
+    </style>
+    <style>
+        @keyframes rushEVibrarOpa {
+            0% { transform: scale(1) translate(0px, 0px); opacity: 1; }
+            10% { transform: scale(4.5) translate(-2px, 1.5px); opacity: 1; }
+            20% { transform: scale(8.0) translate(2.5px, -2.5px); opacity: 1; }
+            30% { transform: scale(11.5) translate(-1.5px, -1px); opacity: 1; }
+            40% { transform: scale(15.0) translate(2px, 2px); opacity: 1; }
+            50% { transform: scale(18.5) translate(-2.5px, -2px); opacity: 1; }
+            60% { transform: scale(22.0) translate(1.5px, 0.5px); opacity: 1; }
+            70% { transform: scale(25.5) translate(-0.5px, 1px); opacity: 1; }
+            80% { transform: scale(29.0) translate(1px, -1px); opacity: 1; }
+            90% { transform: scale(32.0) translate(-1px, 0.5px); opacity: 1; }
+            100% { transform: scale(35.0) translate(0px, 0px); opacity: 1; }
+        }
+        .loja-container { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; position: relative; z-index: 10; }
+        .botao-loja {
+            color: white; border: 3px solid white; padding: 15px 25px;
+            font-size: 18px; cursor: pointer; font-family: 'Courier New', Courier, monospace;
+            font-weight: bold; min-width: 380px; box-shadow: 4px 4px 0px black;
+            text-align: center; text-shadow: 2px 2px 0px #000; transition: background-color 0.3s ease;
+        }
+        .cor-rosa { background-color: #ff007f !important; }
+        .cor-amarela { background-color: #e6b800 !important; color: white !important; }
+        .cor-azul { background-color: #0055ff !important; color: white !important; display: none; }
+    </style>
+    <style>
+        #area-botoes-config-jogo {
+            position: absolute; top: 15px; right: 15px; z-index: 10;
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .btn-game-control {
+            background: #222; color: cyan; border: 1px solid cyan; 
+            padding: 4px 8px; font-size: 10px; font-family: monospace; 
+            cursor: pointer; box-shadow: 2px 2px 0px black; user-select: none;
+        }
+        #telefone_p {
+            position: absolute; top: 20px; left: 20px; margin: 0; padding: 0;
+            z-index: 20; width: 60px; height: 60px; pointer-events: auto;
+        }
+        body.telefone-na-morte #telefone_p { z-index: 99999999; }
+        .tel-camada {
+            position: absolute; top: 0; left: 0; width: 60px; height: 60px;
+            image-rendering: pixelated; filter: drop-shadow(2px 2px 0px black); cursor: pointer;
+            transition: opacity 0.5s ease-in-out !important; z-index: 1;
+        }
+        #sprite-telefone { opacity: 1; }
+        #sprite-telefone-alt { opacity: 0; }
+        body.telefone-na-morte #sprite-telefone { opacity: 1; }
+        body.telefone-na-morte #sprite-telefone-alt { opacity: 1; }
+        
+        .money-particle {
+            position: fixed; top: 0; left: 0; color: #00ffcc; font-weight: bold;
+            text-shadow: 2px 2px 0px #000; pointer-events: none !important; 
+            z-index: 5 !important; font-family: 'Courier New', Courier, monospace; user-select: none; will-change: transform;
+        }
+        .pipis-particle {
+            position: fixed; top: 0; left: 0; pointer-events: none !important;
+            z-index: 5 !important; image-rendering: pixelated; width: 32px; height: 24px; will-change: transform; filter: drop-shadow(2px 2px 0px black);
+        }
+        .friend-catcher {
+            position: fixed; bottom: -150px; width: 40px; height: auto; image-rendering: pixelated;
+            z-index: 4; left: 15px; transform: none;
+            transition: bottom 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.15); will-change: transform, left, bottom; display: none;
+        }
+        .lancer-bike { position: fixed; bottom: 10px; right: 15px; width: 140px; height: auto; image-rendering: pixelated; z-index: 4; cursor: pointer; display: none; }
+        .pink-mewmew { position: fixed; top: 50%; right: 15px; width: 100px; height: auto; image-rendering: pixelated; z-index: 4; pointer-events: none; transform: translateY(-50%); display: none; }
+        .gaster-body { position: fixed; top: 50%; left: 15px; width: 55px; height: auto; image-rendering: pixelated; z-index: 3; pointer-events: none; transform: translateY(-50%); display: none; }
+        .gaster-vibrando { animation: gasterVibrarCaotico 0.08s infinite linear !important; }
+        .lancer-salto-anim { animation: lancerSalto 0.4s ease-out; }
+        .pink-salto-anim { animation: pinkSalto 0.3s ease-out; }
+        @keyframes lancerSalto {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-40px); }
+            100% { transform: translateY(0); }
+        }
+        @keyframes pinkSalto {
+            0% { transform: translateY(-50%); }
+            50% { transform: translateY(-80%); }
+            100% { transform: translateY(-50%); }
+        }
+        #tela-morte { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: black; z-index: 99999995 !important; display: none; opacity: 0; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease-in-out !important; }
+        #texto-morte { color: red; font-size: 40px; font-weight: bold; text-shadow: 3px 3px 0px #300; font-family: 'Courier New', Courier, monospace; line-height: 1.5; transition: opacity 0.5s ease-in-out !important; }
+        #sprite-telefone { transition: filter 0.5s ease-in-out !important; }
+    </style>
+</head>
+<body>
+    <div id="filtro-tinta-vermelha"></div>
+    <div id="filtro-tinta-preto-e-branco"></div>
+    <div id="tela-morte"><div id="texto-morte">VOCÊ MORREU!<br>[TRAPACEIRO DEFINITIVO]!</div></div>
+
+    <div id="tela-titulo">
+        <div id="titulo-jogo">Mini Lojinha de Kromer<br>[BIG SHOT EDITION!]</div>
+        <button class="botao-menu" onclick="entrarNoJogo()">JOGAR</button>
+        <button class="botao-menu" onclick="abrirSubTela('tela-config')">CONFIGURAÇÕES</button>
+        <button class="botao-menu" onclick="abrirSubTela('tela-creditos')">CRÉDITOS</button>
+        <button class="botao-menu" onclick="abrirSubTela('tela-como-jogar')">COMO JOGAR</button>
+    </div>
+
+    <div id="tela-config" class="sub-tela">
+        <h2 style="color: cyan; text-shadow: 2px 2px black;">PAINEL DE CONFIGURAÇÕES</h2>
+        <button id="cfg-musica" class="botao-menu" onclick="alternarMusicaNativa()">MÚSICA: ON</button>
+        <button id="cfg-risadas" class="botao-menu" onclick="alternarMutarRisadas()">RISADAS: ON</button>
+        <button id="cfg-reset" class="botao-menu" style="background-color: #a00;" onclick="deletarProgressoManual()">DELETAR PROGRESSO</button>
+        <button class="botao-menu" style="background-color: #444; margin-top: 20px;" onclick="fecharSubTela('tela-config')">VOLTAR</button>
+    </div>
+    <div id="tela-creditos" class="sub-tela">
+        <h2 style="color: cyan; text-shadow: 2px 2px black;">CRÉDITOS</h2>
+        <p style="font-size: 28px; color: white; text-shadow: 2px 2px black;">ovo gamer</p>
+        <button class="botao-menu" style="background-color: #444; margin-top: 40px;" onclick="fecharSubTela('tela-creditos')">VOLTAR</button>
+    </div>
+    <div id="tela-como-jogar" class="sub-tela">
+        <h2 style="color: cyan; text-shadow: 2px 2px black;">COMO JOGAR</h2>
+        <div class="menu-scroll">
+            <div id="conteudo-como-jogar"></div>
+        </div>
+        <button class="botao-menu" style="background-color: #444; margin-top: 20px;" onclick="fecharSubTela('tela-como-jogar')">VOLTAR</button>
+    </div>
+
+    <div id="tela-pausa">
+        <div id="titulo-jogo" style="color: cyan;">MENU RÁPIDO</div>
+        <button class="botao-menu" onclick="retomarJogoDaPausa()">RETOMAR</button>
+        <button class="botao-menu" onclick="abrirSubTela('tela-config')">CONFIGURAÇÕES</button>
+        <button class="botao-menu" onclick="menuPrincipalReloadCompleto()">MENU PRINCIPAL</button>
+    </div>
+    <div id="area-jogo">
+        <div id="telefone_p">
+            <img src="telefone.png" id="sprite-telefone" class="tel-camada" onclick="cliqueNoTelefone()" alt="Telefone">
+            <img src="telefone_alt.png" id="sprite-telefone-alt" class="tel-camada" onclick="cliqueNoTelefone()" alt="Telefone Alternativo">
+        </div>
+        
+        <img src="friend.png" id="friend-asset" class="friend-catcher" alt="Friend">
+        <img src="lancer.gif" id="lancer-asset" class="lancer-bike" onclick="cliqueNoLancerSplat()" alt="Lancer">
+        <img src="pink.png" id="pink-asset" class="pink-mewmew" alt="Pink">
+        <img src="gaster.png" id="gaster-asset" class="gaster-body" alt="Gaster">
+        
+        <div id="area-botoes-config-jogo">
+            <button class="btn-game-control" style="border-color: cyan;" onclick="abrirMenuDePausaOpa()">MENU RÁPIDO</button>
+        </div>
+        <div class="container">
+            <div id="fala-spamton">OLÁ, [Cliente Valioso]!</div>
+            <small style="color: #bbb; text-shadow: 1px 1px black; font-size: 14px;">(CLIQUE EM MIM PARA GERAR [Kromer]!)</small>
+            <img id="sprite-spamton" src="spamton_sprite_frame1.png" alt="Sprite do Spamton">
+            <div id="kromer">Kromer: 0</div>
+            <div id="painel-melhorias">Melhorias: (+0 kromer por segundo), (+1 kromer por clique)</div>
+            <div class="loja-container">
+                <button id="botao-kps" class="botao-loja cor-rosa"></button>
+                <button id="botao-kpc" class="botao-loja cor-amarela"></button>
+                <button id="botao-powerup" class="botao-loja cor-azul"></button>
+            </div>
+        </div>
+    </div>
+    <audio id="som-ambiente" src="dialtone.mp3" loop></audio>
+    <script src="config.js"></script>
+    <script src="morte.js"></script>
+    <script>
+        const itensKPS = [{ nome: "BIG SHOT [Specil]" }, { nome: "PIPIS DE ESTIMAÇÃO" }, { nome: "[HYPERLINK Bloqueado]" }, { nome: "TESOURA PARA [Cordinhas malucas]" }, { nome: "ESTÁTUA DE [KROMER PURÍSSIMO]" }];
+        const itensKPC = [{ nome: "CLIQUE PARA [Grande negócio]" }, { nome: "MOUSE SEM [Especificações]" }, { nome: "CONTAINER PARA [Objeto Em Formato De Coração]!" }, { nome: "SEGREDO PARA [Vendas]" }, { nome: "CHAVE DO [Porão escuro]" }];
+        const falasSpamton = ["HEHEHEHE!! VOCÊ QUER MAIS [Kromer]?!", "[Acordo de vida inteira]?? APENAS HOJE POR [Preço Inacreditável]!!!", "NÃO TEM DINHEIRO? QUE TRISTEZA! [Compre] ALGO!", "EU TENHO O QUE VOCÊ PRECISA! [NEGÓCIOS FERVENDO]!!!", "SEJA UM [Big Shot]! COMPRE AGORA!", "KRIS? VOCÊ ESTÁ AI? ENTÃO COMPRE MAIS HAHAHAHA!!!", "Mike...", "KRIS! NÃO OUÇA O QUE DIZEM NA [TV]!", "COMPRE!! NÃO TEM [Kromer]? COMPRE MAIS!", "OLÁ, [Cliente Valioso]!"];
+        const falasSucessoComprar = ["OBRIGADO, [COMPRADOR SATISFEITO]!!", "UM TRABALHO [Espetacular]!! ACORDO FEITO!", "PRA_ZER EM FAZER NEGÓCIOS COM VOCÊ!!", "ISSO VAI DEIXAR SEU [Kromer] FERVENDO!!!"];
+        const falasFaltaDinheiro = ["FALTA [DINHEIRO]! VOLTE QUANDO FOR UM [BIG SHOT]!", "NÃO TEM [Kromer]? QUE TRISTEZA RE_AL HAHAHA!", "VOLTE COM OS BOLSOS CHEIOS DE [Dinheiro Rápido]!"];
+        const falasAvisoCheat = ["VOCÊ ACHA QUE PODE ENGANAR UM [Big Shot]?!", "CLI_QUES DEMAIS!! ISSO SÃO [Cordinhas Malucas]?!", "CONEXÃO SUSPEITA!! CADÊ O SEU [Fair Play]?!"];
+        const falasGritoCheat = ["NÃO SE TRAPACEIA NOS NEGÓCIOS!!!", "VOCÊ FOI... [Bloqueado] PARA SEMPRE!!!", "HA_HA_HA_HA_HA!!! PEGO NO FLAGRA!!!"];
+        const falasTelaMorte = ["VOCÊ MORREU!<br>[TRAPACEIRO DEFINITIVO]!", "SISTEMA REINICIADO!<br>[PUNIÇÃO DO BIG SHOT]!", "FIM DE JOGO!<br>[CONTRATO RESCINDIDO À FORÇA]!"];
+        const spriteFrames = ["spamton_sprite_frame1.png", "spamton_sprite_frame2.png"];
+
+        const kromerLabel = document.getElementById("kromer");
+        const painelMelhorias = document.getElementById("painel-melhorias");
+        const falaSpamtonDiv = document.getElementById("fala-spamton");
+        const botaoKPS = document.getElementById("botao-kps");
+        const botaoKPC = document.getElementById("botao-kpc");
+        const botaoPowerUp = document.getElementById("botao-powerup");
+        const friendAsset = document.getElementById("friend-asset");
+        const lancerAsset = document.getElementById("lancer-asset");
+        const pinkAsset = document.getElementById("pink-asset");
+        const gasterAsset = document.getElementById("gaster-asset");
+        const filterTinta = document.getElementById("filtro-tinta-vermelha");
+        const filtroGoner = document.getElementById("filtro-tinta-preto-e-branco");
+        const spriteTelefone = document.getElementById("sprite-telefone");
+        const spriteSpamtonImg = document.getElementById("sprite-spamton");
+        const telaMorte = document.getElementById("tela-morte");
+        const textoMorteElement = document.getElementById("texto-morte");
+        const musicaNativa = document.getElementById("som-ambiente");
+
+        let kromer = 0, kromerPorSegundo = 0, kromerPorClique = 1, cliquesNesseSegundo = 0, frameAtualIndex = 0;
+        let cheatDetectado = false, modoMorteAtivo = false, risadasMutadas = false, screenTitleActive = true, telaDeMorteVisivel = false;
+        let musicaHabilitada = true;
+        let nivelPowerUpPipis = 0, chancePipisBase = 0.1997, custoPowerUp = 0, nivelLancer = 0, nivelPink = 0, nivelGaster = 0, tipoSorteadoPowerUp = "";
+        let weirdRouteLevel = 0;
+        let custoItemKPS = 0, custoItemKPC = 0;
+    </script>
+    <script>
+        function abrirSubTela(id) { document.getElementById(id).style.display = "flex"; }
+        function fecharSubTela(id) { document.getElementById(id).style.display = "none"; }
+        function atualizarSpriteTelefone() {
+            const areaJogo = document.getElementById("area-jogo");
+            const estaNoJogo = Boolean(areaJogo && getComputedStyle(areaJogo).display !== "none");
+
+            const spriteAlternativoAtivo = Boolean(estaNoJogo && telaDeMorteVisivel === true);
+            document.body.classList.toggle("telefone-na-morte", spriteAlternativoAtivo);
+
+            const protegerDaTinta = Boolean(estaNoJogo && modoMorteAtivo === true);
+            if (typeof gerenciarCamadasMorte === "function") {
+                gerenciarCamadasMorte(protegerDaTinta, areaJogo);
+            }
+        }
+
+        function entrarNoJogo() {
+            document.getElementById("tela-titulo").style.display = "none";
+            document.getElementById("area-jogo").style.display = "block";
+            atualizarSpriteTelefone();
+            if (musicaHabilitada && musicaNativa.paused && !cheatDetectado) {
+                musicaNativa.volume = 0.3; musicaNativa.play().catch(function() {});
+            }
+        }
+        function abrirMenuDePausaOpa() { if (!cheatDetectado) document.getElementById("tela-pausa").style.display = "flex"; }
+        function retomarJogoDaPausa() { document.getElementById("tela-pausa").style.display = "none"; }
+        function menuPrincipalReloadCompleto() { salvarDadosNoNavegador(); location.reload(); }
+
+        function alternarMutarRisadas() {
+            if (cheatDetectado) return;
+            risadasMutadas = !risadasMutadas;
+            document.getElementById("cfg-risadas").textContent = risadasMutadas ? "RISADAS: OFF" : "RISADAS: ON";
+            localStorage.setItem("cfg_save_risadas", risadasMutadas);
+        }
+    </script>
+    <script>
+        function alternarMusicaNativa() {
+            if (cheatDetectado) return;
+            musicaHabilitada = !musicaHabilitada;
+            document.getElementById("cfg-musica").textContent = musicaHabilitada ? "MÚSICA: ON" : "MÚSICA: OFF";
+            localStorage.setItem("cfg_save_musica", musicaHabilitada);
+            if (document.getElementById("area-jogo").style.display === "block") {
+                if (musicaHabilitada) { musicaNativa.volume = 0.3; musicaNativa.play().catch(function() {}); }
+                else { musicaNativa.pause(); }
+            }
+        }
+        document.getElementById("cfg-musica").textContent = musicaHabilitada ? "MÚSICA: ON" : "MÚSICA: OFF";
+
+        function cliqueNoTelefone() {
+            if (telaDeMorteVisivel === true) {
+                if (Math.random() <= 0.10) { window.open(CONFIG_LINKS.tv, "_blank"); }
+                else { window.open(CONFIG_LINKS.sighting, "_blank"); }
+            } else { window.open(CONFIG_LINKS.padrao, "_blank"); }
+        }
+        function executarPunicaoCheat() {
+            cliquesNesseSegundo = 0;
+            if (weirdRouteLevel < 1997) {
+                weirdRouteLevel++;
+            }
+            
+            let backupWeirdRoute = weirdRouteLevel;
+            
+            localStorage.clear();
+            
+            localStorage.setItem("save_wrd", backupWeirdRoute);
+            localStorage.setItem("cfg_save_risadas", "false");
+            localStorage.setItem("cfg_save_musica", "true");
+            
+            cheatDetectado = true;
+            modoMorteAtivo = true;
+
+            atualizarSpriteTelefone();
+            musicaNativa.pause();
+            document.getElementById("tela-pausa").style.display = "none";
+            spriteSpamtonImg.src = "spamton_sprite_frame3.png";
+            filterTinta.style.backgroundColor = "rgba(255, 0, 0, 1)";
+            falaSpamtonDiv.textContent = falasAvisoCheat[Math.floor(Math.random() * falasAvisoCheat.length)];
+            falaSpamtonDiv.style.color = "red";
+            botaoKPS.style.pointerEvents = "none";
+            botaoKPC.style.pointerEvents = "none";
+            botaoPowerUp.style.pointerEvents = "none";
+            
+            setTimeout(function() {
+                falaSpamtonDiv.textContent = falasGritoCheat[Math.floor(Math.random() * falasGritoCheat.length)]; 
+                setTimeout(function() {
+                    spriteSpamtonImg.className = "spamton-ataque-frenetico";
+                    let loopRapido = setInterval(function() { 
+                        frameAtualIndex = (frameAtualIndex + 1) % spriteFrames.length; 
+                        spriteSpamtonImg.src = spriteFrames[frameAtualIndex]; 
+                    }, 60);
+                    
+                    const pRate = Math.random() * (0.6 - 0.4) + 0.4;
+                    const somJumpscare1 = new Audio('laugh.mp3');
+                    somJumpscare1.preservesPitch = false;
+                    somJumpscare1.volume = 1.0;
+                    somJumpscare1.playbackRate = pRate;
+                    somJumpscare1.play().catch(function() {});
+                    
+                    const somJumpscare2 = new Audio('laugh.mp3');
+                    somJumpscare2.preservesPitch = false;
+                    somJumpscare2.volume = 1.0;
+                    somJumpscare2.playbackRate = pRate;
+                    somJumpscare2.play().catch(function() {});
+                    
+                    setTimeout(function() {
+                        clearInterval(loopRapido);
+                        textoMorteElement.innerHTML = falasTelaMorte[Math.floor(Math.random() * falasTelaMorte.length)];
+                        
+                        telaMorte.style.display = "flex";
+                        telaDeMorteVisivel = true;
+                        
+                        setTimeout(function() { 
+                            telaMorte.style.opacity = "1"; 
+                            atualizarSpriteTelefone();
+                        }, 50);
+                        
+                        dispararSomMorte();
+                        
+                        setTimeout(function() { 
+                            location.reload();
+                        }, 5000);
+                    }, 500);
+                }, 1500);
+            }, 2000);
+        }
+    </script>
+    <script>
+        function dispararRisadaLocal(grave = false) {
+            if (risadasMutadas === true) return;
+            const somInstante = new Audio('laugh.mp3'); somInstante.preservesPitch = false;
+            if (grave === true) { somInstante.volume = 1.0; somInstante.playbackRate = Math.random() * (0.6 - 0.4) + 0.4; }
+            else { somInstante.volume = 0.5; somInstante.playbackRate = Math.random() * (1.2 - 0.8) + 0.8; }
+            somInstante.play().catch(function() {});
+        }
+        function cliqueNoLancerSplat() { if (!cheatDetectado) { const splatSom = new Audio('splat.mp3'); splatSom.volume = 0.7; splatSom.play().catch(function() {}); } }
+        function dispararSomFriend() { if (!risadasMutadas) { const sf = new Audio('friend_laugh.mp3'); sf.volume = 0.6; sf.play().catch(function() {}); } }
+        function dispararSomLancer() { if (!risadasMutadas) { const sl = new Audio('lancer_laugh.mp3'); sl.volume = 0.6; sl.play().catch(function() {}); } }
+        function dispararSomPink() { if (!risadasMutadas) { const sp = new Audio('pink_laugh.mp3'); sp.volume = 0.6; sp.play().catch(function() {}); } }
+        function dispararSomGaster() { const sg = new Audio('gaster.mp3'); sg.volume = 0.8; sg.play().catch(function() {}); }
+        function dispararSomMorte() { const sm = new Audio('death.mp3'); sm.volume = 1.0; sm.play().catch(function() {}); }
+
+        function criarParticulaFisica() {
+            let spawnX = Math.random() * window.innerWidth; let spawnY = window.innerHeight;
+            let elemento = document.createElement( (Math.random() * 100 <= chancePipisBase) ? 'img' : 'div' ); const ehPipis = elemento.tagName === 'IMG';
+            elemento.style.transform = "translate(-1000px, -1000px)";
+            if (ehPipis === true) { elemento.src = 'pipis.png'; elemento.className = 'pipis-particle'; }
+            else { elemento.className = 'money-particle'; elemento.textContent = '$'; elemento.style.fontSize = (Math.floor(Math.random() * (54 - 20 + 1)) + 20) + 'px'; }
+            document.getElementById("area-jogo").appendChild(elemento);
+            let posX = spawnX, posY = spawnY, iRot = 0, velRot = (Math.random() * 12 - 6), velY, velX, gravidade;
+            if (ehPipis === true) { velY = -(Math.random() * 5 + 8); velX = (Math.random() * 4 - 2); gravidade = 0.15; }
+            else { velY = -(Math.random() * 10 + 10); velX = (Math.random() * 6 - 3); gravidade = 0.42; }
+            let larguraElem = ehPipis ? 32 : 20;
+            let loopFisico = setInterval(function() {
+                velY += gravidade; posX += velX; posY += velY; iRot += velRot;
+                if (posX < 0 && velX < 0) { posX = 0; velX = -velX; }
+                if (posX > window.innerWidth - larguraElem && velX > 0) { posX = window.innerWidth - larguraElem; velX = -velX; }
+                elemento.style.transform = `translate(${posX}px, ${posY}px) rotate(${iRot}deg)`;
+                if (ehPipis === true && nivelPowerUpPipis > 0 && velY > 0) { clearInterval(loopFisico); executarMecanicaFriendDuplicavel(elemento, posX, posY, velX, velY, gravidade, iRot, velRot); return; }
+                if (posY > window.innerHeight + 50) { clearInterval(loopFisico); elemento.remove(); }
+            }, 16);
+        }
+    </script>
+    <script>
+        function lancerSaltoEfeito() {
+            lancerAsset.classList.remove("lancer-salto-anim");
+            void lancerAsset.offsetWidth;
+            lancerAsset.classList.add("lancer-salto-anim");
+        }
+
+        function pinkSaltoEfeito() {
+            pinkAsset.classList.remove("pink-salto-anim");
+            void pinkAsset.offsetWidth;
+            pinkAsset.classList.add("pink-salto-anim");
+        }
+
+        function lancarPipisDoLancer() {
+            if (cheatDetectado || nivelLancer === 0) return;
+            if (document.getElementById("area-jogo").style.display !== "block") return;
+            lancerSaltoEfeito();
+            dispararSomLancer();
+            for (let i = 0; i < nivelLancer; i++) {
+                setTimeout(function() {
+                    let elLancer = document.createElement('img');
+                    elLancer.src = 'pipis.png';
+                    elLancer.className = 'pipis-particle';
+                    elLancer.style.transform = "translate(-1000px, -1000px)";
+                    document.getElementById("area-jogo").appendChild(elLancer);
+                    let posX = window.innerWidth - 120;
+                    let posY = window.innerHeight - 100;
+                    let velY = -(Math.random() * 4 + 7);
+                    let velX = -(Math.random() * 5 + 4);
+                    let gravidade = 0.15;
+                    let iRot = 0;
+                    let velRot = (Math.random() * 12 - 6);
+                    let loopLancerPipis = setInterval(function() {
+                        velY += gravidade;
+                        posX += velX;
+                        posY += velY;
+                        iRot += velRot;
+                        if (posX < 0 && velX < 0) { posX = 0; velX = -velX; }
+                        if (posX > window.innerWidth - 32 && velX > 0) { posX = window.innerWidth - 32; velX = -velX; }
+                        elLancer.style.transform = `translate(${posX}px, ${posY}px) rotate(${iRot}deg)`;
+                        if (nivelPowerUpPipis > 0 && velY > 0) {
+                            clearInterval(loopLancerPipis);
+                            executarMecanicaFriendDuplicavel(elLancer, posX, posY, velX, velY, gravidade, iRot, velRot);
+                            return;
+                        }
+                        if (posY > window.innerHeight + 50) {
+                            clearInterval(loopLancerPipis);
+                            elLancer.remove();
+                        }
+                    }, 16);
+                }, i * 250);
+            }
+        }
+        function produzirPassivoPinkMewMew() {
+            if (cheatDetectado || nivelPink === 0) return;
+            if (document.getElementById("area-jogo").style.display !== "block") return;
+            pinkSaltoEfeito();
+            kromer += (kromerPorClique * nivelPink);
+            kromerLabel.textContent = `Kromer: ${Math.floor(kromer)}`;
+            let chancePipisPinkMew = chancePipisBase * (10 + (nivelPink - 1));
+            for (let i = 0; i < nivelPink; i++) {
+                setTimeout(function() {
+                    let elPink = document.createElement((Math.random() * 100 <= chancePipisPinkMew) ? 'img' : 'div');
+                    const ehPipisPink = elPink.tagName === 'IMG';
+                    elPink.style.transform = "translate(-1000px, -1000px)";
+                    if (ehPipisPink === true) {
+                        elPink.src = 'ms_pipis.png';
+                        elPink.className = 'pipis-particle';
+                        dispararSomPink();
+                    } else {
+                        elPink.className = 'money-particle';
+                        elPink.textContent = '$';
+                        elPink.style.fontSize = (Math.floor(Math.random() * 35) + 20) + 'px';
+                    }
+                    document.getElementById("area-jogo").appendChild(elPink);
+                    let posX = window.innerWidth - 110, posY = window.innerHeight / 2;
+                    let velY = -(Math.random() * 4 + 6), velX = -(Math.random() * 5 + 4);
+                    let gravidade = ehPipisPink ? 0.15 : 0.42, iRot = 0, velRot = (Math.random() * 12 - 6);
+                    let larguraPinkElem = ehPipisPink ? 32 : 20;
+                    let loopPinkParticula = setInterval(function() {
+                        velY += gravidade; posX += velX; posY += velY; iRot += velRot;
+                        if (posX < 0 && velX < 0) { posX = 0; velX = -velX; }
+                        if (posX > window.innerWidth - larguraPinkElem && velX > 0) { posX = window.innerWidth - larguraPinkElem; velX = -larguraPinkElem; }
+                        elPink.style.transform = `translate(${posX}px, ${posY}px) rotate(${iRot}deg)`;
+                        if (ehPipisPink === true && nivelPowerUpPipis > 0 && velY > 0) {
+                            clearInterval(loopPinkParticula);
+                            executarMecanicaFriendDuplicavel(elPink, posX, posY, velX, velY, gravidade, iRot, velRot);
+                            return;
+                        }
+                        if (posY > window.innerHeight + 50) {
+                            elPink.remove();
+                            clearInterval(loopPinkParticula);
+                        }
+                    }, 16);
+                }, i * 150);
+            }
+        }
+
+        function dispararEventoMonocromaticoGaster() {
+            if (cheatDetectado || nivelGaster === 0) return;
+            if (document.getElementById("area-jogo").style.display !== "block") return;
+            let m = !musicaNativa.paused;
+            if (m) musicaNativa.pause();
+            gasterAsset.src = "gaster_using.png";
+            filtroGoner.style.backdropFilter = "grayscale(100%)";
+            dispararSomGaster();
+            let loopTremorAleatorio = setInterval(function() {
+                let offsetX = (Math.random() * 8 - 4);
+                let offsetY = (Math.random() * 8 - 4);
+                let randomTilt = (Math.random() * 10 - 5);
+                let randomScale = (Math.random() * 0.08 + 0.96);
+                
+                gasterAsset.style.transform = `translateY(-50%) translate(${offsetX}px, ${offsetY}px) rotate(${randomTilt}deg) scale(${randomScale})`;
+            }, 30);
+
+            let t = 0;
+            let loop = setInterval(function() {
+                t++;
+                for (let i = 0; i < nivelGaster; i++) {
+                    let el = document.createElement('img');
+                    el.src = 'pipis.png';
+                    el.className = 'pipis-particle';
+                    el.style.transform = "translate(-1000px, -1000px)";
+                    document.getElementById("area-jogo").appendChild(el);
+                    let pX = 90, pY = window.innerHeight / 2, vY = -(Math.random() * 5 + 6), vX = (Math.random() * 6 + 4), g = 0.15, r = 0, vr = (Math.random() * 12 - 6);
+                    let lp = setInterval(function() {
+                        vY += g; pX += vX; pY += vY; r += vr;
+                        if (pX < 0 && vX < 0) { pX = 0; vX = -vX; }
+                        if (pX > window.innerWidth - 32 && vX > 0) { pX = window.innerWidth - 32; vX = -vX; }
+                        el.style.transform = `translate(${pX}px, ${pY}px) rotate(${r}deg)`;
+                        if (nivelPowerUpPipis > 0 && vY > 0) {
+                            clearInterval(lp);
+                            executarMecanicaFriendDuplicavel(el, pX, pY, vX, vY, g, r, vr);
+                            return;
+                        }
+                        if (pY > window.innerHeight + 50) {
+                            clearInterval(lp);
+                            el.remove();
+                        }
+                    }, 16);
+                }
+                if (t >= 10) {
+                    clearInterval(loop);
+                    clearInterval(loopTremorAleatorio); 
+                    gasterAsset.src = "gaster.png";
+                    gasterAsset.style.transform = "translateY(-50%)"; 
+                    filtroGoner.style.backdropFilter = "grayscale(0%)";
+                    if (m && !cheatDetectado && musicaHabilitada) musicaNativa.play().catch(function() {});
+                }
+            }, 1000);
+        }
+        function executarMecanicaFriendDuplicavel(pElem, x, y, vx, vy, grav, initRot, vRot) {
+            let pX = x, pY = y, vY = vy, vX = vx, l = 0;
+            while (pY < window.innerHeight && l < 500) {
+                l++; vY += grav; pY += vY; pX += vX;
+                if (pX < 0 && vX < 0) { pX = 0; vX = -vX; }
+                if (pX > window.innerWidth - 32 && vX > 0) { pX = window.innerWidth - 32; vX = -vX; }
+            }
+            let pImp = pX;
+            if (nivelPowerUpPipis > 0) {
+                friendAsset.style.transition = "bottom 0.22s ease-in-out";
+                friendAsset.style.bottom = "-150px";
+            }
+            let cop = document.createElement("img");
+            cop.src = "friend.png";
+            cop.className = "friend-catcher";
+            cop.style.cssText = `position: fixed; bottom: -150px; width: 40px; height: auto; image-rendering: pixelated; z-index: 4; left: ${pImp - 14}px; transition: bottom 0.22s ease-in-out; display: block;`;
+            document.getElementById("area-jogo").appendChild(cop);
+            
+            setTimeout(function() {
+                cop.style.bottom = "10px";
+                let cY = y, cVy = vy, cX = x, cVx = vx, iRot = initRot;
+                let lQ = setInterval(function() {
+                    cVy += grav; cY += cVy; cX += cVx; iRot += vRot;
+                    if (cX < 0 && cVx < 0) { cX = 0; cVx = -cVx; }
+                    if (cX > window.innerWidth - 32 && cVx > 0) { cX = window.innerWidth - 32; cVx = -cVx; }
+                    pElem.style.transform = `translate(${cX}px, ${cY}px) rotate(${iRot}deg)`;
+                    
+                    if (cY >= window.innerHeight - 30) {
+                        clearInterval(lQ);
+                        pElem.remove();
+                        cop.style.bottom = "-150px";
+                        
+                        let vS = Math.floor(Math.random() * 1997) + 1;
+                        let tx = document.createElement("div");
+                        
+                        if (pElem.ehAlt === true) {
+                            kromer -= vS;
+                            if (kromer < 0) kromer = 0;
+                            tx.textContent = `-${vS}`;
+                            tx.style.cssText = `position: fixed; left: ${pImp - 20}px; bottom: 60px; color: #ff3333; font-family: 'Courier New', monospace; font-weight: bold; font-size: 16px; text-shadow: 2px 2px 0px #000; z-index: 5; pointer-events: none; transition: transform 0.5s ease-out, opacity 0.5s ease-out;`;
+                        } else {
+                            kromer += vS;
+                            tx.textContent = `+${vS}`;
+                            tx.style.cssText = `position: fixed; left: ${pImp - 20}px; bottom: 60px; color: #00ffcc; font-family: 'Courier New', monospace; font-weight: bold; font-size: 16px; text-shadow: 2px 2px 0px #000; z-index: 5; pointer-events: none; transition: transform 0.5s ease-out, opacity 0.5s ease-out;`;
+                        }
+                        
+                        kromerLabel.textContent = `Kromer: ${Math.floor(kromer)}`;
+                        document.getElementById("area-jogo").appendChild(tx);
+                        
+                        setTimeout(function() { tx.style.transform = "translateY(-25px)"; tx.style.opacity = "0"; }, 10);
+                        setTimeout(function() { tx.remove(); }, 520);
+                        
+                        dispararSomFriend();
+                        salvarDadosNoNavegador();
+                        
+                        setTimeout(function() {
+                            cop.remove();
+                            if (document.querySelectorAll(".friend-catcher:not(#friend-asset)").length === 0 && nivelPowerUpPipis > 0) friendAsset.style.bottom = "10px";
+                        }, 300);
+                    }
+                }, 16);
+            }, 100);
+        }
+        function salvarDadosNoNavegador() {
+            if (!cheatDetectado) {
+                localStorage.setItem("save_krm", kromer);
+                localStorage.setItem("save_kps", kromerPorSegundo);
+                localStorage.setItem("save_kpc", kromerPorClique);
+                localStorage.setItem("save_fnd", nivelPowerUpPipis);
+                localStorage.setItem("save_cpc", chancePipisBase);
+                localStorage.setItem("save_lan", nivelLancer);
+                localStorage.setItem("save_pnk", nivelPink);
+                localStorage.setItem("save_gas", nivelGaster);
+                localStorage.setItem("save_wrd", weirdRouteLevel);
+            }
+        }
+        function carregarDadosDoNavegador() {
+            if (localStorage.getItem("save_wrd") !== null) {
+                weirdRouteLevel = parseInt(localStorage.getItem("save_wrd") || 0);
+            }
+            
+            if (localStorage.getItem("save_krm") !== null) {
+                kromer = parseFloat(localStorage.getItem("save_krm"));
+                kromerPorSegundo = parseInt(localStorage.getItem("save_kps"));
+                kromerPorClique = parseInt(localStorage.getItem("save_kpc"));
+                nivelPowerUpPipis = parseInt(localStorage.getItem("save_fnd") || 0);
+                chancePipisBase = parseFloat(localStorage.getItem("save_cpc") || 0.1997);
+                nivelLancer = parseInt(localStorage.getItem("save_lan") || 0);
+                nivelPink = parseInt(localStorage.getItem("save_pnk") || 0);
+                nivelGaster = parseInt(localStorage.getItem("save_gas") || 0);
+                if (nivelPowerUpPipis > 0) { friendAsset.style.display = "block"; friendAsset.style.bottom = "10px"; }
+                if (nivelLancer > 0) lancerAsset.style.display = "block";
+                if (nivelPink > 0) pinkAsset.style.display = "block";
+                if (nivelGaster > 0) gasterAsset.style.display = "block";
+                kromerLabel.textContent = `Kromer: ${Math.floor(kromer)}`;
+            }
+            if (localStorage.getItem("cfg_save_risadas") !== null) {
+                risadasMutadas = localStorage.getItem("cfg_save_risadas") === "true";
+                document.getElementById("cfg-risadas").textContent = risadasMutadas ? "RISADAS: OFF" : "RISADAS: ON";
+            }
+            if (localStorage.getItem("cfg_save_musica") !== null) {
+                musicaHabilitada = localStorage.getItem("cfg_save_musica") === "true";
+                document.getElementById("cfg-musica").textContent = musicaHabilitada ? "MÚSICA: ON" : "MÚSICA: OFF";
+            }
+        }
+
+        function animarSprite() { if (!cheatDetectado) { frameAtualIndex = (frameAtualIndex + 1) % spriteFrames.length; spriteSpamtonImg.src = spriteFrames[frameAtualIndex]; } }
+        function atualizarPainelTexto() { painelMelhorias.textContent = `Melhorias: (+${kromerPorSegundo} kromer por segundo), (+${kromerPorClique} kromer por clique)`; }
+        function alternarCoresBotoes() { if (!cheatDetectado) { let c = botaoKPS.classList.contains("cor-rosa"); botaoKPS.className = c ? "botao-loja cor-amarela" : "botao-loja cor-rosa" ; botaoKPC.className = c ? "botao-loja cor-rosa" : "botao-loja cor-amarela" ; } }
+        
+        function dispararAparicaoBotaoAzul() {
+            if (cheatDetectado || document.getElementById("area-jogo").style.display !== "block") return;
+            let kpc = parseInt(kromerPorClique) || 1, kps = parseInt(kromerPorSegundo) || 0;
+            custoPowerUp = Math.max(100, (kpc + kps) * (Math.floor(Math.random() * 10) + 1));
+            let pool = ["friend", "lancer", "pink", "gaster"], buffer = new Uint32Array(1), tS = "";
+            if (window.crypto && window.crypto.getRandomValues) { window.crypto.getRandomValues(buffer); tS = pool[buffer % pool.length]; }
+            else { tS = pool[Math.floor(Math.random() * pool.length)]; }
+            window.tipoSorteadoPowerUpGlobal = tS;
+            switch (tS) {
+                case "friend": botaoPowerUp.innerHTML = `CONTRATAR [PEGADOR DE PROTEINA] (NÍVEL ${nivelPowerUpPipis + 1}) (${custoPowerUp} KROMER)`; break;
+                case "lancer": botaoPowerUp.innerHTML = `CONTRATAR [CARTA VALETE DE ESPADAS] (NÍVEL ${nivelLancer + 1}) (${custoPowerUp} KROMER)`; break;
+                case "pink": botaoPowerUp.innerHTML = `CONTRATAR [ESTATUETA MEW MEW] (NÍVEL ${nivelPink + 1}) (${custoPowerUp} KROMER)`; break;
+                case "gaster": botaoPowerUp.innerHTML = `CONTRATAR [CIENTISTA REAL] (NÍVEL ${nivelGaster + 1}) (${custoPowerUp} KROMER)`; break;
+            }
+            botaoPowerUp.style.display = "block";
+        }
+
+        function comprarPowerUp() {
+            if (cheatDetectado) return;
+            let tS = window.tipoSorteadoPowerUpGlobal || tipoSorteadoPowerUp;
+            if (kromer >= custoPowerUp) {
+                kromer -= custoPowerUp;
+                if (tS === "friend") { nivelPowerUpPipis++; friendAsset.style.display = "block"; friendAsset.style.bottom = "10px"; if (nivelPowerUpPipis >= 2) chancePipisBase += 0.1997; }
+                else if (tS === "lancer") { nivelLancer++; lancerAsset.style.display = "block"; }
+                else if (tS === "pink") { nivelPink++; pinkAsset.style.display = "block"; }
+                else if (tS === "gaster") { nivelGaster++; gasterAsset.style.display = "block"; }
+                botaoPowerUp.style.display = "none";
+                falaSpamtonDiv.textContent = falasSucessoComprar[Math.floor(Math.random() * falasSucessoComprar.length)];
+                falaSpamtonDiv.style.color = "lightgreen";
+                kromerLabel.textContent = `Kromer: ${Math.floor(kromer)}`;
+                atualizarPainelTexto(); salvarDadosNoNavegador();
+            } else {
+                falaSpamtonDiv.textContent = falasFaltaDinheiro[Math.floor(Math.random() * falasFaltaDinheiro.length)];
+                falaSpamtonDiv.style.color = "red";
+            }
+            botaoPowerUp.blur();
+        }
+        function comprarKPS() {
+            if (cheatDetectado) return;
+            if (kromer >= custoItemKPS) {
+                if (musicaHabilitada && !musicaNativa.paused) { musicaNativa.volume = 0.3; musicaNativa.play().catch(function() {}); }
+                kromer -= custoItemKPS;
+                let g = Math.floor(Math.random() * 5) + 1; kromerPorSegundo += g;
+                falaSpamtonDiv.textContent = `${falasSucessoComprar[Math.floor(Math.random() * falasSucessoComprar.length)]} (GANHOU +${g} KPS)!`;
+                falaSpamtonDiv.style.color = "lightgreen";
+                kromerLabel.textContent = `Kromer: ${Math.floor(kromer)}`;
+                atualizarPainelTexto(); gerarItemKPS(); salvarDadosNoNavegador();
+            } else {
+                falaSpamtonDiv.textContent = falasFaltaDinheiro[Math.floor(Math.random() * falasFaltaDinheiro.length)];
+                falaSpamtonDiv.style.color = "red";
+            }
+            botaoKPS.blur();
+        }
+
+        function comprarKPC() {
+            if (cheatDetectado) return;
+            if (kromer >= custoItemKPC) {
+                if (musicaHabilitada && !musicaNativa.paused) { musicaNativa.volume = 0.3; musicaNativa.play().catch(function() {}); }
+                kromer -= custoItemKPC;
+                let g = Math.floor(Math.random() * 5) + 1; kromerPorClique += g;
+                falaSpamtonDiv.textContent = `${falasSucessoComprar[Math.floor(Math.random() * falasSucessoComprar.length)]} (GANHOU +${g} KPC)!`;
+                falaSpamtonDiv.style.color = "lightgreen";
+                kromerLabel.textContent = `Kromer: ${Math.floor(kromer)}`;
+                atualizarPainelTexto(); gerarItemKPC(); salvarDadosNoNavegador();
+            } else {
+                falaSpamtonDiv.textContent = falasFaltaDinheiro[Math.floor(Math.random() * falasFaltaDinheiro.length)];
+                falaSpamtonDiv.style.color = "red";
+            }
+            botaoKPC.blur();
+        }
+
+        function cliqueManual() {
+            if (cheatDetectado) return;
+            cliquesNesseSegundo++;
+            if (cliquesNesseSegundo > 15) { executarPunicaoCheat(); return; }
+            dispararRisadaLocal(false); criarParticulaFisica();
+            kromer += kromerPorClique;
+            kromerLabel.textContent = `Kromer: ${Math.floor(kromer)}`;
+            salvarDadosNoNavegador();
+        }
+
+        function atualizarKromer() { if (!cheatDetectado) { kromer += kromerPorSegundo; kromerLabel.textContent = `Kromer: ${Math.floor(kromer)}`; produzirPassivoPinkMewMew(); salvarDadosNoNavegador(); } }
+        function gerarItemKPS() { custoItemKPS = (Math.floor(Math.random() * 10) + 1) * (kromerPorSegundo === 0 ? 1 : kromerPorSegundo); botaoKPS.innerHTML = `[AUMENTA KPS]<br>COMPRAR ${itensKPS[Math.floor(Math.random() * itensKPS.length)].nome} (${custoItemKPS} Kromer)`; }
+        function gerarItemKPC() { custoItemKPC = (Math.floor(Math.random() * 10) + 1) * kromerPorClique; botaoKPC.innerHTML = `[AUMENTA KPC]<br>COMPRAR ${itensKPC[Math.floor(Math.random() * itensKPC.length)].nome} (${custoItemKPC} Kromer)`; }
+        function deletarProgressoManual() { localStorage.clear(); location.reload(); }
+        function atualizarFalaSpamton() { if (!cheatDetectado) { falaSpamtonDiv.textContent = falasSpamton[Math.floor(Math.random() * falasSpamton.length)]; falaSpamtonDiv.style.color = "yellow"; } }
+        
+        function rolarFalaInicialComPeso() {
+            if (!cheatDetectado) {
+                if (Math.random() <= 0.70) { falaSpamtonDiv.textContent = "OLÁ, [Cliente Valioso]!"; falaSpamtonDiv.style.color = "yellow"; }
+                else { atualizarFalaSpamton(); }
+            }
+        }
+
+        botaoKPS.addEventListener("click", comprarKPS);
+        botaoKPC.addEventListener("click", comprarKPC);
+        botaoPowerUp.addEventListener("click", comprarPowerUp);
+        spriteSpamtonImg.addEventListener("click", cliqueManual);
+        
+        document.addEventListener("DOMContentLoaded", function() { carregarDadosDoNavegador(); gerarItemKPS(); gerarItemKPC(); rolarFalaInicialComPeso(); atualizarPainelTexto(); });
+        document.addEventListener("visibilitychange", function() { if (document.hidden) cliquesNesseSegundo = 0; });
+        
+        setInterval(atualizarKromer, 1000);
+        setInterval(atualizarFalaSpamton, 5000);
+        setInterval(animarSprite, 500);
+        setInterval(alternarCoresBotoes, 1000);
+        setInterval(function() { cliquesNesseSegundo = 0; }, 1000);
+        setInterval(dispararAparicaoBotaoAzul, 300000);
+        setInterval(lancarPipisDoLancer, 30000);
+        setInterval(dispararEventoMonocromaticoGaster, 60000);
+        setInterval(verificarSorteioWeirdRoute, 1000);
+
+        function renderizarTextoComoJogar() {
+            const container = document.getElementById("conteudo-como-jogar");
+            if (!container) return;
+            
+            const textoComoJogarCru = "*KROMER*\nKromer é a moeda que você usará para progredir nesse jogo, para começar, clique no Spamton para gerar 1 kromer, não se preocupe, conseguir kromer será mais fácil depois\n*LOJA*\nA loja é o lugar onde sua produção de kromer aumentará ao longo do tempo, inicialmente ela tem dois botões, o de cima aumenta KPS (kromer por segundo), o de baixo aumenta KPC (kromer por clique), ocasionalmente um terceiro botão azul vai aparecer e vai conceder um dos 4 power-ups\n*POWER-UPS*\nPower-ups são outros darkners que você pode contratar e evoluir, mas antes de explicar como cada um deles funciona eu vou explicar algo necessário para eles funcionarem\n*PIPIS*\nQuando você gera kromer ao clicar no Spamton, alguns $ aparecem, eles começaram sendo uma decoração durante o desenvolvimento do jogo mais viraram uma função excencial para progredir com power-ups, a cada $ que aparece, há uma pequena chance do $ ser substituído por um pipis, no começo eles parecem um easter egg legal mas em breve terão importância\n*IMAGE_FRIEND*\nEsse darkner é o mais importante para os outros power-ups funcionarem bem, quando um pipis aparece na tela, o FRIEND irá imediatamente pegá-lo para conceder uma quantia de kromer em troca, conforme o FRIEND evolui, a chance de um pipis aparecer no lugar de um $ aumenta levemente, isso ajudará depois\n*LANCER*\nLancer é um ótimo companheiro caso você se sinta sozinho nessa jornada, ele trouxe sua bicicleta motorizada para melhorar a poluição do ambiente e faz um som engraçado quando você clica nele, mas ele não está lá só pra brincar, ocasionalmente ele joga alguns pipis para o FRIEND pegar (eu não disse que ele seria importante?), conforme Lancer evolui, ele joga mais pipis de uma vez (legal né?)\n*GASTER*\nTambém conhecido como Homem Misterioso, Gaster ocasionalmente deixará sua tela monocromática, enquanto joga alguns pipis para o FRIEND pegar, conforme o Gaster evolui, ele joga mais pipis também\n*PINK*\nOu Mew Mew pra quem só joga Undertale, ela é um passo importante para progressão, suponhamos que você gastou muito kromer em KPC, mas quer deixar o jogo rodando afk, não se preocupe! Pink age como o seu mouse, e gera kromer a cada segundo, mas ao invés de gerar a quantia baseada em KPS, ela gera baseada em KPC, ou seja, ela clica por você, conforme a Pink evolui, ela gera mais $ e as chances de pipis gerados por ela aumenta\n*MENUS E CONFIGURAÇÕES*\nVocê acha que eu não ia citar isso? claro que não! eu vou explicar agora!\n*MENU PRINCIPAL*\nO lugar onde tudo começa, aqui tem alguns botões que podem ou não ajudar :)\n*BOTÃO \"JOGAR\"*\nFaz você jogar\n*BOTÃO \"CONFIGURAÇÕES\"*\nAqui você pode ligar ou desligar a música e as risadas dos darkners que você contratou, também tem como resetar o progresso aqui mas a gente já resetou demais em Undertale\n*BOTÃO \"CRÉDITOS\"*\nAqui temos os nomes dos criadores desse jogo, que se dedicaram muito para fazer tudo funcionar (não conta pra ninguém mas eu copiei muito código de muitos sites e remendei tudo junto)\n*BOTÃO \"COMO JOGAR\"*\nTraz você pra esse submenu!\n*MENU DE PAUSA*\nBasicamente uma curta versão do menu principal mas ele fica dentro do jogo pra você acessar enquanto assiste o caos!\n*EXTRAS*\nDaqui pra frente tem algumas features simples que não merecem um tópico maior (que pena)\n*TELEFONE*\nUm simples telefone para mandar você pra algum lugar, clique nele, talvez não\n*DIÁLOGO*\nUm texto em cima do Spamton informando o que está acontecendo no jogo, e as vezes é só o Spamton falando com você, quem sabe?\n*ANTI-CHEAT*\nAlguma hora você vai descobrir, ele impede você de ser um trapaceiro sujo (e também atrapalha a conexão telefônica), bem, as coisas tomaram uma rota estranha não é?\n*FIM*\nÉ só isso por enquanto, agora vá jogar e se torne um [[BIG SHOT]]!!1";
+            
+            const linhas = textoComoJogarCru.split("\n");
+            container.innerHTML = "";
+            
+            linhas.forEach(function(linha) {
+                const paragrafo = document.createElement("p");
+                
+                if (linha.trim().startsWith("*") && linha.trim().endsWith("*")) {
+                    paragrafo.textContent = linha.replace(/\*/g, "");
+                    paragrafo.className = "topico-cyan";
+                } else {
+                    paragrafo.textContent = linha;
+                }
+                
+                container.appendChild(paragrafo);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", renderizarTextoComoJogar);
+        function verificarSorteioWeirdRoute() {
+            if (cheatDetectado || weirdRouteLevel === 0) return;
+            if (document.getElementById("area-jogo").style.display !== "block") return;
+
+            let sorteioSegredo = Math.floor(Math.random() * 1997) + 1;
+            if (sorteioSegredo <= weirdRouteLevel) {
+                const areaJogoCorreta = document.getElementById("area-jogo");
+                let somJingle = null;
+
+                let fundoAlt = document.createElement("div");
+                fundoAlt.className = "fundo-camada-alt";
+                if (areaJogoCorreta) {
+                    areaJogoCorreta.insertBefore(fundoAlt, areaJogoCorreta.firstChild);
+                    setTimeout(function() {
+                        fundoAlt.style.opacity = "1";
+                    }, 20);
+                }
+
+                if (!risadasMutadas) {
+                    somJingle = new Audio('weird_route_jingle.mp3');
+                    somJingle.volume = 0.5;
+                    somJingle.play().catch(function() {});
+                }
+
+                let elPipis = document.createElement('img');
+                elPipis.src = 'pipis_alt.png';
+                elPipis.className = 'pipis-particle';
+                elPipis.style.transform = "translate(-1000px, -1000px)";
+                if (areaJogoCorreta) {
+                    areaJogoCorreta.appendChild(elPipis);
+                }
+
+                let posX = window.innerWidth / 2 - 16;
+                let posY = 0;
+                let velY = 0;
+                let velX = 0;
+                let gravidade = 0.15;
+                let iRot = 0;
+                let velRot = (Math.random() * 6 - 3);
+
+                let loopQuedaPipis = setInterval(function() {
+                    velY += gravidade;
+                    posY += velY;
+                    iRot += velRot;
+                    elPipis.style.transform = `translate(${posX}px, ${posY}px) rotate(${iRot}deg)`;
+
+                    if (nivelPowerUpPipis > 0 && velY > 0) {
+                        clearInterval(loopQuedaPipis);
+                        elPipis.ehAlt = true;
+                        executarMecanicaFriendDuplicavel(elPipis, posX, posY, velX, velY, gravidade, iRot, velRot);
+                        return;
+                    }
+
+                    if (posY > window.innerHeight + 50) {
+                        clearInterval(loopQuedaPipis);
+                        elPipis.remove();
+                    }
+                }, 16);
+
+                setTimeout(function() {
+                    if (fundoAlt) {
+                        fundoAlt.style.opacity = "0";
+                        setTimeout(function() {
+                            fundoAlt.remove();
+                        }, 500);
+                    }
+                    if (somJingle) {
+                        somJingle.pause();
+                        somJingle.remove();
+                    }
+                }, 3000);
+            }
+        }
+    </script>
+</body>
+</html>
