@@ -1778,9 +1778,8 @@
             slotsFeedbackKromerAtivos.add(slot);
 
             const tx = document.createElement("div");
-            tx.className = "friend-kromer-feedback";
             tx.textContent = `${ehAlt ? "-" : "+"}${valor}`;
-            tx.style.cssText = `position: fixed; left: ${Math.max(60, Math.min(window.innerWidth - 60, posicaoX))}px; bottom: ${64 + slot * 26}px; color: ${ehAlt ? "#ff3333" : "#00ffcc"}; font-family: 'Courier New', monospace; font-weight: bold; font-size: clamp(20px, 4vw, 28px); -webkit-text-stroke: 1px black; text-shadow: 2px 2px 0px #000, -2px -2px 0px #000; z-index: 99999999; pointer-events: none; opacity: 1; transform: translate(-50%, 0); transition: transform 1.4s ease-out, opacity 1.4s ease-out;`;
+            tx.style.cssText = `position: fixed; left: ${Math.max(60, Math.min(window.innerWidth - 60, posicaoX))}px; bottom: ${64 + slot * 26}px; color: ${ehAlt ? "#ff3333" : "#00ffcc"}; font-family: 'Courier New', monospace; font-weight: bold; font-size: 16px; text-shadow: 2px 2px 0px #000; z-index: 99999999; pointer-events: none; opacity: 1; transform: translate(-50%, 0); transition: transform 0.7s ease-out, opacity 0.7s ease-out;`;
             document.body.appendChild(tx);
 
             requestAnimationFrame(function() {
@@ -1790,7 +1789,7 @@
             setTimeout(function() {
                 tx.remove();
                 slotsFeedbackKromerAtivos.delete(slot);
-            }, 1420);
+            }, 720);
         }
 
         function executarMecanicaFriendDuplicavel(pElem, x, y, vx, vy, grav, initRot, vRot) {
@@ -1839,8 +1838,9 @@
                             setTimeout(function() { cop.remove(); }, 300);
                             return;
                         }
-                        iniciarRisadaFriend();
                         const vS = Math.floor(Math.random() * 1997) + 1;
+                        exibirFeedbackKromerFriend(vS, pElem.ehAlt === true, pImp);
+                        iniciarRisadaFriend();
                         if (pElem.ehAlt === true) {
                             kromer -= vS;
                             if (kromer < 0) kromer = 0;
@@ -1848,7 +1848,6 @@
                             kromer += vS;
                             dadosConquistas.pipisColetados++;
                         }
-                        exibirFeedbackKromerFriend(vS, pElem.ehAlt === true, pImp);
                         atualizarRotuloKromer();
                         salvarConquistas();
                         verificarConquistas();
