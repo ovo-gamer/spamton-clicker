@@ -232,7 +232,7 @@
         }
         .lancer-bike { position: fixed; bottom: 10px; right: 15px; width: 140px; height: auto; image-rendering: pixelated; z-index: 4; cursor: pointer; display: none; }
         .pink-mewmew { position: fixed; top: 50%; right: 15px; width: 100px; height: auto; image-rendering: pixelated; z-index: 4; pointer-events: none; transform: translateY(-50%); display: none; }
-        .gaster-body { position: fixed; top: 50%; left: 15px; width: 55px; height: auto; image-rendering: pixelated; z-index: 3; pointer-events: none; transform: translateY(-50%); display: none; }
+        .gaster-body { position: fixed; top: 50%; left: 15px; width: 55px; height: auto; image-rendering: pixelated; z-index: 4; pointer-events: none; transform: translateY(-50%); display: none; }
         .gaster-vibrando { animation: gasterVibrarCaotico 0.08s infinite linear !important; }
         .lancer-salto-anim { animation: lancerSalto 0.4s ease-out; }
         .pink-salto-anim { animation: pinkSalto 0.3s ease-out; }
@@ -249,6 +249,89 @@
         #tela-morte { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: black; z-index: 99999995 !important; display: none; opacity: 0; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease-in-out !important; }
         #texto-morte { color: red; font-size: 40px; font-weight: bold; text-shadow: 3px 3px 0px #300; font-family: 'Courier New', Courier, monospace; line-height: 1.5; transition: opacity 0.5s ease-in-out !important; }
         #sprite-telefone { transition: filter 0.5s ease-in-out !important; }
+    </style>
+    <style>
+        @media (max-width: 700px) {
+            #tela-titulo,
+            .sub-tela,
+            #tela-pausa,
+            #tela-config-pausa {
+                box-sizing: border-box;
+                gap: clamp(8px, 2.5vh, 18px);
+                padding: 16px;
+                overflow-y: auto;
+            }
+            #titulo-jogo {
+                font-size: clamp(22px, 7vw, 32px);
+                margin-bottom: 4px;
+            }
+            #texto-abertura {
+                font-size: clamp(14px, 4.5vw, 18px);
+            }
+            .botao-menu {
+                box-sizing: border-box;
+                width: min(86vw, 360px);
+                min-width: 0;
+                padding: 11px 14px;
+                font-size: clamp(14px, 4.2vw, 18px);
+            }
+            .menu-scroll {
+                width: 92%;
+                max-height: 45vh;
+                padding: 14px;
+            }
+            .menu-scroll p { font-size: 16px; }
+            .menu-scroll .topico-cyan { font-size: 21px; }
+            #fala-spamton {
+                height: auto;
+                min-height: 1.4em;
+                font-size: clamp(16px, 4.8vw, 22px);
+            }
+            #kromer { font-size: clamp(32px, 10vw, 48px); }
+            #painel-melhorias { font-size: clamp(13px, 3.8vw, 18px); }
+            #sprite-spamton { width: clamp(76px, 23vw, 120px); }
+            .loja-container {
+                width: 100%;
+                align-items: center;
+                gap: 9px;
+                margin-top: 12px;
+            }
+            .botao-loja {
+                box-sizing: border-box;
+                width: min(90vw, 420px);
+                min-width: 0;
+                padding: 10px 12px;
+                font-size: clamp(14px, 4vw, 18px);
+            }
+            .lancer-bike { width: clamp(76px, 20vw, 140px); }
+            .pink-mewmew { width: clamp(64px, 18vw, 100px); }
+            .gaster-body { width: clamp(40px, 11vw, 55px); }
+        }
+
+        @media (max-width: 700px) and (orientation: landscape) {
+            #tela-titulo,
+            .sub-tela,
+            #tela-pausa,
+            #tela-config-pausa {
+                gap: 6px;
+                padding: 8px 16px;
+            }
+            #titulo-jogo { font-size: clamp(20px, 5vh, 28px); }
+            .botao-menu {
+                width: min(70vw, 320px);
+                padding: 7px 12px;
+                font-size: clamp(12px, 3.4vh, 16px);
+            }
+            .menu-scroll { max-height: 32vh; padding: 8px; }
+            .menu-scroll p { font-size: 13px; margin: 6px 0; }
+            .menu-scroll .topico-cyan { font-size: 17px; margin-top: 14px; }
+            #fala-spamton { font-size: 16px; }
+            #kromer { font-size: 30px; margin: 4px 0; }
+            #painel-melhorias { font-size: 13px; margin-top: 2px; }
+            #sprite-spamton { width: 66px; margin: 4px auto; }
+            .loja-container { gap: 5px; margin-top: 6px; }
+            .botao-loja { padding: 6px 10px; font-size: 13px; }
+        }
     </style>
 </head>
 <body>
@@ -756,6 +839,27 @@
                 }
             }, 1000);
         }
+        const slotsFeedbackKromerAtivos = new Set();
+        function exibirFeedbackKromerFriend(valor, ehAlt, posicaoX) {
+            let slot = 0;
+            while (slotsFeedbackKromerAtivos.has(slot)) slot++;
+            slotsFeedbackKromerAtivos.add(slot);
+
+            const tx = document.createElement("div");
+            tx.textContent = `${ehAlt ? "-" : "+"}${valor}`;
+            tx.style.cssText = `position: fixed; left: ${Math.max(60, Math.min(window.innerWidth - 60, posicaoX))}px; bottom: ${64 + slot * 26}px; color: ${ehAlt ? "#ff3333" : "#00ffcc"}; font-family: 'Courier New', monospace; font-weight: bold; font-size: 16px; text-shadow: 2px 2px 0px #000; z-index: 9999990; pointer-events: none; opacity: 1; transform: translate(-50%, 0); transition: transform 0.7s ease-out, opacity 0.7s ease-out;`;
+            document.body.appendChild(tx);
+
+            requestAnimationFrame(function() {
+                tx.style.transform = "translate(-50%, -25px)";
+                tx.style.opacity = "0";
+            });
+            setTimeout(function() {
+                tx.remove();
+                slotsFeedbackKromerAtivos.delete(slot);
+            }, 720);
+        }
+
         function executarMecanicaFriendDuplicavel(pElem, x, y, vx, vy, grav, initRot, vRot) {
             let pX = x, pY = y, vY = vy, vX = vx, l = 0;
             while (pY < window.innerHeight && l < 500) {
@@ -789,24 +893,16 @@
                         cop.style.bottom = "-150px";
                         
                         let vS = Math.floor(Math.random() * 1997) + 1;
-                        let tx = document.createElement("div");
                         
                         if (pElem.ehAlt === true) {
                             kromer -= vS;
                             if (kromer < 0) kromer = 0;
-                            tx.textContent = `-${vS}`;
-                            tx.style.cssText = `position: fixed; left: ${pImp - 20}px; bottom: 60px; color: #ff3333; font-family: 'Courier New', monospace; font-weight: bold; font-size: 16px; text-shadow: 2px 2px 0px #000; z-index: 5; pointer-events: none; transition: transform 0.5s ease-out, opacity 0.5s ease-out;`;
                         } else {
                             kromer += vS;
-                            tx.textContent = `+${vS}`;
-                            tx.style.cssText = `position: fixed; left: ${pImp - 20}px; bottom: 60px; color: #00ffcc; font-family: 'Courier New', monospace; font-weight: bold; font-size: 16px; text-shadow: 2px 2px 0px #000; z-index: 5; pointer-events: none; transition: transform 0.5s ease-out, opacity 0.5s ease-out;`;
                         }
                         
+                        exibirFeedbackKromerFriend(vS, pElem.ehAlt === true, pImp);
                         kromerLabel.textContent = `Kromer: ${Math.floor(kromer)}`;
-                        document.getElementById("area-jogo").appendChild(tx);
-                        
-                        setTimeout(function() { tx.style.transform = "translateY(-25px)"; tx.style.opacity = "0"; }, 10);
-                        setTimeout(function() { tx.remove(); }, 520);
                         
                         dispararSomFriend();
                         salvarDadosNoNavegador();
