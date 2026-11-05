@@ -163,6 +163,15 @@
             grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
             gap: 10px;
         }
+        .conquistas-categoria + .conquistas-categoria { margin-top: 18px; }
+        .conquistas-categoria-titulo {
+            margin: 0 0 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid cyan;
+            color: cyan;
+            text-align: left;
+            text-shadow: 2px 2px black;
+        }
         .conquista-cartao {
             display: flex;
             align-items: center;
@@ -795,12 +804,15 @@
         let weirdRouteLevel = 0;
         let custoItemKPS = 0, custoItemKPC = 0, indiceItemKPS = 0, indiceItemKPC = 0;
         const CHAVE_CONQUISTAS = "save_conquistas";
-        const dadosConquistas = { desbloqueadas: [], cliques: 0, comprasKPS: 0, comprasKPC: 0, compras: 0, pipisColetados: 0 };
+        const dadosConquistas = {
+            desbloqueadas: [], cliques: 0, comprasKPS: 0, comprasKPC: 0, compras: 0,
+            pipisColetados: 0, tempoJogado: 0, menusRapidosAbertos: 0, kromerGastos: 0
+        };
         let origemConquistas = "titulo";
         let filaBragConquistas = [];
         let bragConquistaAtivo = false;
         let bragConquistaAte = 0;
-        const listaConquistas = [
+        const conquistasLegadas = [
             { id: "krm_1", titulo: "Primeiro Kromer", tituloEn: "First Kromer", descricao: "Tenha 1 Kromer.", descricaoEn: "Have 1 Kromer.", verificar: () => kromer >= 1 },
             { id: "krm_100", titulo: "Começando a negociar", tituloEn: "Getting Down to Business", descricao: "Tenha 100 Kromer.", descricaoEn: "Have 100 Kromer.", verificar: () => kromer >= 100 },
             { id: "krm_1k", titulo: "Cliente frequente", tituloEn: "Regular Customer", descricao: "Tenha 1.000 Kromer.", descricaoEn: "Have 1,000 Kromer.", verificar: () => kromer >= 1000 },
@@ -852,6 +864,231 @@
             { id: "all_darkners", titulo: "Reunião de equipe", tituloEn: "Team Meeting", descricao: "Tenha Friend, Lancer, Pink e Gaster na equipe.", descricaoEn: "Have Friend, Lancer, Pink, and Gaster on your team.", verificar: () => nivelPowerUpPipis >= 1 && nivelLancer >= 1 && nivelPink >= 1 && nivelGaster >= 1 },
             { id: "all", titulo: "Colecionador BIG SHOT", tituloEn: "BIG SHOT Collector", descricao: "Desbloqueie todas as outras conquistas.", descricaoEn: "Unlock every other achievement.", verificar: () => false }
         ];
+        const categoriasConquistas = {
+            kromer: { pt: "Marcos de Kromer", en: "Kromer Milestones" },
+            clicks: { pt: "Cliques no Spamton", en: "Spamton Clicks" },
+            kps: { pt: "Kromer por segundo (KPS)", en: "Kromer per second (KPS)" },
+            kpc: { pt: "Kromer por clique (KPC)", en: "Kromer per click (KPC)" },
+            upgrades: { pt: "Melhorias da loja", en: "Shop Upgrades" },
+            pipis: { pt: "Pipis coletados", en: "Pipis Collected" },
+            hires: { pt: "Contratações de Darkners", en: "Darkner Hires" },
+            level5: { pt: "Darkners nível 5", en: "Darkners at Level 5" },
+            level10: { pt: "Darkners nível 10", en: "Darkners at Level 10" },
+            level25: { pt: "Darkners nível 25", en: "Darkners at Level 25" },
+            team: { pt: "Equipe", en: "Team" },
+            hireCount: { pt: "Contratações e melhorias", en: "Hires and Level-Ups" },
+            playtime: { pt: "Tempo de jogo", en: "Play Time" },
+            quickMenu: { pt: "Menu rápido", en: "Quick Menu" },
+            spending: { pt: "Kromer gasto", en: "Kromer Spent" },
+            completion: { pt: "Conclusão", en: "Completion" }
+        };
+        const categoriasLegadasPorId = new Map([
+            ["krm_1", "kromer"], ["krm_100", "kromer"], ["krm_1k", "kromer"],
+            ["krm_10k", "kromer"], ["krm_1m", "kromer"], ["krm_500", "kromer"],
+            ["click_1", "clicks"], ["click_25", "clicks"], ["click_100", "clicks"],
+            ["click_1k", "clicks"], ["click_10k", "clicks"], ["click_2500", "clicks"],
+            ["kps_1", "kps"], ["kps_5", "kps"], ["kps_10", "kps"], ["kps_50", "kps"],
+            ["kps_100", "kps"], ["kps_500", "kps"],
+            ["kpc_1", "kpc"], ["kpc_10", "kpc"], ["kpc_25", "kpc"],
+            ["kpc_100", "kpc"], ["kpc_250", "kpc"], ["kpc_1k", "kpc"],
+            ["buy_kps_10", "upgrades"], ["buy_kps_50", "upgrades"],
+            ["buy_kpc_10", "upgrades"], ["buy_kpc_50", "upgrades"],
+            ["pipis_1", "pipis"], ["pipis_100", "pipis"], ["pipis_500", "pipis"],
+            ["buy_1", "hireCount"], ["buy_10", "hireCount"], ["buy_25", "hireCount"],
+            ["all_darkners", "team"], ["all", "completion"]
+        ]);
+        const marcosKromer = [
+            ["krm_10m", 10000000, "Cofre de dez milhões", "Ten-Million Vault"],
+            ["krm_100m", 100000000, "Fortuna colossal", "Colossal Fortune"],
+            ["krm_50m", 50000000, "Kromer sem fim", "Endless Kromer"],
+            ["krm_1b", 1000000000, "Bilionário BIG SHOT", "Kromer Billionaire"],
+            ["krm_10b", 10000000000, "Magnata de dez bilhões", "Ten-Billion Tycoon"],
+            ["krm_1t", 1000000000000, "Trilionário", "Kromer Trillionaire"]
+        ];
+        const marcosKPS = [
+            ["kps_1k", 1000, "Fluxo de Kromer", "Kromer Flow"],
+            ["kps_10k", 10000, "Torrente de Kromer", "Kromer Flood"],
+            ["kps_100k", 100000, "Rio de Kromer", "Kromer River"],
+            ["kps_1m", 1000000, "Usina de Kromer", "Kromer Power Plant"],
+            ["kps_50m", 50000000, "Fábrica de Kromer", "Kromer Factory"],
+            ["kps_1b", 1000000000, "KPS astronômico", "Astronomical KPS"]
+        ];
+        const marcosKPC = [
+            ["kpc_2", 2, "Primeiro grande clique", "First Big Click"],
+            ["kpc_10k", 10000, "Clique de alto valor", "High-Value Click"],
+            ["kpc_100k", 100000, "Clique colossal", "Colossal Click"],
+            ["kpc_1m", 1000000, "Clique milionário", "Million-Kromer Click"],
+            ["kpc_50m", 50000000, "Toque de Midas", "Midas Touch"],
+            ["kpc_1b", 1000000000, "Um clique bilionário", "One-Billion-Kromer Click"],
+            ["kpc_10b", 10000000000, "O último clique", "The Ultimate Click"]
+        ];
+        const marcosCliques = [
+            ["click_25k", 25000, "Cliques em série", "Clicking Spree"],
+            ["click_50k", 50000, "O botão aguenta", "The Button Can Take It"],
+            ["click_100k", 100000, "Lenda dos cliques", "Click Legend"],
+            ["click_250k", 250000, "Dedicação sem limites", "Unstoppable Dedication"]
+        ];
+        const marcosPipis = [
+            [5000, "Pipis para todo lado", "Pipis Everywhere"],
+            [10000, "Especialista em Pipis", "Pipis Expert"],
+            [50000, "Montanha de Pipis", "Mountain of Pipis"],
+            [100000, "Império de Pipis", "Pipis Empire"]
+        ];
+        const conquistasNumericasNovas = [
+            ...marcosKromer.map(([id, meta, titulo, tituloEn]) => ({
+                id, categoria: "kromer", meta, titulo, tituloEn,
+                descricao: `Tenha ${meta.toLocaleString("pt-BR")} Kromer.`,
+                descricaoEn: `Have ${meta.toLocaleString("en-US")} Kromer.`,
+                verificar: () => kromer >= meta
+            })),
+            ...marcosKPS.map(([id, meta, titulo, tituloEn]) => ({
+                id, categoria: "kps", meta, titulo, tituloEn,
+                descricao: `Alcance ${meta.toLocaleString("pt-BR")} Kromer por segundo.`,
+                descricaoEn: `Reach ${meta.toLocaleString("en-US")} Kromer per second.`,
+                verificar: () => kromerPorSegundo >= meta
+            })),
+            ...marcosKPC.map(([id, meta, titulo, tituloEn]) => ({
+                id, categoria: "kpc", meta, titulo, tituloEn,
+                descricao: meta === 2
+                    ? "Alcance 2 Kromer por clique (o padrão é 1)."
+                    : `Alcance ${meta.toLocaleString("pt-BR")} Kromer por clique.`,
+                descricaoEn: meta === 2
+                    ? "Reach 2 Kromer per click (the default is 1)."
+                    : `Reach ${meta.toLocaleString("en-US")} Kromer per click.`,
+                verificar: () => kromerPorClique >= meta
+            })),
+            ...marcosCliques.map(([id, meta, titulo, tituloEn]) => ({
+                id, categoria: "clicks", meta, titulo, tituloEn,
+                descricao: `Clique no Spamton ${meta.toLocaleString("pt-BR")} vezes.`,
+                descricaoEn: `Click Spamton ${meta.toLocaleString("en-US")} times.`,
+                verificar: () => dadosConquistas.cliques >= meta
+            })),
+            ...marcosPipis.map(([meta, titulo, tituloEn]) => ({
+                id: `pipis_${meta}`, categoria: "pipis", meta, titulo, tituloEn,
+                descricao: `Faça Friend coletar ${meta.toLocaleString("pt-BR")} Pipis.`,
+                descricaoEn: `Have Friend collect ${meta.toLocaleString("en-US")} Pipis.`,
+                verificar: () => dadosConquistas.pipisColetados >= meta
+            })),
+            {
+                id: "buy_kps_100", categoria: "upgrades", meta: 100, titulo: "Mestre das melhorias KPS", tituloEn: "KPS Upgrade Master",
+                descricao: "Compre 100 melhorias de KPS.", descricaoEn: "Buy 100 KPS upgrades.",
+                verificar: () => dadosConquistas.comprasKPS >= 100
+            },
+            {
+                id: "buy_kpc_100", categoria: "upgrades", meta: 100, titulo: "Mestre das melhorias KPC", tituloEn: "KPC Upgrade Master",
+                descricao: "Compre 100 melhorias de KPC.", descricaoEn: "Buy 100 KPC upgrades.",
+                verificar: () => dadosConquistas.comprasKPC >= 100
+            },
+            {
+                id: "pipis_1000", categoria: "pipis", meta: 1000, titulo: "Pipis aos milhares", tituloEn: "Pipis by the Thousand",
+                descricao: "Faça Friend coletar 1.000 Pipis.", descricaoEn: "Have Friend collect 1,000 Pipis.",
+                verificar: () => dadosConquistas.pipisColetados >= 1000
+            }
+        ];
+        const conquistasExtras = [
+            ...[
+                [50, "Equipe em crescimento", "Growing Team"],
+                [100, "Gerente de Darkners", "Darkner Manager"],
+                [250, "Chefe da loja", "Shop Boss"],
+                [500, "Lenda das contratações", "Hiring Legend"]
+            ].map(([meta, titulo, tituloEn]) => ({
+                id: `buy_${meta}`, categoria: "hireCount", meta, titulo, tituloEn,
+                descricao: `Contrate ou evolua Darkners ${meta} vezes.`,
+                descricaoEn: `Hire or level up Darkners ${meta} times.`,
+                verificar: () => dadosConquistas.compras >= meta
+            })),
+            ...[
+                [60, "Só começando", "Just Getting Started"],
+                [300, "Cinco minutos de negócios", "Five-Minute Business"],
+                [1800, "Meia hora de Kromer", "Half an Hour of Kromer"],
+                [3600, "Uma hora de trabalho", "One-Hour Workday"],
+                [36000, "Cliente fiel", "Loyal Customer"]
+            ].map(([segundos, titulo, tituloEn]) => ({
+                id: `playtime_${segundos}`, categoria: "playtime", meta: segundos, titulo, tituloEn,
+                descricao: `Jogue por ${segundos / 60} minutos no total.`,
+                descricaoEn: `Play for ${segundos / 60} minutes in total.`,
+                verificar: () => dadosConquistas.tempoJogado >= segundos
+            })),
+            ...[
+                [1, "Menu aberto", "Menu Opened"],
+                [10, "Pausa estratégica", "Strategic Pause"],
+                [50, "Pausa para negócios", "Business Break"],
+                [100, "Fã do menu rápido", "Quick Menu Fan"],
+                [500, "Cliente sempre de olho", "Always Watching"]
+            ].map(([meta, titulo, tituloEn]) => ({
+                id: `quickmenu_${meta}`, categoria: "quickMenu", meta, titulo, tituloEn,
+                descricao: `Abra o menu rápido ${meta} vezes.`,
+                descricaoEn: `Open the quick menu ${meta} times.`,
+                verificar: () => dadosConquistas.menusRapidosAbertos >= meta
+            })),
+            ...[
+                [10000, "Primeiro grande gasto", "First Big Spend"],
+                [100000, "Dinheiro bem investido", "Money Well Spent"],
+                [1000000, "Gastador milionário", "Million-Kromer Spender"],
+                [1000000000, "Investimento bilionário", "Billion-Kromer Investment"],
+                [1000000000000, "Valeu cada Kromer", "Worth Every Kromer"]
+            ].map(([meta, titulo, tituloEn]) => ({
+                id: `spent_${meta}`, categoria: "spending", meta, titulo, tituloEn,
+                descricao: `Gaste ${meta.toLocaleString("pt-BR")} Kromer no total.`,
+                descricaoEn: `Spend ${meta.toLocaleString("en-US")} Kromer in total.`,
+                verificar: () => dadosConquistas.kromerGastos >= meta
+            }))
+        ];
+        const dadosDarknersConquistas = [
+            { id: "friend", nome: "Friend", nomeEn: "Friend", nivel: () => nivelPowerUpPipis },
+            { id: "lancer", nome: "Lancer", nomeEn: "Lancer", nivel: () => nivelLancer },
+            { id: "pink", nome: "Pink", nomeEn: "Pink", nivel: () => nivelPink },
+            { id: "gaster", nome: "Gaster", nomeEn: "Gaster", nivel: () => nivelGaster }
+        ];
+        const conquistasDarkners = [];
+        dadosDarknersConquistas.forEach(darkner => {
+            conquistasDarkners.push({
+                id: `${darkner.id}_1`, categoria: "hires",
+                titulo: `${darkner.nome} contratado`, tituloEn: `${darkner.nomeEn} Hired`,
+                descricao: `Contrate ${darkner.nome}.`, descricaoEn: `Hire ${darkner.nomeEn}.`,
+                verificar: () => darkner.nivel() >= 1
+            });
+            [5, 10, 25].forEach(nivel => {
+                conquistasDarkners.push({
+                    id: `${darkner.id}_${nivel}`, categoria: `level${nivel}`,
+                    titulo: `${darkner.nome} nível ${nivel}`, tituloEn: `${darkner.nomeEn} Level ${nivel}`,
+                    descricao: `Evolua ${darkner.nome} até o nível ${nivel}.`,
+                    descricaoEn: `Level up ${darkner.nomeEn} to level ${nivel}.`,
+                    verificar: () => darkner.nivel() >= nivel
+                });
+            });
+        });
+        const idsConquistasLegadas = new Set([
+            ...categoriasLegadasPorId.keys(),
+            "krm_10k", "krm_500", "click_2500", "kps_5", "kps_50",
+            "kpc_25", "kpc_250", "kpc_1k", "buy_kps_50", "buy_kpc_50",
+            "pipis_1", "pipis_100", "pipis_500",
+            "buy_1", "buy_10", "buy_25"
+        ]);
+        const conquistasLegadasSelecionadas = conquistasLegadas
+            .filter(conquista => idsConquistasLegadas.has(conquista.id))
+            .map(conquista => ({
+                ...conquista,
+                meta: (() => {
+                    const match = conquista.id.match(/_(\d+)(k|m|b|t)?$/);
+                    const multiplicadores = { k: 1000, m: 1000000, b: 1000000000, t: 1000000000000 };
+                    return match ? Number(match[1]) * (multiplicadores[match[2]] || 1) : Number.MAX_SAFE_INTEGER;
+                })(),
+                categoria: categoriasLegadasPorId.get(conquista.id) || (
+                    conquista.id.startsWith("krm_") ? "kromer" :
+                    conquista.id.startsWith("click_") ? "clicks" :
+                    conquista.id.startsWith("kps_") ? "kps" :
+                    conquista.id.startsWith("kpc_") ? "kpc" :
+                    conquista.id.startsWith("buy_kps_") || conquista.id.startsWith("buy_kpc_") ? "upgrades" :
+                    conquista.id.startsWith("pipis_") ? "pipis" : "hireCount"
+                )
+            }));
+        const listaConquistas = [
+            ...conquistasLegadasSelecionadas,
+            ...conquistasNumericasNovas,
+            ...conquistasExtras,
+            ...conquistasDarkners
+        ];
     </script>
     <script>
         function abrirSubTela(id) { document.getElementById(id).style.display = "flex"; }
@@ -877,7 +1114,17 @@
                 aplicarVolumeMusica(); musicaNativa.play().catch(function() {});
             }
         }
-        function abrirMenuDePausaOpa() { if (!cheatDetectado) document.getElementById("tela-pausa").style.display = "flex"; }
+        function abrirMenuDePausaOpa() {
+            if (cheatDetectado) return;
+            const pausa = document.getElementById("tela-pausa");
+            if (pausa.style.display === "flex") return;
+            pausa.style.display = "flex";
+            if (document.getElementById("area-jogo").style.display === "block") {
+                dadosConquistas.menusRapidosAbertos++;
+                salvarConquistas();
+                verificarConquistas();
+            }
+        }
         function retomarJogoDaPausa() {
             document.getElementById("tela-pausa").style.display = "none";
             document.getElementById("tela-config-pausa").style.display = "none";
@@ -903,7 +1150,23 @@
             if (origemConquistas === "pausa") document.getElementById("tela-pausa").style.display = "flex";
         }
         function salvarConquistas() {
-            localStorage.setItem(CHAVE_CONQUISTAS, JSON.stringify(dadosConquistas));
+            if (!cheatDetectado) localStorage.setItem(CHAVE_CONQUISTAS, JSON.stringify(dadosConquistas));
+        }
+        function limparDadosConquistas() {
+            dadosConquistas.desbloqueadas = [];
+            dadosConquistas.cliques = 0;
+            dadosConquistas.comprasKPS = 0;
+            dadosConquistas.comprasKPC = 0;
+            dadosConquistas.compras = 0;
+            dadosConquistas.pipisColetados = 0;
+            dadosConquistas.tempoJogado = 0;
+            dadosConquistas.menusRapidosAbertos = 0;
+            dadosConquistas.kromerGastos = 0;
+            filaBragConquistas = [];
+            bragConquistaAtivo = false;
+            bragConquistaAte = 0;
+            localStorage.removeItem(CHAVE_CONQUISTAS);
+            renderizarConquistas();
         }
         function carregarConquistas() {
             const salvo = localStorage.getItem(CHAVE_CONQUISTAS);
@@ -914,7 +1177,7 @@
                 dadosConquistas.desbloqueadas = Array.isArray(dados.desbloqueadas)
                     ? [...new Set(dados.desbloqueadas.filter(id => idsValidos.has(id)))]
                     : [];
-                ["cliques", "comprasKPS", "comprasKPC", "compras", "pipisColetados"].forEach(chave => {
+                ["cliques", "comprasKPS", "comprasKPC", "compras", "pipisColetados", "tempoJogado", "menusRapidosAbertos", "kromerGastos"].forEach(chave => {
                     const valor = Number(dados[chave]);
                     dadosConquistas[chave] = Number.isSafeInteger(valor) && valor >= 0 ? valor : 0;
                 });
@@ -928,7 +1191,7 @@
             const estrelas = document.getElementById("estrelas-conquistas");
             const trofeuMenu = document.getElementById("trofeu-conquistas");
             const trofeuJogo = document.getElementById("trofeu-spamton");
-            const estrelasDesbloqueadas = Math.min(5, Math.floor(totalDesbloqueadas / 10));
+            const estrelasDesbloqueadas = Math.min(5, Math.floor(totalDesbloqueadas / 20));
             const possuiTrofeu = totalDesbloqueadas === listaConquistas.length;
 
             if (estrelas) {
@@ -967,29 +1230,44 @@
             document.getElementById("resumo-conquistas").textContent = textoProgresso;
             lista.replaceChildren();
 
-            listaConquistas.forEach(conquista => {
-                const desbloqueada = desbloqueadas.has(conquista.id);
-                const cartao = document.createElement("article");
-                cartao.className = `conquista-cartao${desbloqueada ? "" : " bloqueada"}`;
-                const icone = document.createElement("img");
-                icone.src = "conquista.png";
-                icone.alt = "";
-                icone.setAttribute("aria-hidden", "true");
-                const texto = document.createElement("div");
-                texto.className = "conquista-texto";
-                const nome = document.createElement("div");
-                nome.className = "conquista-nome";
-                nome.textContent = idiomaAtual === "en" ? conquista.tituloEn : conquista.titulo;
-                const descricao = document.createElement("div");
-                descricao.className = "conquista-descricao";
-                const estado = textoIdioma(
-                    desbloqueada ? "achievementUnlocked" : "achievementLocked",
-                    desbloqueada ? "DESBLOQUEADA" : "BLOQUEADA"
-                );
-                descricao.textContent = `${estado} — ${idiomaAtual === "en" ? conquista.descricaoEn : conquista.descricao}`;
-                texto.append(nome, descricao);
-                cartao.append(icone, texto);
-                lista.appendChild(cartao);
+            Object.keys(categoriasConquistas).forEach(categoria => {
+                const conquistasDaCategoria = listaConquistas
+                    .filter(conquista => conquista.categoria === categoria)
+                    .sort((a, b) => a.meta - b.meta);
+                if (conquistasDaCategoria.length === 0) return;
+                const secao = document.createElement("section");
+                secao.className = "conquistas-categoria";
+                const tituloCategoria = document.createElement("h3");
+                tituloCategoria.className = "conquistas-categoria-titulo";
+                tituloCategoria.textContent = categoriasConquistas[categoria][idiomaAtual === "en" ? "en" : "pt"];
+                const grade = document.createElement("div");
+                grade.className = "conquistas-grade";
+                conquistasDaCategoria.forEach(conquista => {
+                    const desbloqueada = desbloqueadas.has(conquista.id);
+                    const cartao = document.createElement("article");
+                    cartao.className = `conquista-cartao${desbloqueada ? "" : " bloqueada"}`;
+                    const icone = document.createElement("img");
+                    icone.src = "conquista.png";
+                    icone.alt = "";
+                    icone.setAttribute("aria-hidden", "true");
+                    const texto = document.createElement("div");
+                    texto.className = "conquista-texto";
+                    const nome = document.createElement("div");
+                    nome.className = "conquista-nome";
+                    nome.textContent = idiomaAtual === "en" ? conquista.tituloEn : conquista.titulo;
+                    const descricao = document.createElement("div");
+                    descricao.className = "conquista-descricao";
+                    const estado = textoIdioma(
+                        desbloqueada ? "achievementUnlocked" : "achievementLocked",
+                        desbloqueada ? "DESBLOQUEADA" : "BLOQUEADA"
+                    );
+                    descricao.textContent = `${estado} — ${idiomaAtual === "en" ? conquista.descricaoEn : conquista.descricao}`;
+                    texto.append(nome, descricao);
+                    cartao.append(icone, texto);
+                    grade.appendChild(cartao);
+                });
+                secao.append(tituloCategoria, grade);
+                lista.appendChild(secao);
             });
             atualizarVisualProgressoConquistas();
         }
@@ -1032,6 +1310,7 @@
             mostrarProxima();
         }
         function verificarConquistas() {
+            if (cheatDetectado) return;
             const desbloqueadas = new Set(dadosConquistas.desbloqueadas);
             let mudou = false;
             listaConquistas.forEach(conquista => {
@@ -1237,18 +1516,17 @@
             
             let backupWeirdRoute = weirdRouteLevel;
             
-            const conquistasSalvas = localStorage.getItem(CHAVE_CONQUISTAS);
             localStorage.clear();
-            if (conquistasSalvas !== null) localStorage.setItem(CHAVE_CONQUISTAS, conquistasSalvas);
-            localStorage.setItem("cfg_idioma", idiomaAtual);
-            localStorage.setItem("cfg_volume_musica", String(Math.round(volumeMusica * 100)));
-            localStorage.setItem("cfg_volume_risadas", String(Math.round(volumeRisadas * 100)));
+            cheatDetectado = true;
+            limparDadosConquistas();
+            idiomaAtual = "pt";
+            risadasMutadas = false;
+            musicaHabilitada = true;
+            inicializarControlesVolume();
+            aplicarIdioma();
             
             localStorage.setItem("save_wrd", backupWeirdRoute);
-            localStorage.setItem("cfg_save_risadas", "false");
-            localStorage.setItem("cfg_save_musica", "true");
             
-            cheatDetectado = true;
             modoMorteAtivo = true;
 
             atualizarSpriteTelefone();
@@ -1500,8 +1778,9 @@
             slotsFeedbackKromerAtivos.add(slot);
 
             const tx = document.createElement("div");
+            tx.className = "friend-kromer-feedback";
             tx.textContent = `${ehAlt ? "-" : "+"}${valor}`;
-            tx.style.cssText = `position: fixed; left: ${Math.max(60, Math.min(window.innerWidth - 60, posicaoX))}px; bottom: ${64 + slot * 26}px; color: ${ehAlt ? "#ff3333" : "#00ffcc"}; font-family: 'Courier New', monospace; font-weight: bold; font-size: 16px; text-shadow: 2px 2px 0px #000; z-index: 9999990; pointer-events: none; opacity: 1; transform: translate(-50%, 0); transition: transform 0.7s ease-out, opacity 0.7s ease-out;`;
+            tx.style.cssText = `position: fixed; left: ${Math.max(60, Math.min(window.innerWidth - 60, posicaoX))}px; bottom: ${64 + slot * 26}px; color: ${ehAlt ? "#ff3333" : "#00ffcc"}; font-family: 'Courier New', monospace; font-weight: bold; font-size: clamp(20px, 4vw, 28px); -webkit-text-stroke: 1px black; text-shadow: 2px 2px 0px #000, -2px -2px 0px #000; z-index: 99999999; pointer-events: none; opacity: 1; transform: translate(-50%, 0); transition: transform 1.4s ease-out, opacity 1.4s ease-out;`;
             document.body.appendChild(tx);
 
             requestAnimationFrame(function() {
@@ -1511,7 +1790,7 @@
             setTimeout(function() {
                 tx.remove();
                 slotsFeedbackKromerAtivos.delete(slot);
-            }, 720);
+            }, 1420);
         }
 
         function executarMecanicaFriendDuplicavel(pElem, x, y, vx, vy, grav, initRot, vRot) {
@@ -1540,8 +1819,11 @@
             }
             
             setTimeout(function() {
+                if (cheatDetectado) {
+                    cop.remove();
+                    return;
+                }
                 cop.style.bottom = "10px";
-                setTimeout(iniciarRisadaFriend, 350);
                 let cY = y, cVy = vy, cX = x, cVx = vx, iRot = initRot;
                 let lQ = setInterval(function() {
                     cVy += grav; cY += cVy; cX += cVx; iRot += vRot;
@@ -1552,28 +1834,32 @@
                     if (cY >= window.innerHeight - 30) {
                         clearInterval(lQ);
                         pElem.remove();
+                        if (cheatDetectado) {
+                            cop.style.bottom = "-150px";
+                            setTimeout(function() { cop.remove(); }, 300);
+                            return;
+                        }
                         iniciarRisadaFriend();
-                        const restanteRisada = Math.max(0, 1100 - (Date.now() - risadaIniciadaEm));
+                        const vS = Math.floor(Math.random() * 1997) + 1;
+                        if (pElem.ehAlt === true) {
+                            kromer -= vS;
+                            if (kromer < 0) kromer = 0;
+                        } else {
+                            kromer += vS;
+                            dadosConquistas.pipisColetados++;
+                        }
+                        exibirFeedbackKromerFriend(vS, pElem.ehAlt === true, pImp);
+                        atualizarRotuloKromer();
+                        salvarConquistas();
+                        verificarConquistas();
+                        salvarDadosNoNavegador();
                         setTimeout(function() {
                             cop.style.bottom = "-150px";
-                            let vS = Math.floor(Math.random() * 1997) + 1;
-                            if (pElem.ehAlt === true) {
-                                kromer -= vS;
-                                if (kromer < 0) kromer = 0;
-                            } else {
-                                kromer += vS;
-                                dadosConquistas.pipisColetados++;
-                            }
-                            exibirFeedbackKromerFriend(vS, pElem.ehAlt === true, pImp);
-                            atualizarRotuloKromer();
-                            salvarConquistas();
-                            verificarConquistas();
-                            salvarDadosNoNavegador();
                             setTimeout(function() {
                                 cop.remove();
                                 if (document.querySelectorAll(".friend-catcher:not(#friend-asset)").length === 0 && nivelPowerUpPipis > 0) friendAsset.style.bottom = "10px";
                             }, 300);
-                        }, restanteRisada);
+                        }, 500);
                     }
                 }, 16);
             }, 100);
@@ -1668,6 +1954,7 @@
             let tS = window.tipoSorteadoPowerUpGlobal || tipoSorteadoPowerUp;
             if (kromer >= custoPowerUp) {
                 kromer -= custoPowerUp;
+                dadosConquistas.kromerGastos += custoPowerUp;
                 if (tS === "friend") { nivelPowerUpPipis++; friendAsset.style.display = "block"; friendAsset.style.bottom = "10px"; if (nivelPowerUpPipis >= 2) chancePipisBase += 0.1997; }
                 else if (tS === "lancer") { nivelLancer++; lancerAsset.style.display = "block"; }
                 else if (tS === "pink") { nivelPink++; pinkAsset.style.display = "block"; }
@@ -1690,6 +1977,7 @@
             if (kromer >= custoItemKPS) {
                 if (musicaHabilitada && !musicaNativa.paused) { aplicarVolumeMusica(); musicaNativa.play().catch(function() {}); }
                 kromer -= custoItemKPS;
+                dadosConquistas.kromerGastos += custoItemKPS;
                 let g = Math.floor(Math.random() * 5) + 1; kromerPorSegundo += g;
                 falaSpamtonDiv.textContent = `${listaIdioma("success", falasSucessoComprar)[Math.floor(Math.random() * falasSucessoComprar.length)]} ${textoIdioma("gotKps", "(GANHOU +{amount} KPS)!").replace("{amount}", g)}`;
                 falaSpamtonDiv.style.color = "lightgreen";
@@ -1709,6 +1997,7 @@
             if (kromer >= custoItemKPC) {
                 if (musicaHabilitada && !musicaNativa.paused) { aplicarVolumeMusica(); musicaNativa.play().catch(function() {}); }
                 kromer -= custoItemKPC;
+                dadosConquistas.kromerGastos += custoItemKPC;
                 let g = Math.floor(Math.random() * 5) + 1; kromerPorClique += g;
                 falaSpamtonDiv.textContent = `${listaIdioma("success", falasSucessoComprar)[Math.floor(Math.random() * falasSucessoComprar.length)]} ${textoIdioma("gotKpc", "(GANHOU +{amount} KPC)!").replace("{amount}", g)}`;
                 falaSpamtonDiv.style.color = "lightgreen";
@@ -1735,7 +2024,23 @@
             salvarConquistas(); verificarConquistas();
         }
 
-        function atualizarKromer() { if (!cheatDetectado) { kromer += kromerPorSegundo; atualizarRotuloKromer(); produzirPassivoPinkMewMew(); salvarDadosNoNavegador(); verificarConquistas(); } }
+        function atualizarKromer() {
+            if (cheatDetectado) return;
+            kromer += kromerPorSegundo;
+            atualizarRotuloKromer();
+            produzirPassivoPinkMewMew();
+            if (
+                document.getElementById("area-jogo").style.display === "block" &&
+                document.getElementById("tela-pausa").style.display !== "flex" &&
+                document.getElementById("tela-config-pausa").style.display !== "flex" &&
+                document.getElementById("tela-conquistas").style.display !== "flex"
+            ) {
+                dadosConquistas.tempoJogado++;
+                salvarConquistas();
+            }
+            salvarDadosNoNavegador();
+            verificarConquistas();
+        }
         function renderizarBotoesLoja() {
             const nomeItemKPS = idiomaAtual === "en" ? idiomaIngles.kpsItems[indiceItemKPS] : itensKPS[indiceItemKPS].nome;
             const nomeItemKPC = idiomaAtual === "en" ? idiomaIngles.kpcItems[indiceItemKPC] : itensKPC[indiceItemKPC].nome;
@@ -1753,9 +2058,7 @@
             renderizarBotoesLoja();
         }
         function deletarProgressoManual() {
-            const conquistasSalvas = localStorage.getItem(CHAVE_CONQUISTAS);
             localStorage.clear();
-            if (conquistasSalvas !== null) localStorage.setItem(CHAVE_CONQUISTAS, conquistasSalvas);
             localStorage.setItem("cfg_idioma", idiomaAtual);
             location.reload();
         }
@@ -1790,14 +2093,16 @@
             const container = document.getElementById("conteudo-como-jogar");
             if (!container) return;
             
-            const textoComoJogarPortugues = `*KROMER*\nKromer é a moeda que você usará para progredir nesse jogo, para começar, clique no Spamton para gerar 1 kromer, não se preocupe, conseguir kromer será mais fácil depois\n*LOJA*\nA loja é o lugar onde sua produção de kromer aumentará ao longo do tempo, inicialmente ela tem dois botões, o de cima aumenta KPS (kromer por segundo), o de baixo aumenta KPC (kromer por clique), ocasionalmente um terceiro botão azul vai aparecer e vai conceder um dos 4 power-ups\n*POWER-UPS*\nPower-ups são outros darkners que você pode contratar e evoluir, mas antes de explicar como cada um deles funciona eu vou explicar algo necessário para eles funcionarem\n*PIPIS*\nQuando você gera kromer ao clicar no Spamton, alguns $ aparecem, eles começaram sendo uma decoração durante o desenvolvimento do jogo mais viraram uma função excencial para progredir com power-ups, a cada $ que aparece, há uma pequena chance do $ ser substituído por um pipis, no começo eles parecem um easter egg legal mas em breve terão importância\n*IMAGE_FRIEND*\nEsse darkner é o mais importante para os outros power-ups funcionarem bem, quando um pipis aparece na tela, o FRIEND irá imediatamente pegá-lo para conceder uma quantia de kromer em troca, conforme o FRIEND evolui, a chance de um pipis aparecer no lugar de um $ aumenta levemente, isso ajudará depois\n*LANCER*\nLancer é um ótimo companheiro caso você se sinta sozinho nessa jornada, ele trouxe sua bicicleta motorizada para melhorar a poluição do ambiente e faz um som engraçado quando você clica nele, mas ele não está lá só pra brincar, ocasionalmente ele joga alguns pipis para o FRIEND pegar (eu não disse que ele seria importante?), conforme Lancer evolui, ele joga mais pipis de uma vez (legal né?)\n*GASTER*\nTambém conhecido como Homem Misterioso, Gaster ocasionalmente deixará sua tela monocromática, enquanto joga alguns pipis para o FRIEND pegar, conforme o Gaster evolui, ele joga mais pipis também\n*PINK*\nOu Mew Mew pra quem só joga Undertale, ela é um passo importante para progressão, suponhamos que você gastou muito kromer em KPC, mas quer deixar o jogo rodando afk, não se preocupe! Pink age como o seu mouse, e gera kromer a cada segundo, mas ao invés de gerar a quantia baseada em KPS, ela gera baseada em KPC, ou seja, ela clica por você, conforme a Pink evolui, ela gera mais $ e as chances de pipis gerados por ela aumenta\n*MENUS E CONFIGURAÇÕES*\nVocê acha que eu não ia citar isso? claro que não! eu vou explicar agora!\n*MENU PRINCIPAL*\nO lugar onde tudo começa, aqui tem alguns botões que podem ou não ajudar :)\n*BOTÃO "JOGAR"*\nFaz você jogar\n*BOTÃO "CONFIGURAÇÕES"*\nAqui você pode ligar ou desligar a música e as risadas dos darkners que você contratou, ajustar o volume de cada um pelos controles abaixo dos botões, ativar a tela cheia (se o navegador oferecer suporte), mudar o idioma e também resetar o progresso aqui mas a gente já resetou demais em Undertale\n*BOTÃO "CRÉDITOS"*\nAqui temos os nomes dos criadores desse jogo, que se dedicaram muito para fazer tudo funcionar (não conta pra ninguém mas eu copiei muito código de muitos sites e remendei tudo junto)\n*BOTÃO "COMO JOGAR"*\nTraz você pra esse submenu!\n*MENU DE PAUSA*\nBasicamente uma curta versão do menu principal mas ele fica dentro do jogo pra você acessar enquanto assiste o caos!\n*CONFIGURAÇÃO DE IDIOMA*\nEscolha inglês ou português em Configurações. Sua escolha fica salva neste dispositivo e altera os menus, diálogos, itens da loja e este guia.\n*EXTRAS*\nDaqui pra frente tem algumas features simples que não merecem um tópico maior (que pena)\n*TELEFONE*\nUm simples telefone para mandar você pra algum lugar, clique nele, talvez não\n*DIÁLOGO*\nUm texto em cima do Spamton informando o que está acontecendo no jogo, e as vezes é só o Spamton falando com você, quem sabe?\n*ANTI-CHEAT*\nAlguma hora você vai descobrir, ele impede você de ser um trapaceiro sujo (e também atrapalha a conexão telefônica), bem, as coisas tomaram uma rota estranha não é?\n*FIM*\nÉ só isso por enquanto, agora vá jogar e se torne um [[BIG SHOT]]!!1`;
+            const textoComoJogarPortugues = `*KROMER*\nKromer é a moeda que você usará para progredir nesse jogo, para começar, clique no Spamton para gerar 1 kromer, não se preocupe, conseguir kromer será mais fácil depois\n*LOJA*\nA loja é o lugar onde sua produção de kromer aumentará ao longo do tempo, inicialmente ela tem dois botões, o de cima aumenta KPS (kromer por segundo), o de baixo aumenta KPC (kromer por clique), ocasionalmente um terceiro botão azul vai aparecer e vai conceder um dos 4 power-ups\n*POWER-UPS*\nPower-ups são outros darkners que você pode contratar e evoluir, mas antes de explicar como cada um deles funciona eu vou explicar algo necessário para eles funcionarem\n*PIPIS*\nQuando você gera kromer ao clicar no Spamton, alguns $ aparecem, eles começaram sendo uma decoração durante o desenvolvimento do jogo mais viraram uma função excencial para progredir com power-ups, a cada $ que aparece, há uma pequena chance do $ ser substituído por um pipis, no começo eles parecem um easter egg legal mas em breve terão importância\n*IMAGE_FRIEND*\nEsse darkner é o mais importante para os outros power-ups funcionarem bem, quando um pipis aparece na tela, o FRIEND irá imediatamente pegá-lo para conceder uma quantia de kromer em troca, conforme o FRIEND evolui, a chance de um pipis aparecer no lugar de um $ aumenta levemente, isso ajudará depois\n*LANCER*\nLancer é um ótimo companheiro caso você se sinta sozinho nessa jornada, ele trouxe sua bicicleta motorizada para melhorar a poluição do ambiente e faz um som engraçado quando você clica nele, mas ele não está lá só pra brincar, ocasionalmente ele joga alguns pipis para o FRIEND pegar (eu não disse que ele seria importante?), conforme Lancer evolui, ele joga mais pipis de uma vez (legal né?)\n*GASTER*\nTambém conhecido como Homem Misterioso, Gaster ocasionalmente deixará sua tela monocromática, enquanto joga alguns pipis para o FRIEND pegar, conforme o Gaster evolui, ele joga mais pipis também\n*PINK*\nOu Mew Mew pra quem só joga Undertale, ela é um passo importante para progressão, suponhamos que você gastou muito kromer em KPC, mas quer deixar o jogo rodando afk, não se preocupe! Pink age como o seu mouse, e gera kromer a cada segundo, mas ao invés de gerar a quantia baseada em KPS, ela gera baseada em KPC, ou seja, ela clica por você, conforme a Pink evolui, ela gera mais $ e as chances de pipis gerados por ela aumenta\n*MENUS E CONFIGURAÇÕES*\nVocê acha que eu não ia citar isso? claro que não! eu vou explicar agora!\n*MENU PRINCIPAL*\nO lugar onde tudo começa, aqui tem alguns botões que podem ou não ajudar :)\n*BOTÃO "JOGAR"*\nFaz você jogar\n*BOTÃO "CONFIGURAÇÕES"*\nAqui você pode ligar ou desligar a música e as risadas dos darkners que você contratou, ajustar o volume de cada um pelos controles abaixo dos botões, ativar a tela cheia (se o navegador oferecer suporte), mudar o idioma e também resetar o progresso aqui mas a gente já resetou demais em Undertale\n*BOTÃO "CRÉDITOS"*\nAqui temos os nomes dos criadores desse jogo, que se dedicaram muito para fazer tudo funcionar (não conta pra ninguém mas eu copiei muito código de muitos sites e remendei tudo junto)\n*BOTÃO "COMO JOGAR"*\nTraz você pra esse submenu!\n*MENU DE PAUSA*\nBasicamente uma curta versão do menu principal mas ele fica dentro do jogo pra você acessar enquanto assiste o caos!\n*CONFIGURAÇÃO DE IDIOMA*\nEscolha português ou inglês em Configurações. Sua escolha fica salva neste dispositivo e altera os menus, diálogos, itens da loja e este guia.\n*EXTRAS*\nDaqui pra frente tem algumas features simples que não merecem um tópico maior (que pena)\n*TELEFONE*\nUm simples telefone para mandar você pra algum lugar, clique nele, talvez não\n*DIÁLOGO*\nUm texto em cima do Spamton informando o que está acontecendo no jogo, e as vezes é só o Spamton falando com você, quem sabe?\n*ANTI-CHEAT*\nAlguma hora você vai descobrir, ele impede você de ser um trapaceiro sujo (e também atrapalha a conexão telefônica), bem, as coisas tomaram uma rota estranha não é?\n*FIM*\nÉ só isso por enquanto, agora vá jogar e se torne um [[BIG SHOT]]!!1`;
             const linhas = (idiomaAtual === "en" ? idiomaIngles.howToPlay : textoComoJogarPortugues).split("\n");
-            const indiceFim = linhas.findIndex(linha => linha === (idiomaAtual === "en" ? "*THE END*" : "*FIM*"));
-            linhas.splice(indiceFim < 0 ? linhas.length : indiceFim, 0,
+            const indiceAntiCheat = linhas.indexOf("*ANTI-CHEAT*");
+            if (indiceAntiCheat >= 0) linhas.splice(indiceAntiCheat, 2);
+            const indiceExtras = linhas.indexOf("*EXTRAS*");
+            linhas.splice(indiceExtras < 0 ? linhas.length : indiceExtras, 0,
                 idiomaAtual === "en" ? "*ACHIEVEMENTS*" : "*CONQUISTAS*",
                 idiomaAtual === "en"
-                    ? "Unlock achievements by collecting Kromer, clicking Spamton, improving KPS/KPC, hiring and leveling up Darkners, and having Friend collect Pipis. Every 10 achievements earns a star; unlock all 50 to earn the trophy above Spamton. Your achievements are saved separately from game progress. Spamton celebrates each new achievement!"
-                    : "Desbloqueie conquistas acumulando Kromer, clicando no Spamton, melhorando KPS/KPC, contratando e evoluindo Darkners e fazendo Friend coletar Pipis. A cada 10 conquistas, você ganha uma estrela; desbloqueie as 50 para ganhar o troféu acima do Spamton. Suas conquistas são salvas separadamente do progresso do jogo. Spamton comemora cada nova conquista!"
+                    ? "Unlock achievements by collecting Kromer, clicking Spamton, improving KPS/KPC, hiring and leveling up Darkners, and having Friend collect Pipis. Achievements are sorted into categories. Every 20 achievements earns a star; unlock all 100 to earn the trophy above Spamton. Your achievements are saved on this device and are erased when progress is deleted. Spamton celebrates each new achievement!"
+                    : "Desbloqueie conquistas acumulando Kromer, clicando no Spamton, melhorando KPS/KPC, contratando e evoluindo Darkners e fazendo Friend coletar Pipis. As conquistas são organizadas por categoria. A cada 20 conquistas, você ganha uma estrela; desbloqueie as 100 para ganhar o troféu acima do Spamton. Suas conquistas são salvas neste dispositivo e apagadas ao deletar o progresso. Spamton comemora cada nova conquista!"
             );
             container.innerHTML = "";
             
