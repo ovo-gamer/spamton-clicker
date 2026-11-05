@@ -122,6 +122,35 @@
             max-height: 58vh;
             width: min(92vw, 820px);
         }
+        .estrelas-conquistas {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 0 0 12px;
+        }
+        .estrela-conquista {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+        .trofeu-conquistas {
+            display: block;
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 12px;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+        .trofeu-conquistas[hidden] { display: none; }
+        #trofeu-spamton {
+            display: none;
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 4px;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
         .conquistas-resumo {
             color: cyan;
             font-size: 18px;
@@ -367,6 +396,9 @@
             .menu-scroll p { font-size: 16px; }
             .menu-scroll .topico-cyan { font-size: 21px; }
             .conquistas-scroll { max-height: 55vh; }
+            .estrela-conquista { width: 30px; height: 30px; }
+            .trofeu-conquistas { width: 52px; height: 52px; }
+            #trofeu-spamton { width: 38px; height: 38px; }
             .conquista-cartao { gap: 8px; padding: 8px; }
             .conquista-cartao img { flex-basis: 40px; width: 40px; height: 40px; }
             #fala-spamton {
@@ -413,6 +445,9 @@
             .menu-scroll { max-height: 32vh; padding: 8px; }
             .settings-scroll { max-height: 40vh; gap: 8px; padding: 8px; }
             .conquistas-scroll { max-height: 46vh; }
+            .estrela-conquista { width: 24px; height: 24px; }
+            .trofeu-conquistas { width: 38px; height: 38px; margin-bottom: 4px; }
+            #trofeu-spamton { width: 30px; height: 30px; }
             .menu-scroll p { font-size: 13px; margin: 6px 0; }
             .menu-scroll .topico-cyan { font-size: 17px; margin-top: 14px; }
             #fala-spamton { font-size: 16px; }
@@ -467,6 +502,8 @@
     <div id="tela-conquistas" class="sub-tela">
         <h2 data-i18n="achievements" style="color: cyan; text-shadow: 2px 2px black;">CONQUISTAS</h2>
         <div class="menu-scroll conquistas-scroll">
+            <div class="estrelas-conquistas" id="estrelas-conquistas" aria-label="0 de 5 estrelas"></div>
+            <img class="trofeu-conquistas" id="trofeu-conquistas" src="golden_certain_crt.png" alt="Troféu de todas as conquistas" hidden>
             <div class="conquistas-resumo" id="resumo-conquistas"></div>
             <div class="conquistas-grade" id="lista-conquistas"></div>
         </div>
@@ -508,6 +545,7 @@
             <button class="btn-game-control" data-i18n="quickMenu" style="border-color: cyan;" onclick="abrirMenuDePausaOpa()">MENU RÁPIDO</button>
         </div>
         <div class="container">
+            <img id="trofeu-spamton" src="golden_certain_crt.png" alt="Troféu de todas as conquistas">
             <div id="fala-spamton">OLÁ, [Cliente Valioso]!</div>
             <small id="instrucao-clique" data-i18n="clickForKromer" style="color: #bbb; text-shadow: 1px 1px black; font-size: 14px;">(CLIQUE EM MIM PARA GERAR [Kromer]!)</small>
             <img id="sprite-spamton" src="spamton_sprite_frame1.png" alt="Sprite do Spamton" data-i18n-alt="spamtonSprite">
@@ -802,6 +840,16 @@
             { id: "pipis_1", titulo: "Pipis resgatado", tituloEn: "Pipis Rescued", descricao: "Faça Friend coletar 1 Pipis.", descricaoEn: "Have Friend collect 1 Pipis.", verificar: () => dadosConquistas.pipisColetados >= 1 },
             { id: "pipis_100", titulo: "Controle de qualidade", tituloEn: "Quality Control", descricao: "Faça Friend coletar 100 Pipis.", descricaoEn: "Have Friend collect 100 Pipis.", verificar: () => dadosConquistas.pipisColetados >= 100 },
             { id: "pipis_500", titulo: "Pipis em massa", tituloEn: "Pipis in Bulk", descricao: "Faça Friend coletar 500 Pipis.", descricaoEn: "Have Friend collect 500 Pipis.", verificar: () => dadosConquistas.pipisColetados >= 500 },
+            { id: "krm_500", titulo: "Gorjeta generosa", tituloEn: "A Generous Tip", descricao: "Tenha 500 Kromer.", descricaoEn: "Have 500 Kromer.", verificar: () => kromer >= 500 },
+            { id: "click_25", titulo: "Só mais um clique", tituloEn: "Just One More Click", descricao: "Clique no Spamton 25 vezes.", descricaoEn: "Click Spamton 25 times.", verificar: () => dadosConquistas.cliques >= 25 },
+            { id: "click_2500", titulo: "Dedo profissional", tituloEn: "Professional Clicker", descricao: "Clique no Spamton 2.500 vezes.", descricaoEn: "Click Spamton 2,500 times.", verificar: () => dadosConquistas.cliques >= 2500 },
+            { id: "kps_5", titulo: "Pequena renda passiva", tituloEn: "A Little Passive Income", descricao: "Alcance 5 Kromer por segundo.", descricaoEn: "Reach 5 Kromer per second.", verificar: () => kromerPorSegundo >= 5 },
+            { id: "kpc_50", titulo: "Clique valioso", tituloEn: "Valuable Click", descricao: "Alcance 50 Kromer por clique.", descricaoEn: "Reach 50 Kromer per click.", verificar: () => kromerPorClique >= 50 },
+            { id: "buy_kps_1", titulo: "Primeira melhoria de KPS", tituloEn: "First KPS Upgrade", descricao: "Compre uma melhoria de KPS.", descricaoEn: "Buy one KPS upgrade.", verificar: () => dadosConquistas.comprasKPS >= 1 },
+            { id: "buy_kpc_1", titulo: "Primeira melhoria de KPC", tituloEn: "First KPC Upgrade", descricao: "Compre uma melhoria de KPC.", descricaoEn: "Buy one KPC upgrade.", verificar: () => dadosConquistas.comprasKPC >= 1 },
+            { id: "pink_1", titulo: "Miau!", tituloEn: "Meow!", descricao: "Contrate Pink.", descricaoEn: "Hire Pink.", verificar: () => nivelPink >= 1 },
+            { id: "gaster_1", titulo: "Uma mãozinha", tituloEn: "A Helping Hand", descricao: "Contrate Gaster.", descricaoEn: "Hire Gaster.", verificar: () => nivelGaster >= 1 },
+            { id: "all_darkners", titulo: "Reunião de equipe", tituloEn: "Team Meeting", descricao: "Tenha Friend, Lancer, Pink e Gaster na equipe.", descricaoEn: "Have Friend, Lancer, Pink, and Gaster on your team.", verificar: () => nivelPowerUpPipis >= 1 && nivelLancer >= 1 && nivelPink >= 1 && nivelGaster >= 1 },
             { id: "all", titulo: "Colecionador BIG SHOT", tituloEn: "BIG SHOT Collector", descricao: "Desbloqueie todas as outras conquistas.", descricaoEn: "Unlock every other achievement.", verificar: () => false }
         ];
     </script>
@@ -874,6 +922,40 @@
                 console.error("Não foi possível carregar as conquistas salvas.", erro);
             }
         }
+        function atualizarVisualProgressoConquistas() {
+            const desbloqueadas = new Set(dadosConquistas.desbloqueadas);
+            const totalDesbloqueadas = desbloqueadas.size;
+            const estrelas = document.getElementById("estrelas-conquistas");
+            const trofeuMenu = document.getElementById("trofeu-conquistas");
+            const trofeuJogo = document.getElementById("trofeu-spamton");
+            const estrelasDesbloqueadas = Math.min(5, Math.floor(totalDesbloqueadas / 10));
+            const possuiTrofeu = totalDesbloqueadas === listaConquistas.length;
+
+            if (estrelas) {
+                estrelas.replaceChildren();
+                estrelas.setAttribute(
+                    "aria-label",
+                    idiomaAtual === "en"
+                        ? `${estrelasDesbloqueadas} of 5 achievement stars`
+                        : `${estrelasDesbloqueadas} de 5 estrelas de conquistas`
+                );
+                for (let indice = 0; indice < 5; indice++) {
+                    const estrela = document.createElement("img");
+                    const ativa = indice < estrelasDesbloqueadas;
+                    estrela.className = "estrela-conquista";
+                    estrela.src = ativa ? "star_on.png" : "star_off.png";
+                    estrela.alt = idiomaAtual === "en"
+                        ? `Star ${indice + 1}: ${ativa ? "earned" : "not earned"}`
+                        : `Estrela ${indice + 1}: ${ativa ? "conquistada" : "não conquistada"}`;
+                    estrelas.appendChild(estrela);
+                }
+            }
+            if (trofeuMenu) trofeuMenu.hidden = !possuiTrofeu;
+            if (trofeuJogo) {
+                trofeuJogo.style.display = possuiTrofeu ? "block" : "none";
+                trofeuJogo.alt = idiomaAtual === "en" ? "All achievements trophy" : "Troféu de todas as conquistas";
+            }
+        }
         function renderizarConquistas() {
             const lista = document.getElementById("lista-conquistas");
             if (!lista) return;
@@ -909,6 +991,7 @@
                 cartao.append(icone, texto);
                 lista.appendChild(cartao);
             });
+            atualizarVisualProgressoConquistas();
         }
         function anunciarConquista(conquista) {
             filaBragConquistas.push(conquista);
@@ -960,6 +1043,11 @@
                 }
             });
             const final = listaConquistas.find(conquista => conquista.id === "all");
+            if (desbloqueadas.has("all") && desbloqueadas.size !== listaConquistas.length) {
+                dadosConquistas.desbloqueadas = dadosConquistas.desbloqueadas.filter(id => id !== "all");
+                desbloqueadas.delete("all");
+                mudou = true;
+            }
             if (!desbloqueadas.has("all") && desbloqueadas.size === listaConquistas.length - 1) {
                 dadosConquistas.desbloqueadas.push("all");
                 anunciarConquista(final);
@@ -969,6 +1057,7 @@
                 salvarConquistas();
                 renderizarConquistas();
             }
+            atualizarVisualProgressoConquistas();
         }
         function menuPrincipalReloadCompleto() { salvarDadosNoNavegador(); location.reload(); }
 
@@ -1707,8 +1796,8 @@
             linhas.splice(indiceFim < 0 ? linhas.length : indiceFim, 0,
                 idiomaAtual === "en" ? "*ACHIEVEMENTS*" : "*CONQUISTAS*",
                 idiomaAtual === "en"
-                    ? "Unlock achievements by collecting Kromer, clicking Spamton, improving KPS/KPC, hiring and leveling up Darkners, and having Friend collect Pipis. Your achievements are saved separately from game progress. Spamton celebrates each new achievement!"
-                    : "Desbloqueie conquistas acumulando Kromer, clicando no Spamton, melhorando KPS/KPC, contratando e evoluindo Darkners e fazendo Friend coletar Pipis. Suas conquistas são salvas separadamente do progresso do jogo. Spamton comemora cada nova conquista!"
+                    ? "Unlock achievements by collecting Kromer, clicking Spamton, improving KPS/KPC, hiring and leveling up Darkners, and having Friend collect Pipis. Every 10 achievements earns a star; unlock all 50 to earn the trophy above Spamton. Your achievements are saved separately from game progress. Spamton celebrates each new achievement!"
+                    : "Desbloqueie conquistas acumulando Kromer, clicando no Spamton, melhorando KPS/KPC, contratando e evoluindo Darkners e fazendo Friend coletar Pipis. A cada 10 conquistas, você ganha uma estrela; desbloqueie as 50 para ganhar o troféu acima do Spamton. Suas conquistas são salvas separadamente do progresso do jogo. Spamton comemora cada nova conquista!"
             );
             container.innerHTML = "";
             
