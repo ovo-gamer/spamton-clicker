@@ -55,6 +55,15 @@
             font-weight: bold;
             text-shadow: 2px 2px black;
         }
+        #versao-jogo {
+            position: absolute;
+            left: 12px;
+            bottom: 10px;
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 12px;
+            text-shadow: 1px 1px black;
+            pointer-events: none;
+        }
         .botao-menu {
             background-color: #0055ff; color: white;
             border: 3px solid white; padding: 15px 30px;
@@ -481,6 +490,7 @@
         <button class="botao-menu" data-i18n="achievements" onclick="abrirConquistas('titulo')">CONQUISTAS</button>
         <button class="botao-menu" data-i18n="credits" onclick="abrirSubTela('tela-creditos')">CRÉDITOS</button>
         <button class="botao-menu" data-i18n="howToPlay" onclick="abrirSubTela('tela-como-jogar')">COMO JOGAR</button>
+        <div id="versao-jogo" aria-live="polite">VERSÃO...</div>
     </div>
 
     <div id="tela-config" class="sub-tela">
@@ -1395,6 +1405,45 @@
             aplicarIdioma();
         }
 
+        let versaoGitHub = null;
+        function atualizarRotuloVersao() {
+            const rotulo = document.getElementById("versao-jogo");
+            if (!rotulo) return;
+            const prefixo = idiomaAtual === "en" ? "VERSION" : "VERSÃO";
+            if (versaoGitHub) {
+                rotulo.textContent = `${prefixo} ${versaoGitHub}`;
+            } else {
+                rotulo.textContent = idiomaAtual === "en" ? "VERSION UNAVAILABLE" : "VERSÃO INDISPONÍVEL";
+            }
+        }
+
+        async function carregarVersaoGitHub() {
+            try {
+                const resposta = await fetch("https://api.github.com/repos/ovo-gamer/spamton-clicker/commits?per_page=20", {
+                    headers: { Accept: "application/vnd.github+json" },
+                    cache: "no-store"
+                });
+                if (!resposta.ok) throw new Error(`GitHub returned HTTP ${resposta.status}.`);
+                const commits = await resposta.json();
+                if (!Array.isArray(commits)) throw new Error("GitHub returned an invalid commit list.");
+                const versaoCommit = commits
+                    .map(commit => {
+                        const titulo = commit.commit && commit.commit.message
+                            ? commit.commit.message.split("\n", 1)[0]
+                            : "";
+                        return titulo.match(/^(?:(?:vers[aã]o|version)\s+)?v?(\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?)(?:\s|$)/i);
+                    })
+                    .find(match => match);
+                if (!versaoCommit) throw new Error("No versioned commit was found in the latest 20 commits.");
+                versaoGitHub = versaoCommit[1];
+                atualizarRotuloVersao();
+            } catch (erro) {
+                console.error("Could not load the game version from GitHub.", erro);
+                versaoGitHub = null;
+                atualizarRotuloVersao();
+            }
+        }
+
         function carregarVolumeSalvo(chave) {
             const valorSalvo = localStorage.getItem(chave);
             if (valorSalvo === null) return 1;
@@ -1488,6 +1537,7 @@
             });
 
             atualizarRotulosConfiguracao();
+            atualizarRotuloVersao();
             textoAbertura.textContent = listaIdioma("opening", falasAbertura)[Math.floor(Math.random() * falasAbertura.length)];
             document.getElementById("instrucao-clique").textContent = textoIdioma("clickForKromer", "(CLIQUE EM MIM PARA GERAR [Kromer]!)");
             atualizarRotuloKromer();
@@ -1779,17 +1829,18 @@
 
             const tx = document.createElement("div");
             tx.textContent = `${ehAlt ? "-" : "+"}${valor}`;
-            tx.style.cssText = `position: fixed; left: ${Math.max(60, Math.min(window.innerWidth - 60, posicaoX))}px; bottom: ${64 + slot * 26}px; color: ${ehAlt ? "#ff3333" : "#00ffcc"}; font-family: 'Courier New', monospace; font-weight: bold; font-size: 16px; text-shadow: 2px 2px 0px #000; z-index: 99999999; pointer-events: none; opacity: 1; transform: translate(-50%, 0); transition: transform 0.7s ease-out, opacity 0.7s ease-out;`;
+            tx.style.cssText = `position: fixed; left: ${Math.max(60, Math.min(window.innerWidth - 60, posicaoX))}px; bottom: ${Math.min(64 + slot * 26, Math.max(12, window.innerHeight - 28))}px; display: block; visibility: visible; color: ${ehAlt ? "#ff3333" : "#00ffcc"}; font-family: 'Courier New', monospace; font-weight: bold; font-size: 16px; line-height: 1.2; white-space: nowrap; text-shadow: 2px 2px 0px #000; z-index: 2147483647; pointer-events: none; opacity: 1; transform: translate(-50%, 0);`;
             document.body.appendChild(tx);
 
-            requestAnimationFrame(function() {
+            setTimeout(function() {
+                tx.style.transition = "transform 0.3s ease-out, opacity 0.3s ease-out";
                 tx.style.transform = "translate(-50%, -25px)";
                 tx.style.opacity = "0";
-            });
+            }, 1000);
             setTimeout(function() {
                 tx.remove();
                 slotsFeedbackKromerAtivos.delete(slot);
-            }, 720);
+            }, 1320);
         }
 
         function executarMecanicaFriendDuplicavel(pElem, x, y, vx, vy, grav, initRot, vRot) {
@@ -2075,7 +2126,7 @@
         botaoPowerUp.addEventListener("click", comprarPowerUp);
         spriteSpamtonImg.addEventListener("click", cliqueManual);
         
-        document.addEventListener("DOMContentLoaded", function() { inicializarControlesVolume(); aplicarIdioma(); carregarDadosDoNavegador(); gerarItemKPS(); gerarItemKPC(); rolarFalaInicialComPeso(); atualizarPainelTexto(); });
+        document.addEventListener("DOMContentLoaded", function() { inicializarControlesVolume(); aplicarIdioma(); carregarDadosDoNavegador(); gerarItemKPS(); gerarItemKPC(); rolarFalaInicialComPeso(); atualizarPainelTexto(); carregarVersaoGitHub(); });
         document.addEventListener("visibilitychange", function() { if (document.hidden) cliquesNesseSegundo = 0; });
         
         setInterval(atualizarKromer, 1000);
