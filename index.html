@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="titulo-pagina">Mini Lojinha de Kromer [BIG SHOT EDITION!]</title>
+    <link rel="icon" type="image/png" href="spamtonhead.png">
     <style>
         body {
             background-color: #555;
@@ -88,6 +89,10 @@
             display: none; flex-direction: column;
             align-items: center; justify-content: center; gap: 20px;
         }
+        #tela-conquistas.pausa-transparente {
+            background-color: rgba(0, 17, 136, 0.55);
+            backdrop-filter: blur(4px);
+        }
         .menu-scroll {
             width: 80%;
             max-width: 600px;
@@ -107,6 +112,56 @@
             scrollbar-gutter: stable;
         }
         .settings-scroll > * { flex-shrink: 0; }
+        .settings-scroll > .botao-menu {
+            box-sizing: border-box;
+            width: auto;
+            min-width: min(280px, 100%);
+            max-width: 100%;
+        }
+        .conquistas-scroll {
+            max-height: 58vh;
+            width: min(92vw, 820px);
+        }
+        .conquistas-resumo {
+            color: cyan;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0 0 14px;
+            text-shadow: 2px 2px black;
+        }
+        .conquistas-grade {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+            gap: 10px;
+        }
+        .conquista-cartao {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+            padding: 10px;
+            border: 2px solid white;
+            background: rgba(0, 0, 0, 0.55);
+            text-align: left;
+        }
+        .conquista-cartao img {
+            flex: 0 0 48px;
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+        .conquista-cartao.bloqueada img {
+            filter: grayscale(1) brightness(0.45);
+        }
+        .conquista-cartao.bloqueada { opacity: 0.72; }
+        .conquista-texto { min-width: 0; }
+        .conquista-nome {
+            margin-bottom: 4px;
+            color: yellow;
+            font-weight: bold;
+        }
+        .conquista-descricao { color: white; font-size: 14px; line-height: 1.3; }
         .menu-scroll p {
             font-size: 18px;
             color: white;
@@ -311,6 +366,9 @@
             .settings-scroll { max-height: 52vh; }
             .menu-scroll p { font-size: 16px; }
             .menu-scroll .topico-cyan { font-size: 21px; }
+            .conquistas-scroll { max-height: 55vh; }
+            .conquista-cartao { gap: 8px; padding: 8px; }
+            .conquista-cartao img { flex-basis: 40px; width: 40px; height: 40px; }
             #fala-spamton {
                 height: auto;
                 min-height: 1.4em;
@@ -327,10 +385,10 @@
             }
             .botao-loja {
                 box-sizing: border-box;
-                width: min(90vw, 420px);
+                width: min(80vw, 360px);
                 min-width: 0;
-                padding: 10px 12px;
-                font-size: clamp(14px, 4vw, 18px);
+                padding: 8px 10px;
+                font-size: clamp(13px, 3.6vw, 16px);
             }
             .lancer-bike { width: clamp(76px, 20vw, 140px); }
             .pink-mewmew { width: clamp(64px, 18vw, 100px); }
@@ -354,6 +412,7 @@
             }
             .menu-scroll { max-height: 32vh; padding: 8px; }
             .settings-scroll { max-height: 40vh; gap: 8px; padding: 8px; }
+            .conquistas-scroll { max-height: 46vh; }
             .menu-scroll p { font-size: 13px; margin: 6px 0; }
             .menu-scroll .topico-cyan { font-size: 17px; margin-top: 14px; }
             #fala-spamton { font-size: 16px; }
@@ -375,6 +434,7 @@
         <div id="texto-abertura"></div>
         <button class="botao-menu" data-i18n="play" onclick="entrarNoJogo()">JOGAR</button>
         <button class="botao-menu" data-i18n="settings" onclick="abrirSubTela('tela-config')">CONFIGURAÇÕES</button>
+        <button class="botao-menu" data-i18n="achievements" onclick="abrirConquistas('titulo')">CONQUISTAS</button>
         <button class="botao-menu" data-i18n="credits" onclick="abrirSubTela('tela-creditos')">CRÉDITOS</button>
         <button class="botao-menu" data-i18n="howToPlay" onclick="abrirSubTela('tela-como-jogar')">COMO JOGAR</button>
     </div>
@@ -404,10 +464,19 @@
         </div>
         <button class="botao-menu" data-i18n="back" style="background-color: #444; margin-top: 20px;" onclick="fecharSubTela('tela-como-jogar')">VOLTAR</button>
     </div>
+    <div id="tela-conquistas" class="sub-tela">
+        <h2 data-i18n="achievements" style="color: cyan; text-shadow: 2px 2px black;">CONQUISTAS</h2>
+        <div class="menu-scroll conquistas-scroll">
+            <div class="conquistas-resumo" id="resumo-conquistas"></div>
+            <div class="conquistas-grade" id="lista-conquistas"></div>
+        </div>
+        <button class="botao-menu" data-i18n="back" style="background-color: #444; margin-top: 20px;" onclick="fecharConquistas()">VOLTAR</button>
+    </div>
 
     <div id="tela-pausa">
         <div class="titulo-menu-pausa" data-i18n="quickMenu" style="color: cyan;">MENU RÁPIDO</div>
         <button class="botao-menu" data-i18n="resume" onclick="retomarJogoDaPausa()">RETOMAR</button>
+        <button class="botao-menu" data-i18n="achievements" onclick="abrirConquistas('pausa')">CONQUISTAS</button>
         <button class="botao-menu" data-i18n="settings" onclick="abrirConfiguracoesDaPausa()">CONFIGURAÇÕES</button>
         <button class="botao-menu" data-i18n="mainMenu" onclick="menuPrincipalReloadCompleto()">MENU PRINCIPAL</button>
     </div>
@@ -499,6 +568,10 @@
                 settings: "SETTINGS",
                 credits: "CREDITS",
                 howToPlay: "HOW TO PLAY",
+                achievements: "ACHIEVEMENTS",
+                achievementProgress: "UNLOCKED: {unlocked}/{total}",
+                achievementLocked: "LOCKED",
+                achievementUnlocked: "UNLOCKED",
                 settingsTitle: "SETTINGS",
                 deleteProgress: "DELETE PROGRESS",
                 back: "BACK",
@@ -683,6 +756,54 @@
         let nivelPowerUpPipis = 0, chancePipisBase = 0.1997, custoPowerUp = 0, nivelLancer = 0, nivelPink = 0, nivelGaster = 0, tipoSorteadoPowerUp = "";
         let weirdRouteLevel = 0;
         let custoItemKPS = 0, custoItemKPC = 0, indiceItemKPS = 0, indiceItemKPC = 0;
+        const CHAVE_CONQUISTAS = "save_conquistas";
+        const dadosConquistas = { desbloqueadas: [], cliques: 0, comprasKPS: 0, comprasKPC: 0, compras: 0, pipisColetados: 0 };
+        let origemConquistas = "titulo";
+        let filaBragConquistas = [];
+        let bragConquistaAtivo = false;
+        let bragConquistaAte = 0;
+        const listaConquistas = [
+            { id: "krm_1", titulo: "Primeiro Kromer", tituloEn: "First Kromer", descricao: "Tenha 1 Kromer.", descricaoEn: "Have 1 Kromer.", verificar: () => kromer >= 1 },
+            { id: "krm_100", titulo: "Começando a negociar", tituloEn: "Getting Down to Business", descricao: "Tenha 100 Kromer.", descricaoEn: "Have 100 Kromer.", verificar: () => kromer >= 100 },
+            { id: "krm_1k", titulo: "Cliente frequente", tituloEn: "Regular Customer", descricao: "Tenha 1.000 Kromer.", descricaoEn: "Have 1,000 Kromer.", verificar: () => kromer >= 1000 },
+            { id: "krm_10k", titulo: "Pequena fortuna", tituloEn: "Small Fortune", descricao: "Tenha 10.000 Kromer.", descricaoEn: "Have 10,000 Kromer.", verificar: () => kromer >= 10000 },
+            { id: "krm_100k", titulo: "Magnata da loja", tituloEn: "Shop Tycoon", descricao: "Tenha 100.000 Kromer.", descricaoEn: "Have 100,000 Kromer.", verificar: () => kromer >= 100000 },
+            { id: "krm_1m", titulo: "BIG SHOT MILIONÁRIO", tituloEn: "MILLION-KROMER BIG SHOT", descricao: "Tenha 1.000.000 Kromer.", descricaoEn: "Have 1,000,000 Kromer.", verificar: () => kromer >= 1000000 },
+            { id: "click_1", titulo: "Um pequeno clique", tituloEn: "A Little Click", descricao: "Clique no Spamton pela primeira vez.", descricaoEn: "Click Spamton for the first time.", verificar: () => dadosConquistas.cliques >= 1 },
+            { id: "click_100", titulo: "Dedos ocupados", tituloEn: "Busy Fingers", descricao: "Clique no Spamton 100 vezes.", descricaoEn: "Click Spamton 100 times.", verificar: () => dadosConquistas.cliques >= 100 },
+            { id: "click_1k", titulo: "Dedicação ao negócio", tituloEn: "Business Dedication", descricao: "Clique no Spamton 1.000 vezes.", descricaoEn: "Click Spamton 1,000 times.", verificar: () => dadosConquistas.cliques >= 1000 },
+            { id: "click_10k", titulo: "O botão está bem?", tituloEn: "Is the Button Okay?", descricao: "Clique no Spamton 10.000 vezes.", descricaoEn: "Click Spamton 10,000 times.", verificar: () => dadosConquistas.cliques >= 10000 },
+            { id: "kps_1", titulo: "Renda passiva", tituloEn: "Passive Income", descricao: "Alcance 1 Kromer por segundo.", descricaoEn: "Reach 1 Kromer per second.", verificar: () => kromerPorSegundo >= 1 },
+            { id: "kps_10", titulo: "Negócios crescendo", tituloEn: "Business Is Booming", descricao: "Alcance 10 Kromer por segundo.", descricaoEn: "Reach 10 Kromer per second.", verificar: () => kromerPorSegundo >= 10 },
+            { id: "kps_50", titulo: "Máquina de dinheiro", tituloEn: "Money Machine", descricao: "Alcance 50 Kromer por segundo.", descricaoEn: "Reach 50 Kromer per second.", verificar: () => kromerPorSegundo >= 50 },
+            { id: "kps_100", titulo: "Impressora de Kromer", tituloEn: "Kromer Printer", descricao: "Alcance 100 Kromer por segundo.", descricaoEn: "Reach 100 Kromer per second.", verificar: () => kromerPorSegundo >= 100 },
+            { id: "kps_500", titulo: "A economia enlouqueceu", tituloEn: "The Economy Is Broken", descricao: "Alcance 500 Kromer por segundo.", descricaoEn: "Reach 500 Kromer per second.", verificar: () => kromerPorSegundo >= 500 },
+            { id: "kpc_10", titulo: "Clique lucrativo", tituloEn: "Profitable Click", descricao: "Alcance 10 Kromer por clique.", descricaoEn: "Reach 10 Kromer per click.", verificar: () => kromerPorClique >= 10 },
+            { id: "kpc_25", titulo: "Mão de ouro", tituloEn: "Golden Touch", descricao: "Alcance 25 Kromer por clique.", descricaoEn: "Reach 25 Kromer per click.", verificar: () => kromerPorClique >= 25 },
+            { id: "kpc_100", titulo: "Um clique, muito Kromer", tituloEn: "One Click, Big Kromer", descricao: "Alcance 100 Kromer por clique.", descricaoEn: "Reach 100 Kromer per click.", verificar: () => kromerPorClique >= 100 },
+            { id: "kpc_250", titulo: "Clique de ouro", tituloEn: "Click of Gold", descricao: "Alcance 250 Kromer por clique.", descricaoEn: "Reach 250 Kromer per click.", verificar: () => kromerPorClique >= 250 },
+            { id: "kpc_1k", titulo: "O clique definitivo", tituloEn: "The Ultimate Click", descricao: "Alcance 1.000 Kromer por clique.", descricaoEn: "Reach 1,000 Kromer per click.", verificar: () => kromerPorClique >= 1000 },
+            { id: "buy_kps_10", titulo: "Especialista em KPS", tituloEn: "KPS Specialist", descricao: "Compre 10 melhorias de KPS.", descricaoEn: "Buy 10 KPS upgrades.", verificar: () => dadosConquistas.comprasKPS >= 10 },
+            { id: "buy_kps_50", titulo: "Investidor de KPS", tituloEn: "KPS Investor", descricao: "Compre 50 melhorias de KPS.", descricaoEn: "Buy 50 KPS upgrades.", verificar: () => dadosConquistas.comprasKPS >= 50 },
+            { id: "buy_kpc_10", titulo: "Especialista em KPC", tituloEn: "KPC Specialist", descricao: "Compre 10 melhorias de KPC.", descricaoEn: "Buy 10 KPC upgrades.", verificar: () => dadosConquistas.comprasKPC >= 10 },
+            { id: "buy_kpc_50", titulo: "Investidor de KPC", tituloEn: "KPC Investor", descricao: "Compre 50 melhorias de KPC.", descricaoEn: "Buy 50 KPC upgrades.", verificar: () => dadosConquistas.comprasKPC >= 50 },
+            { id: "buy_1", titulo: "Primeira contratação", tituloEn: "First Hire", descricao: "Contrate seu primeiro Darkner.", descricaoEn: "Hire your first Darkner.", verificar: () => dadosConquistas.compras >= 1 },
+            { id: "buy_10", titulo: "Chefe da equipe", tituloEn: "Team Manager", descricao: "Contrate ou melhore Darkners 10 vezes.", descricaoEn: "Hire or level up Darkners 10 times.", verificar: () => dadosConquistas.compras >= 10 },
+            { id: "buy_25", titulo: "Dono da loja", tituloEn: "Shop Owner", descricao: "Contrate ou melhore Darkners 25 vezes.", descricaoEn: "Hire or level up Darkners 25 times.", verificar: () => dadosConquistas.compras >= 25 },
+            { id: "friend_1", titulo: "Amigo novo", tituloEn: "New Friend", descricao: "Contrate Friend.", descricaoEn: "Hire Friend.", verificar: () => nivelPowerUpPipis >= 1 },
+            { id: "friend_5", titulo: "Amizade forte", tituloEn: "Strong Friendship", descricao: "Melhore Friend até o nível 5.", descricaoEn: "Level up Friend to level 5.", verificar: () => nivelPowerUpPipis >= 5 },
+            { id: "friend_10", titulo: "Melhores amigos", tituloEn: "Best Friends", descricao: "Melhore Friend até o nível 10.", descricaoEn: "Level up Friend to level 10.", verificar: () => nivelPowerUpPipis >= 10 },
+            { id: "lancer_5", titulo: "Parceiro de aventuras", tituloEn: "Adventure Buddy", descricao: "Melhore Lancer até o nível 5.", descricaoEn: "Level up Lancer to level 5.", verificar: () => nivelLancer >= 5 },
+            { id: "lancer_10", titulo: "Motoqueiro lendário", tituloEn: "Legendary Biker", descricao: "Melhore Lancer até o nível 10.", descricaoEn: "Level up Lancer to level 10.", verificar: () => nivelLancer >= 10 },
+            { id: "pink_5", titulo: "Estrela em ascensão", tituloEn: "Rising Star", descricao: "Melhore Pink até o nível 5.", descricaoEn: "Level up Pink to level 5.", verificar: () => nivelPink >= 5 },
+            { id: "pink_10", titulo: "Ícone pop", tituloEn: "Pop Icon", descricao: "Melhore Pink até o nível 10.", descricaoEn: "Level up Pink to level 10.", verificar: () => nivelPink >= 10 },
+            { id: "gaster_5", titulo: "Cientista misterioso", tituloEn: "Mystery Scientist", descricao: "Melhore Gaster até o nível 5.", descricaoEn: "Level up Gaster to level 5.", verificar: () => nivelGaster >= 5 },
+            { id: "gaster_10", titulo: "Além do conhecimento", tituloEn: "Beyond Understanding", descricao: "Melhore Gaster até o nível 10.", descricaoEn: "Level up Gaster to level 10.", verificar: () => nivelGaster >= 10 },
+            { id: "pipis_1", titulo: "Pipis resgatado", tituloEn: "Pipis Rescued", descricao: "Faça Friend coletar 1 Pipis.", descricaoEn: "Have Friend collect 1 Pipis.", verificar: () => dadosConquistas.pipisColetados >= 1 },
+            { id: "pipis_100", titulo: "Controle de qualidade", tituloEn: "Quality Control", descricao: "Faça Friend coletar 100 Pipis.", descricaoEn: "Have Friend collect 100 Pipis.", verificar: () => dadosConquistas.pipisColetados >= 100 },
+            { id: "pipis_500", titulo: "Pipis em massa", tituloEn: "Pipis in Bulk", descricao: "Faça Friend coletar 500 Pipis.", descricaoEn: "Have Friend collect 500 Pipis.", verificar: () => dadosConquistas.pipisColetados >= 500 },
+            { id: "all", titulo: "Colecionador BIG SHOT", tituloEn: "BIG SHOT Collector", descricao: "Desbloqueie todas as outras conquistas.", descricaoEn: "Unlock every other achievement.", verificar: () => false }
+        ];
     </script>
     <script>
         function abrirSubTela(id) { document.getElementById(id).style.display = "flex"; }
@@ -720,6 +841,134 @@
         function fecharConfiguracoesDaPausa() {
             document.getElementById("tela-config-pausa").style.display = "none";
             document.getElementById("tela-pausa").style.display = "flex";
+        }
+        function abrirConquistas(origem) {
+            origemConquistas = origem;
+            document.getElementById("tela-conquistas").classList.toggle("pausa-transparente", origem === "pausa");
+            if (origem === "pausa") document.getElementById("tela-pausa").style.display = "none";
+            renderizarConquistas();
+            document.getElementById("tela-conquistas").style.display = "flex";
+        }
+        function fecharConquistas() {
+            document.getElementById("tela-conquistas").style.display = "none";
+            document.getElementById("tela-conquistas").classList.remove("pausa-transparente");
+            if (origemConquistas === "pausa") document.getElementById("tela-pausa").style.display = "flex";
+        }
+        function salvarConquistas() {
+            localStorage.setItem(CHAVE_CONQUISTAS, JSON.stringify(dadosConquistas));
+        }
+        function carregarConquistas() {
+            const salvo = localStorage.getItem(CHAVE_CONQUISTAS);
+            if (salvo === null) return;
+            try {
+                const dados = JSON.parse(salvo);
+                const idsValidos = new Set(listaConquistas.map(conquista => conquista.id));
+                dadosConquistas.desbloqueadas = Array.isArray(dados.desbloqueadas)
+                    ? [...new Set(dados.desbloqueadas.filter(id => idsValidos.has(id)))]
+                    : [];
+                ["cliques", "comprasKPS", "comprasKPC", "compras", "pipisColetados"].forEach(chave => {
+                    const valor = Number(dados[chave]);
+                    dadosConquistas[chave] = Number.isSafeInteger(valor) && valor >= 0 ? valor : 0;
+                });
+            } catch (erro) {
+                console.error("Não foi possível carregar as conquistas salvas.", erro);
+            }
+        }
+        function renderizarConquistas() {
+            const lista = document.getElementById("lista-conquistas");
+            if (!lista) return;
+            const desbloqueadas = new Set(dadosConquistas.desbloqueadas);
+            const totalReal = listaConquistas.length;
+            const textoProgresso = textoIdioma("achievementProgress", "DESBLOQUEADAS: {unlocked}/{total}")
+                .replace("{unlocked}", desbloqueadas.size)
+                .replace("{total}", totalReal);
+            document.getElementById("resumo-conquistas").textContent = textoProgresso;
+            lista.replaceChildren();
+
+            listaConquistas.forEach(conquista => {
+                const desbloqueada = desbloqueadas.has(conquista.id);
+                const cartao = document.createElement("article");
+                cartao.className = `conquista-cartao${desbloqueada ? "" : " bloqueada"}`;
+                const icone = document.createElement("img");
+                icone.src = "conquista.png";
+                icone.alt = "";
+                icone.setAttribute("aria-hidden", "true");
+                const texto = document.createElement("div");
+                texto.className = "conquista-texto";
+                const nome = document.createElement("div");
+                nome.className = "conquista-nome";
+                nome.textContent = idiomaAtual === "en" ? conquista.tituloEn : conquista.titulo;
+                const descricao = document.createElement("div");
+                descricao.className = "conquista-descricao";
+                const estado = textoIdioma(
+                    desbloqueada ? "achievementUnlocked" : "achievementLocked",
+                    desbloqueada ? "DESBLOQUEADA" : "BLOQUEADA"
+                );
+                descricao.textContent = `${estado} — ${idiomaAtual === "en" ? conquista.descricaoEn : conquista.descricao}`;
+                texto.append(nome, descricao);
+                cartao.append(icone, texto);
+                lista.appendChild(cartao);
+            });
+        }
+        function anunciarConquista(conquista) {
+            filaBragConquistas.push(conquista);
+            if (bragConquistaAtivo) return;
+            bragConquistaAtivo = true;
+            const falasConquista = {
+                en: [
+                    "CONGRATULATIONS! YOU UNLOCKED [{name}]!",
+                    "A NEW [ACHIEVEMENT] FOR OUR BIG SHOT: [{name}]!",
+                    "YOU DID IT! [{name}] IS NOW PART OF YOUR [DEAL]!",
+                    "LOOK AT YOU, UNLOCKING [{name}] LIKE A TRUE [WINNER]!",
+                    "THAT'S A [SWEET DEAL]! YOU GOT [{name}]!",
+                    "ANOTHER MILESTONE FOR THE [RECORD BOOK]: [{name}]!"
+                ],
+                pt: [
+                    "PARAB3NS! VOCÊ DESBLOQUEOU [{name}]!",
+                    "UM NOVO [FEITO] PARA NOSSO BIG SHOT: [{name}]!",
+                    "VOCÊ CONSEGUIU! [{name}] AGORA FAZ PARTE DO SEU [ACORDO]!",
+                    "OLHA SÓ! DESBLOQUEANDO [{name}] COMO UM [PROFISSIONAL]!",
+                    "ISSO SIM É UM [BOM NEGÓCIO]! VOCÊ GANHOU [{name}]!",
+                    "MAIS UM MARCO PARA A [HISTÓRIA]: [{name}]!"
+                ]
+            };
+            const mostrarProxima = () => {
+                const proxima = filaBragConquistas.shift();
+                if (!proxima) {
+                    bragConquistaAtivo = false;
+                    return;
+                }
+                const nome = idiomaAtual === "en" ? proxima.tituloEn : proxima.titulo;
+                const falas = idiomaAtual === "en" ? falasConquista.en : falasConquista.pt;
+                const fala = falas[Math.floor(Math.random() * falas.length)];
+                falaSpamtonDiv.textContent = fala.replace("{name}", nome);
+                falaSpamtonDiv.style.color = "yellow";
+                bragConquistaAte = Date.now() + 2600;
+                setTimeout(mostrarProxima, 2600);
+            };
+            mostrarProxima();
+        }
+        function verificarConquistas() {
+            const desbloqueadas = new Set(dadosConquistas.desbloqueadas);
+            let mudou = false;
+            listaConquistas.forEach(conquista => {
+                if (conquista.id !== "all" && !desbloqueadas.has(conquista.id) && conquista.verificar()) {
+                    desbloqueadas.add(conquista.id);
+                    dadosConquistas.desbloqueadas.push(conquista.id);
+                    anunciarConquista(conquista);
+                    mudou = true;
+                }
+            });
+            const final = listaConquistas.find(conquista => conquista.id === "all");
+            if (!desbloqueadas.has("all") && desbloqueadas.size === listaConquistas.length - 1) {
+                dadosConquistas.desbloqueadas.push("all");
+                anunciarConquista(final);
+                mudou = true;
+            }
+            if (mudou) {
+                salvarConquistas();
+                renderizarConquistas();
+            }
         }
         function menuPrincipalReloadCompleto() { salvarDadosNoNavegador(); location.reload(); }
 
@@ -883,6 +1132,7 @@
             }
             textoMorteElement.innerHTML = textoIdioma("copyrightNotice", "VOCÊ MORREU!<br>[TRAPACEIRO DEFINITIVO]!");
             if (typeof renderizarTextoComoJogar === "function") renderizarTextoComoJogar();
+            renderizarConquistas();
         }
         function cliqueNoTelefone() {
             if (telaDeMorteVisivel === true) {
@@ -898,7 +1148,9 @@
             
             let backupWeirdRoute = weirdRouteLevel;
             
+            const conquistasSalvas = localStorage.getItem(CHAVE_CONQUISTAS);
             localStorage.clear();
+            if (conquistasSalvas !== null) localStorage.setItem(CHAVE_CONQUISTAS, conquistasSalvas);
             localStorage.setItem("cfg_idioma", idiomaAtual);
             localStorage.setItem("cfg_volume_musica", String(Math.round(volumeMusica * 100)));
             localStorage.setItem("cfg_volume_risadas", String(Math.round(volumeRisadas * 100)));
@@ -1186,13 +1438,21 @@
                 friendAsset.style.bottom = "-150px";
             }
             let cop = document.createElement("img");
-            cop.src = "friend.png";
+            cop.src = "friend_using.png";
             cop.className = "friend-catcher";
             cop.style.cssText = `position: fixed; bottom: -150px; width: 40px; height: auto; image-rendering: pixelated; z-index: 4; left: ${pImp - 14}px; transition: bottom 0.22s ease-in-out; display: block;`;
             document.getElementById("area-jogo").appendChild(cop);
+            let risadaIniciadaEm = 0;
+            function iniciarRisadaFriend() {
+                if (risadaIniciadaEm) return;
+                risadaIniciadaEm = Date.now();
+                cop.src = "friend_laugh.gif";
+                dispararSomFriend();
+            }
             
             setTimeout(function() {
                 cop.style.bottom = "10px";
+                setTimeout(iniciarRisadaFriend, 350);
                 let cY = y, cVy = vy, cX = x, cVx = vx, iRot = initRot;
                 let lQ = setInterval(function() {
                     cVy += grav; cY += cVy; cX += cVx; iRot += vRot;
@@ -1203,27 +1463,28 @@
                     if (cY >= window.innerHeight - 30) {
                         clearInterval(lQ);
                         pElem.remove();
-                        cop.style.bottom = "-150px";
-                        
-                        let vS = Math.floor(Math.random() * 1997) + 1;
-                        
-                        if (pElem.ehAlt === true) {
-                            kromer -= vS;
-                            if (kromer < 0) kromer = 0;
-                        } else {
-                            kromer += vS;
-                        }
-                        
-                        exibirFeedbackKromerFriend(vS, pElem.ehAlt === true, pImp);
-                        atualizarRotuloKromer();
-                        
-                        dispararSomFriend();
-                        salvarDadosNoNavegador();
-                        
+                        iniciarRisadaFriend();
+                        const restanteRisada = Math.max(0, 1100 - (Date.now() - risadaIniciadaEm));
                         setTimeout(function() {
-                            cop.remove();
-                            if (document.querySelectorAll(".friend-catcher:not(#friend-asset)").length === 0 && nivelPowerUpPipis > 0) friendAsset.style.bottom = "10px";
-                        }, 300);
+                            cop.style.bottom = "-150px";
+                            let vS = Math.floor(Math.random() * 1997) + 1;
+                            if (pElem.ehAlt === true) {
+                                kromer -= vS;
+                                if (kromer < 0) kromer = 0;
+                            } else {
+                                kromer += vS;
+                                dadosConquistas.pipisColetados++;
+                            }
+                            exibirFeedbackKromerFriend(vS, pElem.ehAlt === true, pImp);
+                            atualizarRotuloKromer();
+                            salvarConquistas();
+                            verificarConquistas();
+                            salvarDadosNoNavegador();
+                            setTimeout(function() {
+                                cop.remove();
+                                if (document.querySelectorAll(".friend-catcher:not(#friend-asset)").length === 0 && nivelPowerUpPipis > 0) friendAsset.style.bottom = "10px";
+                            }, 300);
+                        }, restanteRisada);
                     }
                 }, 16);
             }, 100);
@@ -1242,6 +1503,7 @@
             }
         }
         function carregarDadosDoNavegador() {
+            carregarConquistas();
             if (localStorage.getItem("save_wrd") !== null) {
                 weirdRouteLevel = parseInt(localStorage.getItem("save_wrd") || 0);
             }
@@ -1261,6 +1523,7 @@
                 if (nivelGaster > 0) gasterAsset.style.display = "block";
                 atualizarRotuloKromer();
             }
+            verificarConquistas();
             if (localStorage.getItem("cfg_save_risadas") !== null) {
                 risadasMutadas = localStorage.getItem("cfg_save_risadas") === "true";
                 atualizarRotulosConfiguracao();
@@ -1320,11 +1583,13 @@
                 else if (tS === "lancer") { nivelLancer++; lancerAsset.style.display = "block"; }
                 else if (tS === "pink") { nivelPink++; pinkAsset.style.display = "block"; }
                 else if (tS === "gaster") { nivelGaster++; gasterAsset.style.display = "block"; }
+                dadosConquistas.compras++;
                 botaoPowerUp.style.display = "none";
                 falaSpamtonDiv.textContent = listaIdioma("success", falasSucessoComprar)[Math.floor(Math.random() * falasSucessoComprar.length)];
                 falaSpamtonDiv.style.color = "lightgreen";
                 atualizarRotuloKromer();
                 atualizarPainelTexto(); salvarDadosNoNavegador();
+                salvarConquistas(); verificarConquistas();
             } else {
                 falaSpamtonDiv.textContent = listaIdioma("insufficient", falasFaltaDinheiro)[Math.floor(Math.random() * falasFaltaDinheiro.length)];
                 falaSpamtonDiv.style.color = "red";
@@ -1341,6 +1606,8 @@
                 falaSpamtonDiv.style.color = "lightgreen";
                 atualizarRotuloKromer();
                 atualizarPainelTexto(); gerarItemKPS(); salvarDadosNoNavegador();
+                dadosConquistas.comprasKPS++;
+                salvarConquistas(); verificarConquistas();
             } else {
                 falaSpamtonDiv.textContent = listaIdioma("insufficient", falasFaltaDinheiro)[Math.floor(Math.random() * falasFaltaDinheiro.length)];
                 falaSpamtonDiv.style.color = "red";
@@ -1358,6 +1625,8 @@
                 falaSpamtonDiv.style.color = "lightgreen";
                 atualizarRotuloKromer();
                 atualizarPainelTexto(); gerarItemKPC(); salvarDadosNoNavegador();
+                dadosConquistas.comprasKPC++;
+                salvarConquistas(); verificarConquistas();
             } else {
                 falaSpamtonDiv.textContent = listaIdioma("insufficient", falasFaltaDinheiro)[Math.floor(Math.random() * falasFaltaDinheiro.length)];
                 falaSpamtonDiv.style.color = "red";
@@ -1371,11 +1640,13 @@
             if (cliquesNesseSegundo > 15) { executarPunicaoCheat(); return; }
             dispararRisadaLocal(false); criarParticulaFisica();
             kromer += kromerPorClique;
+            dadosConquistas.cliques++;
             atualizarRotuloKromer();
             salvarDadosNoNavegador();
+            salvarConquistas(); verificarConquistas();
         }
 
-        function atualizarKromer() { if (!cheatDetectado) { kromer += kromerPorSegundo; atualizarRotuloKromer(); produzirPassivoPinkMewMew(); salvarDadosNoNavegador(); } }
+        function atualizarKromer() { if (!cheatDetectado) { kromer += kromerPorSegundo; atualizarRotuloKromer(); produzirPassivoPinkMewMew(); salvarDadosNoNavegador(); verificarConquistas(); } }
         function renderizarBotoesLoja() {
             const nomeItemKPS = idiomaAtual === "en" ? idiomaIngles.kpsItems[indiceItemKPS] : itensKPS[indiceItemKPS].nome;
             const nomeItemKPC = idiomaAtual === "en" ? idiomaIngles.kpcItems[indiceItemKPC] : itensKPC[indiceItemKPC].nome;
@@ -1393,11 +1664,13 @@
             renderizarBotoesLoja();
         }
         function deletarProgressoManual() {
+            const conquistasSalvas = localStorage.getItem(CHAVE_CONQUISTAS);
             localStorage.clear();
+            if (conquistasSalvas !== null) localStorage.setItem(CHAVE_CONQUISTAS, conquistasSalvas);
             localStorage.setItem("cfg_idioma", idiomaAtual);
             location.reload();
         }
-        function atualizarFalaSpamton() { if (!cheatDetectado) { falaSpamtonDiv.textContent = listaIdioma("spamton", falasSpamton)[Math.floor(Math.random() * falasSpamton.length)]; falaSpamtonDiv.style.color = "yellow"; } }
+        function atualizarFalaSpamton() { if (!cheatDetectado && Date.now() >= bragConquistaAte) { falaSpamtonDiv.textContent = listaIdioma("spamton", falasSpamton)[Math.floor(Math.random() * falasSpamton.length)]; falaSpamtonDiv.style.color = "yellow"; } }
         
         function rolarFalaInicialComPeso() {
             if (!cheatDetectado) {
@@ -1430,6 +1703,13 @@
             
             const textoComoJogarPortugues = `*KROMER*\nKromer é a moeda que você usará para progredir nesse jogo, para começar, clique no Spamton para gerar 1 kromer, não se preocupe, conseguir kromer será mais fácil depois\n*LOJA*\nA loja é o lugar onde sua produção de kromer aumentará ao longo do tempo, inicialmente ela tem dois botões, o de cima aumenta KPS (kromer por segundo), o de baixo aumenta KPC (kromer por clique), ocasionalmente um terceiro botão azul vai aparecer e vai conceder um dos 4 power-ups\n*POWER-UPS*\nPower-ups são outros darkners que você pode contratar e evoluir, mas antes de explicar como cada um deles funciona eu vou explicar algo necessário para eles funcionarem\n*PIPIS*\nQuando você gera kromer ao clicar no Spamton, alguns $ aparecem, eles começaram sendo uma decoração durante o desenvolvimento do jogo mais viraram uma função excencial para progredir com power-ups, a cada $ que aparece, há uma pequena chance do $ ser substituído por um pipis, no começo eles parecem um easter egg legal mas em breve terão importância\n*IMAGE_FRIEND*\nEsse darkner é o mais importante para os outros power-ups funcionarem bem, quando um pipis aparece na tela, o FRIEND irá imediatamente pegá-lo para conceder uma quantia de kromer em troca, conforme o FRIEND evolui, a chance de um pipis aparecer no lugar de um $ aumenta levemente, isso ajudará depois\n*LANCER*\nLancer é um ótimo companheiro caso você se sinta sozinho nessa jornada, ele trouxe sua bicicleta motorizada para melhorar a poluição do ambiente e faz um som engraçado quando você clica nele, mas ele não está lá só pra brincar, ocasionalmente ele joga alguns pipis para o FRIEND pegar (eu não disse que ele seria importante?), conforme Lancer evolui, ele joga mais pipis de uma vez (legal né?)\n*GASTER*\nTambém conhecido como Homem Misterioso, Gaster ocasionalmente deixará sua tela monocromática, enquanto joga alguns pipis para o FRIEND pegar, conforme o Gaster evolui, ele joga mais pipis também\n*PINK*\nOu Mew Mew pra quem só joga Undertale, ela é um passo importante para progressão, suponhamos que você gastou muito kromer em KPC, mas quer deixar o jogo rodando afk, não se preocupe! Pink age como o seu mouse, e gera kromer a cada segundo, mas ao invés de gerar a quantia baseada em KPS, ela gera baseada em KPC, ou seja, ela clica por você, conforme a Pink evolui, ela gera mais $ e as chances de pipis gerados por ela aumenta\n*MENUS E CONFIGURAÇÕES*\nVocê acha que eu não ia citar isso? claro que não! eu vou explicar agora!\n*MENU PRINCIPAL*\nO lugar onde tudo começa, aqui tem alguns botões que podem ou não ajudar :)\n*BOTÃO "JOGAR"*\nFaz você jogar\n*BOTÃO "CONFIGURAÇÕES"*\nAqui você pode ligar ou desligar a música e as risadas dos darkners que você contratou, ajustar o volume de cada um pelos controles abaixo dos botões, ativar a tela cheia (se o navegador oferecer suporte), mudar o idioma e também resetar o progresso aqui mas a gente já resetou demais em Undertale\n*BOTÃO "CRÉDITOS"*\nAqui temos os nomes dos criadores desse jogo, que se dedicaram muito para fazer tudo funcionar (não conta pra ninguém mas eu copiei muito código de muitos sites e remendei tudo junto)\n*BOTÃO "COMO JOGAR"*\nTraz você pra esse submenu!\n*MENU DE PAUSA*\nBasicamente uma curta versão do menu principal mas ele fica dentro do jogo pra você acessar enquanto assiste o caos!\n*CONFIGURAÇÃO DE IDIOMA*\nEscolha inglês ou português em Configurações. Sua escolha fica salva neste dispositivo e altera os menus, diálogos, itens da loja e este guia.\n*EXTRAS*\nDaqui pra frente tem algumas features simples que não merecem um tópico maior (que pena)\n*TELEFONE*\nUm simples telefone para mandar você pra algum lugar, clique nele, talvez não\n*DIÁLOGO*\nUm texto em cima do Spamton informando o que está acontecendo no jogo, e as vezes é só o Spamton falando com você, quem sabe?\n*ANTI-CHEAT*\nAlguma hora você vai descobrir, ele impede você de ser um trapaceiro sujo (e também atrapalha a conexão telefônica), bem, as coisas tomaram uma rota estranha não é?\n*FIM*\nÉ só isso por enquanto, agora vá jogar e se torne um [[BIG SHOT]]!!1`;
             const linhas = (idiomaAtual === "en" ? idiomaIngles.howToPlay : textoComoJogarPortugues).split("\n");
+            const indiceFim = linhas.findIndex(linha => linha === (idiomaAtual === "en" ? "*THE END*" : "*FIM*"));
+            linhas.splice(indiceFim < 0 ? linhas.length : indiceFim, 0,
+                idiomaAtual === "en" ? "*ACHIEVEMENTS*" : "*CONQUISTAS*",
+                idiomaAtual === "en"
+                    ? "Unlock achievements by collecting Kromer, clicking Spamton, improving KPS/KPC, hiring and leveling up Darkners, and having Friend collect Pipis. Your achievements are saved separately from game progress. Spamton celebrates each new achievement!"
+                    : "Desbloqueie conquistas acumulando Kromer, clicando no Spamton, melhorando KPS/KPC, contratando e evoluindo Darkners e fazendo Friend coletar Pipis. Suas conquistas são salvas separadamente do progresso do jogo. Spamton comemora cada nova conquista!"
+            );
             container.innerHTML = "";
             
             linhas.forEach(function(linha) {
