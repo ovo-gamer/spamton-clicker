@@ -63,6 +63,24 @@
             text-shadow: 2px 2px 0px #000; transition: background-color 0.2s;
         }
         .botao-menu:hover { background-color: #0033cc; }
+        .volume-controle {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            width: min(280px, 86vw);
+            margin-top: 4px;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            text-shadow: 1px 1px black;
+        }
+        .volume-controle input[type="range"] {
+            width: 100%;
+            accent-color: cyan;
+            cursor: pointer;
+        }
+        .volume-controle output { min-width: 4ch; }
         .sub-tela {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -81,6 +99,14 @@
             box-sizing: border-box;
             text-align: center;
         }
+        .settings-scroll {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            scrollbar-gutter: stable;
+        }
+        .settings-scroll > * { flex-shrink: 0; }
         .menu-scroll p {
             font-size: 18px;
             color: white;
@@ -282,6 +308,7 @@
                 max-height: 45vh;
                 padding: 14px;
             }
+            .settings-scroll { max-height: 52vh; }
             .menu-scroll p { font-size: 16px; }
             .menu-scroll .topico-cyan { font-size: 21px; }
             #fala-spamton {
@@ -326,6 +353,7 @@
                 font-size: clamp(12px, 3.4vh, 16px);
             }
             .menu-scroll { max-height: 32vh; padding: 8px; }
+            .settings-scroll { max-height: 40vh; gap: 8px; padding: 8px; }
             .menu-scroll p { font-size: 13px; margin: 6px 0; }
             .menu-scroll .topico-cyan { font-size: 17px; margin-top: 14px; }
             #fala-spamton { font-size: 16px; }
@@ -353,10 +381,15 @@
 
     <div id="tela-config" class="sub-tela">
         <h2 data-i18n="settingsTitle" style="color: cyan; text-shadow: 2px 2px black;">PAINEL DE CONFIGURAÇÕES</h2>
-        <button id="cfg-musica" class="botao-menu cfg-musica" onclick="alternarMusicaNativa()">MÚSICA: ON</button>
-        <button id="cfg-risadas" class="botao-menu cfg-risadas" onclick="alternarMutarRisadas()">RISADAS: ON</button>
-        <button class="botao-menu cfg-idioma" onclick="alternarIdioma()">IDIOMA: PORTUGUÊS</button>
-        <button id="cfg-reset" class="botao-menu" data-i18n="deleteProgress" style="background-color: #a00;" onclick="deletarProgressoManual()">DELETAR PROGRESSO</button>
+        <div class="menu-scroll settings-scroll">
+            <button id="cfg-musica" class="botao-menu cfg-musica" onclick="alternarMusicaNativa()">MÚSICA: ON</button>
+            <label class="volume-controle"><span data-i18n="musicVolume">VOLUME DA MÚSICA</span><input class="cfg-volume-musica" type="range" min="0" max="100" step="1" value="100" oninput="atualizarVolumeMusica(this.value)"><output>100%</output></label>
+            <button id="cfg-risadas" class="botao-menu cfg-risadas" onclick="alternarMutarRisadas()">RISADAS: ON</button>
+            <label class="volume-controle"><span data-i18n="laughsVolume">VOLUME DAS RISADAS</span><input class="cfg-volume-risadas" type="range" min="0" max="100" step="1" value="100" oninput="atualizarVolumeRisadas(this.value)"><output>100%</output></label>
+            <button class="botao-menu cfg-fullscreen" onclick="alternarTelaCheia()">ENTRAR EM TELA CHEIA</button>
+            <button class="botao-menu cfg-idioma" onclick="alternarIdioma()">IDIOMA: PORTUGUÊS</button>
+            <button id="cfg-reset" class="botao-menu" data-i18n="deleteProgress" style="background-color: #a00;" onclick="deletarProgressoManual()">DELETAR PROGRESSO</button>
+        </div>
         <button class="botao-menu" data-i18n="back" style="background-color: #444; margin-top: 20px;" onclick="fecharSubTela('tela-config')">VOLTAR</button>
     </div>
     <div id="tela-creditos" class="sub-tela">
@@ -380,10 +413,15 @@
     </div>
     <div id="tela-config-pausa">
         <h2 data-i18n="settingsTitle" style="color: cyan; text-shadow: 2px 2px black;">PAINEL DE CONFIGURAÇÕES</h2>
-        <button class="botao-menu cfg-musica" onclick="alternarMusicaNativa()">MÚSICA: ON</button>
-        <button class="botao-menu cfg-risadas" onclick="alternarMutarRisadas()">RISADAS: ON</button>
-        <button class="botao-menu cfg-idioma" onclick="alternarIdioma()">IDIOMA: PORTUGUÊS</button>
-        <button class="botao-menu" data-i18n="deleteProgress" style="background-color: #a00;" onclick="deletarProgressoManual()">DELETAR PROGRESSO</button>
+        <div class="menu-scroll settings-scroll">
+            <button class="botao-menu cfg-musica" onclick="alternarMusicaNativa()">MÚSICA: ON</button>
+            <label class="volume-controle"><span data-i18n="musicVolume">VOLUME DA MÚSICA</span><input class="cfg-volume-musica" type="range" min="0" max="100" step="1" value="100" oninput="atualizarVolumeMusica(this.value)"><output>100%</output></label>
+            <button class="botao-menu cfg-risadas" onclick="alternarMutarRisadas()">RISADAS: ON</button>
+            <label class="volume-controle"><span data-i18n="laughsVolume">VOLUME DAS RISADAS</span><input class="cfg-volume-risadas" type="range" min="0" max="100" step="1" value="100" oninput="atualizarVolumeRisadas(this.value)"><output>100%</output></label>
+            <button class="botao-menu cfg-fullscreen" onclick="alternarTelaCheia()">ENTRAR EM TELA CHEIA</button>
+            <button class="botao-menu cfg-idioma" onclick="alternarIdioma()">IDIOMA: PORTUGUÊS</button>
+            <button class="botao-menu" data-i18n="deleteProgress" style="background-color: #a00;" onclick="deletarProgressoManual()">DELETAR PROGRESSO</button>
+        </div>
         <button class="botao-menu" data-i18n="back" style="background-color: #444; margin-top: 20px;" onclick="fecharConfiguracoesDaPausa()">VOLTAR</button>
     </div>
     <div id="area-jogo">
@@ -478,6 +516,12 @@
                 musicOff: "MUSIC: OFF",
                 laughsOn: "LAUGHS: ON",
                 laughsOff: "LAUGHS: OFF",
+                musicVolume: "MUSIC VOLUME",
+                laughsVolume: "LAUGH VOLUME",
+                fullscreenEnter: "ENTER FULLSCREEN",
+                fullscreenExit: "EXIT FULLSCREEN",
+                fullscreenUnavailable: "Fullscreen isn't supported by this browser. You may need to add the game to your home screen to hide browser controls.",
+                fullscreenError: "Couldn't switch fullscreen mode. Your browser may block this feature.",
                 languagePortuguese: "LANGUAGE: PORTUGUESE",
                 languageEnglish: "LANGUAGE: ENGLISH",
                 kromer: "Kromer",
@@ -595,7 +639,7 @@ Where it all begins. There are a few buttons here that might help :)
 *"PLAY" BUTTON*
 Plays the game.
 *"SETTINGS" BUTTON*
-Turn music and your hired Darkners' laughs on or off, change the language, or reset your progress. (We've reset enough in Undertale already.)
+Turn music and your hired Darkners' laughs on or off, adjust each volume with the slider below its button, enter fullscreen (if your browser supports it), change the language, or reset your progress. (We've reset enough in Undertale already.)
 *"CREDITS" BUTTON*
 Shows the names of the people who made this game work. (Don't tell anyone, but I copied and stitched together code from a bunch of websites.)
 *"HOW TO PLAY" BUTTON*
@@ -676,6 +720,7 @@ That's all for now. Go play and become a [[BIG SHOT]]!!1`
         let kromer = 0, kromerPorSegundo = 0, kromerPorClique = 1, cliquesNesseSegundo = 0, frameAtualIndex = 0;
         let cheatDetectado = false, modoMorteAtivo = false, risadasMutadas = false, screenTitleActive = true, telaDeMorteVisivel = false;
         let musicaHabilitada = true;
+        let volumeMusica = 1, volumeRisadas = 1;
         let nivelPowerUpPipis = 0, chancePipisBase = 0.1997, custoPowerUp = 0, nivelLancer = 0, nivelPink = 0, nivelGaster = 0, tipoSorteadoPowerUp = "";
         let weirdRouteLevel = 0;
         let custoItemKPS = 0, custoItemKPC = 0, indiceItemKPS = 0, indiceItemKPC = 0;
@@ -701,7 +746,7 @@ That's all for now. Go play and become a [[BIG SHOT]]!!1`
             document.getElementById("area-jogo").style.display = "block";
             atualizarSpriteTelefone();
             if (musicaHabilitada && musicaNativa.paused && !cheatDetectado) {
-                musicaNativa.volume = 0.3; musicaNativa.play().catch(function() {});
+                aplicarVolumeMusica(); musicaNativa.play().catch(function() {});
             }
         }
         function abrirMenuDePausaOpa() { if (!cheatDetectado) document.getElementById("tela-pausa").style.display = "flex"; }
@@ -735,12 +780,92 @@ That's all for now. Go play and become a [[BIG SHOT]]!!1`
                     ? textoIdioma("languageEnglish", "IDIOMA: INGLÊS")
                     : textoIdioma("languagePortuguese", "IDIOMA: PORTUGUÊS");
             });
+            document.querySelectorAll(".cfg-fullscreen").forEach(function(botao) {
+                botao.textContent = document.fullscreenElement
+                    ? textoIdioma("fullscreenExit", "SAIR DA TELA CHEIA")
+                    : textoIdioma("fullscreenEnter", "ENTRAR EM TELA CHEIA");
+            });
         }
+
+        async function alternarTelaCheia() {
+            if (!document.fullscreenElement && !document.documentElement.requestFullscreen) {
+                alert(textoIdioma(
+                    "fullscreenUnavailable",
+                    "Este navegador não oferece suporte à tela cheia. Talvez seja necessário adicionar o jogo à tela inicial para ocultar os controles do navegador."
+                ));
+                return;
+            }
+
+            try {
+                if (document.fullscreenElement) {
+                    await document.exitFullscreen();
+                } else {
+                    await document.documentElement.requestFullscreen();
+                }
+            } catch (erro) {
+                console.error("Não foi possível alternar o modo de tela cheia.", erro);
+                alert(textoIdioma(
+                    "fullscreenError",
+                    "Não foi possível alternar o modo de tela cheia. Seu navegador pode bloquear esse recurso."
+                ));
+            }
+        }
+
+        document.addEventListener("fullscreenchange", atualizarRotulosConfiguracao);
 
         function alternarIdioma() {
             idiomaAtual = idiomaAtual === "en" ? "pt" : "en";
             localStorage.setItem("cfg_idioma", idiomaAtual);
             aplicarIdioma();
+        }
+
+        function carregarVolumeSalvo(chave) {
+            const valorSalvo = localStorage.getItem(chave);
+            if (valorSalvo === null) return 1;
+            const valor = Number(valorSalvo);
+            return Number.isFinite(valor) ? Math.min(100, Math.max(0, valor)) / 100 : 1;
+        }
+
+        function sincronizarControleVolume(seletor, volume) {
+            const porcentagem = Math.round(volume * 100);
+            document.querySelectorAll(seletor).forEach(function(controle) {
+                controle.value = String(porcentagem);
+                controle.nextElementSibling.textContent = `${porcentagem}%`;
+            });
+        }
+
+        function aplicarVolumeMusica() {
+            musicaNativa.volume = 0.3 * volumeMusica;
+        }
+
+        function definirVolumeRisada(audio, volumeOriginal) {
+            audio.volume = volumeOriginal * volumeRisadas;
+            return audio;
+        }
+
+        function inicializarControlesVolume() {
+            volumeMusica = carregarVolumeSalvo("cfg_volume_musica");
+            volumeRisadas = carregarVolumeSalvo("cfg_volume_risadas");
+            sincronizarControleVolume(".cfg-volume-musica", volumeMusica);
+            sincronizarControleVolume(".cfg-volume-risadas", volumeRisadas);
+            aplicarVolumeMusica();
+        }
+
+        function atualizarVolumeMusica(valor) {
+            const porcentagem = Number(valor);
+            if (!Number.isFinite(porcentagem)) return;
+            volumeMusica = Math.min(100, Math.max(0, porcentagem)) / 100;
+            localStorage.setItem("cfg_volume_musica", String(Math.round(volumeMusica * 100)));
+            sincronizarControleVolume(".cfg-volume-musica", volumeMusica);
+            aplicarVolumeMusica();
+        }
+
+        function atualizarVolumeRisadas(valor) {
+            const porcentagem = Number(valor);
+            if (!Number.isFinite(porcentagem)) return;
+            volumeRisadas = Math.min(100, Math.max(0, porcentagem)) / 100;
+            localStorage.setItem("cfg_volume_risadas", String(Math.round(volumeRisadas * 100)));
+            sincronizarControleVolume(".cfg-volume-risadas", volumeRisadas);
         }
 
         function alternarMutarRisadas() {
@@ -757,7 +882,7 @@ That's all for now. Go play and become a [[BIG SHOT]]!!1`
             atualizarRotulosConfiguracao();
             localStorage.setItem("cfg_save_musica", musicaHabilitada);
             if (document.getElementById("area-jogo").style.display === "block") {
-                if (musicaHabilitada) { musicaNativa.volume = 0.3; musicaNativa.play().catch(function() {}); }
+                if (musicaHabilitada) { aplicarVolumeMusica(); musicaNativa.play().catch(function() {}); }
                 else { musicaNativa.pause(); }
             }
         }
@@ -816,6 +941,8 @@ That's all for now. Go play and become a [[BIG SHOT]]!!1`
             
             localStorage.clear();
             localStorage.setItem("cfg_idioma", idiomaAtual);
+            localStorage.setItem("cfg_volume_musica", String(Math.round(volumeMusica * 100)));
+            localStorage.setItem("cfg_volume_risadas", String(Math.round(volumeRisadas * 100)));
             
             localStorage.setItem("save_wrd", backupWeirdRoute);
             localStorage.setItem("cfg_save_risadas", "false");
@@ -847,13 +974,13 @@ That's all for now. Go play and become a [[BIG SHOT]]!!1`
                     const pRate = Math.random() * (0.6 - 0.4) + 0.4;
                     const somJumpscare1 = new Audio('laugh.mp3');
                     somJumpscare1.preservesPitch = false;
-                    somJumpscare1.volume = 1.0;
+                    definirVolumeRisada(somJumpscare1, 1.0);
                     somJumpscare1.playbackRate = pRate;
                     somJumpscare1.play().catch(function() {});
                     
                     const somJumpscare2 = new Audio('laugh.mp3');
                     somJumpscare2.preservesPitch = false;
-                    somJumpscare2.volume = 1.0;
+                    definirVolumeRisada(somJumpscare2, 1.0);
                     somJumpscare2.playbackRate = pRate;
                     somJumpscare2.play().catch(function() {});
                     
@@ -883,15 +1010,15 @@ That's all for now. Go play and become a [[BIG SHOT]]!!1`
         function dispararRisadaLocal(grave = false) {
             if (risadasMutadas === true) return;
             const somInstante = new Audio('laugh.mp3'); somInstante.preservesPitch = false;
-            if (grave === true) { somInstante.volume = 1.0; somInstante.playbackRate = Math.random() * (0.6 - 0.4) + 0.4; }
-            else { somInstante.volume = 0.5; somInstante.playbackRate = Math.random() * (1.2 - 0.8) + 0.8; }
+            if (grave === true) { definirVolumeRisada(somInstante, 1.0); somInstante.playbackRate = Math.random() * (0.6 - 0.4) + 0.4; }
+            else { definirVolumeRisada(somInstante, 0.5); somInstante.playbackRate = Math.random() * (1.2 - 0.8) + 0.8; }
             somInstante.play().catch(function() {});
         }
         function cliqueNoLancerSplat() { if (!cheatDetectado) { const splatSom = new Audio('splat.mp3'); splatSom.volume = 0.7; splatSom.play().catch(function() {}); } }
-        function dispararSomFriend() { if (!risadasMutadas) { const sf = new Audio('friend_laugh.mp3'); sf.volume = 0.6; sf.play().catch(function() {}); } }
-        function dispararSomLancer() { if (!risadasMutadas) { const sl = new Audio('lancer_laugh.mp3'); sl.volume = 0.6; sl.play().catch(function() {}); } }
-        function dispararSomPink() { if (!risadasMutadas) { const sp = new Audio('pink_laugh.mp3'); sp.volume = 0.6; sp.play().catch(function() {}); } }
-        function dispararSomGaster() { if (risadasMutadas) return; const sg = new Audio('gaster.mp3'); sg.volume = 0.8; sg.play().catch(function() {}); }
+        function dispararSomFriend() { if (!risadasMutadas) { const sf = definirVolumeRisada(new Audio('friend_laugh.mp3'), 0.6); sf.play().catch(function() {}); } }
+        function dispararSomLancer() { if (!risadasMutadas) { const sl = definirVolumeRisada(new Audio('lancer_laugh.mp3'), 0.6); sl.play().catch(function() {}); } }
+        function dispararSomPink() { if (!risadasMutadas) { const sp = definirVolumeRisada(new Audio('pink_laugh.mp3'), 0.6); sp.play().catch(function() {}); } }
+        function dispararSomGaster() { if (risadasMutadas) return; const sg = definirVolumeRisada(new Audio('gaster.mp3'), 0.8); sg.play().catch(function() {}); }
         function dispararSomMorte() { const sm = new Audio('death.mp3'); sm.volume = 1.0; sm.play().catch(function() {}); }
 
         function criarParticulaFisica() {
@@ -1248,7 +1375,7 @@ That's all for now. Go play and become a [[BIG SHOT]]!!1`
         function comprarKPS() {
             if (cheatDetectado) return;
             if (kromer >= custoItemKPS) {
-                if (musicaHabilitada && !musicaNativa.paused) { musicaNativa.volume = 0.3; musicaNativa.play().catch(function() {}); }
+                if (musicaHabilitada && !musicaNativa.paused) { aplicarVolumeMusica(); musicaNativa.play().catch(function() {}); }
                 kromer -= custoItemKPS;
                 let g = Math.floor(Math.random() * 5) + 1; kromerPorSegundo += g;
                 falaSpamtonDiv.textContent = `${listaIdioma("success", falasSucessoComprar)[Math.floor(Math.random() * falasSucessoComprar.length)]} ${textoIdioma("gotKps", "(GANHOU +{amount} KPS)!").replace("{amount}", g)}`;
@@ -1265,7 +1392,7 @@ That's all for now. Go play and become a [[BIG SHOT]]!!1`
         function comprarKPC() {
             if (cheatDetectado) return;
             if (kromer >= custoItemKPC) {
-                if (musicaHabilitada && !musicaNativa.paused) { musicaNativa.volume = 0.3; musicaNativa.play().catch(function() {}); }
+                if (musicaHabilitada && !musicaNativa.paused) { aplicarVolumeMusica(); musicaNativa.play().catch(function() {}); }
                 kromer -= custoItemKPC;
                 let g = Math.floor(Math.random() * 5) + 1; kromerPorClique += g;
                 falaSpamtonDiv.textContent = `${listaIdioma("success", falasSucessoComprar)[Math.floor(Math.random() * falasSucessoComprar.length)]} ${textoIdioma("gotKpc", "(GANHOU +{amount} KPC)!").replace("{amount}", g)}`;
@@ -1325,7 +1452,7 @@ That's all for now. Go play and become a [[BIG SHOT]]!!1`
         botaoPowerUp.addEventListener("click", comprarPowerUp);
         spriteSpamtonImg.addEventListener("click", cliqueManual);
         
-        document.addEventListener("DOMContentLoaded", function() { aplicarIdioma(); carregarDadosDoNavegador(); gerarItemKPS(); gerarItemKPC(); rolarFalaInicialComPeso(); atualizarPainelTexto(); });
+        document.addEventListener("DOMContentLoaded", function() { inicializarControlesVolume(); aplicarIdioma(); carregarDadosDoNavegador(); gerarItemKPS(); gerarItemKPC(); rolarFalaInicialComPeso(); atualizarPainelTexto(); });
         document.addEventListener("visibilitychange", function() { if (document.hidden) cliquesNesseSegundo = 0; });
         
         setInterval(atualizarKromer, 1000);
@@ -1350,7 +1477,7 @@ That's all for now. Go play and become a [[BIG SHOT]]!!1`
             );
             textoComoJogarPortugues = textoComoJogarPortugues.replace(
                 "contratou, também tem como resetar",
-                "contratou, mudar o idioma e também resetar"
+                "contratou, ajustar o volume de cada um pelos controles abaixo dos botões, ativar a tela cheia (se o navegador oferecer suporte), mudar o idioma e também resetar"
             );
             const linhas = (idiomaAtual === "en" ? idiomaIngles.howToPlay : textoComoJogarPortugues).split("\n");
             container.innerHTML = "";
@@ -1390,7 +1517,7 @@ That's all for now. Go play and become a [[BIG SHOT]]!!1`
 
                 if (!risadasMutadas) {
                     somJingle = new Audio('weird_route_jingle.mp3');
-                    somJingle.volume = 0.5;
+                    definirVolumeRisada(somJingle, 0.5);
                     somJingle.play().catch(function() {});
                 }
 
