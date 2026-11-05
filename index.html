@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini Lojinha de Kromer [BIG SHOT EDITION!]</title>
+    <title id="titulo-pagina">Mini Lojinha de Kromer [BIG SHOT EDITION!]</title>
     <style>
         body {
             background-color: #555;
@@ -41,7 +41,8 @@
             display: flex; flex-direction: column;
             align-items: center; justify-content: center; gap: 20px;
         }
-        #titulo-jogo {
+        #titulo-jogo,
+        .titulo-menu-pausa {
             font-size: 32px; color: cyan; font-weight: bold;
             text-shadow: 3px 3px 0px black; margin-bottom: 20px;
         }
@@ -261,7 +262,8 @@
                 padding: 16px;
                 overflow-y: auto;
             }
-            #titulo-jogo {
+            #titulo-jogo,
+            .titulo-menu-pausa {
                 font-size: clamp(22px, 7vw, 32px);
                 margin-bottom: 4px;
             }
@@ -316,7 +318,8 @@
                 gap: 6px;
                 padding: 8px 16px;
             }
-            #titulo-jogo { font-size: clamp(20px, 5vh, 28px); }
+            #titulo-jogo,
+            .titulo-menu-pausa { font-size: clamp(20px, 5vh, 28px); }
             .botao-menu {
                 width: min(70vw, 320px);
                 padding: 7px 12px;
@@ -340,65 +343,67 @@
     <div id="tela-morte"><div id="texto-morte">VOCÊ MORREU!<br>[TRAPACEIRO DEFINITIVO]!</div></div>
 
     <div id="tela-titulo">
-        <div id="titulo-jogo">Mini Lojinha de Kromer<br>[BIG SHOT EDITION!]</div>
+        <div id="titulo-jogo" data-i18n-html="gameTitle">Mini Lojinha de Kromer<br>[BIG SHOT EDITION!]</div>
         <div id="texto-abertura"></div>
-        <button class="botao-menu" onclick="entrarNoJogo()">JOGAR</button>
-        <button class="botao-menu" onclick="abrirSubTela('tela-config')">CONFIGURAÇÕES</button>
-        <button class="botao-menu" onclick="abrirSubTela('tela-creditos')">CRÉDITOS</button>
-        <button class="botao-menu" onclick="abrirSubTela('tela-como-jogar')">COMO JOGAR</button>
+        <button class="botao-menu" data-i18n="play" onclick="entrarNoJogo()">JOGAR</button>
+        <button class="botao-menu" data-i18n="settings" onclick="abrirSubTela('tela-config')">CONFIGURAÇÕES</button>
+        <button class="botao-menu" data-i18n="credits" onclick="abrirSubTela('tela-creditos')">CRÉDITOS</button>
+        <button class="botao-menu" data-i18n="howToPlay" onclick="abrirSubTela('tela-como-jogar')">COMO JOGAR</button>
     </div>
 
     <div id="tela-config" class="sub-tela">
-        <h2 style="color: cyan; text-shadow: 2px 2px black;">PAINEL DE CONFIGURAÇÕES</h2>
+        <h2 data-i18n="settingsTitle" style="color: cyan; text-shadow: 2px 2px black;">PAINEL DE CONFIGURAÇÕES</h2>
         <button id="cfg-musica" class="botao-menu cfg-musica" onclick="alternarMusicaNativa()">MÚSICA: ON</button>
         <button id="cfg-risadas" class="botao-menu cfg-risadas" onclick="alternarMutarRisadas()">RISADAS: ON</button>
-        <button id="cfg-reset" class="botao-menu" style="background-color: #a00;" onclick="deletarProgressoManual()">DELETAR PROGRESSO</button>
-        <button class="botao-menu" style="background-color: #444; margin-top: 20px;" onclick="fecharSubTela('tela-config')">VOLTAR</button>
+        <button class="botao-menu cfg-idioma" onclick="alternarIdioma()">IDIOMA: PORTUGUÊS</button>
+        <button id="cfg-reset" class="botao-menu" data-i18n="deleteProgress" style="background-color: #a00;" onclick="deletarProgressoManual()">DELETAR PROGRESSO</button>
+        <button class="botao-menu" data-i18n="back" style="background-color: #444; margin-top: 20px;" onclick="fecharSubTela('tela-config')">VOLTAR</button>
     </div>
     <div id="tela-creditos" class="sub-tela">
-        <h2 style="color: cyan; text-shadow: 2px 2px black;">CRÉDITOS</h2>
+        <h2 data-i18n="credits" style="color: cyan; text-shadow: 2px 2px black;">CRÉDITOS</h2>
         <p style="font-size: 28px; color: white; text-shadow: 2px 2px black;">ovo gamer</p>
-        <button class="botao-menu" style="background-color: #444; margin-top: 40px;" onclick="fecharSubTela('tela-creditos')">VOLTAR</button>
+        <button class="botao-menu" data-i18n="back" style="background-color: #444; margin-top: 40px;" onclick="fecharSubTela('tela-creditos')">VOLTAR</button>
     </div>
     <div id="tela-como-jogar" class="sub-tela">
-        <h2 style="color: cyan; text-shadow: 2px 2px black;">COMO JOGAR</h2>
+        <h2 data-i18n="howToPlay" style="color: cyan; text-shadow: 2px 2px black;">COMO JOGAR</h2>
         <div class="menu-scroll">
             <div id="conteudo-como-jogar"></div>
         </div>
-        <button class="botao-menu" style="background-color: #444; margin-top: 20px;" onclick="fecharSubTela('tela-como-jogar')">VOLTAR</button>
+        <button class="botao-menu" data-i18n="back" style="background-color: #444; margin-top: 20px;" onclick="fecharSubTela('tela-como-jogar')">VOLTAR</button>
     </div>
 
     <div id="tela-pausa">
-        <div id="titulo-jogo" style="color: cyan;">MENU RÁPIDO</div>
-        <button class="botao-menu" onclick="retomarJogoDaPausa()">RETOMAR</button>
-        <button class="botao-menu" onclick="abrirConfiguracoesDaPausa()">CONFIGURAÇÕES</button>
-        <button class="botao-menu" onclick="menuPrincipalReloadCompleto()">MENU PRINCIPAL</button>
+        <div class="titulo-menu-pausa" data-i18n="quickMenu" style="color: cyan;">MENU RÁPIDO</div>
+        <button class="botao-menu" data-i18n="resume" onclick="retomarJogoDaPausa()">RETOMAR</button>
+        <button class="botao-menu" data-i18n="settings" onclick="abrirConfiguracoesDaPausa()">CONFIGURAÇÕES</button>
+        <button class="botao-menu" data-i18n="mainMenu" onclick="menuPrincipalReloadCompleto()">MENU PRINCIPAL</button>
     </div>
     <div id="tela-config-pausa">
-        <h2 style="color: cyan; text-shadow: 2px 2px black;">PAINEL DE CONFIGURAÇÕES</h2>
+        <h2 data-i18n="settingsTitle" style="color: cyan; text-shadow: 2px 2px black;">PAINEL DE CONFIGURAÇÕES</h2>
         <button class="botao-menu cfg-musica" onclick="alternarMusicaNativa()">MÚSICA: ON</button>
         <button class="botao-menu cfg-risadas" onclick="alternarMutarRisadas()">RISADAS: ON</button>
-        <button class="botao-menu" style="background-color: #a00;" onclick="deletarProgressoManual()">DELETAR PROGRESSO</button>
-        <button class="botao-menu" style="background-color: #444; margin-top: 20px;" onclick="fecharConfiguracoesDaPausa()">VOLTAR</button>
+        <button class="botao-menu cfg-idioma" onclick="alternarIdioma()">IDIOMA: PORTUGUÊS</button>
+        <button class="botao-menu" data-i18n="deleteProgress" style="background-color: #a00;" onclick="deletarProgressoManual()">DELETAR PROGRESSO</button>
+        <button class="botao-menu" data-i18n="back" style="background-color: #444; margin-top: 20px;" onclick="fecharConfiguracoesDaPausa()">VOLTAR</button>
     </div>
     <div id="area-jogo">
         <div id="telefone_p">
-            <img src="telefone.png" id="sprite-telefone" class="tel-camada" onclick="cliqueNoTelefone()" alt="Telefone">
-            <img src="telefone_alt.png" id="sprite-telefone-alt" class="tel-camada" onclick="cliqueNoTelefone()" alt="Telefone Alternativo">
+            <img src="telefone.png" id="sprite-telefone" class="tel-camada" onclick="cliqueNoTelefone()" alt="Telefone" data-i18n-alt="phone">
+            <img src="telefone_alt.png" id="sprite-telefone-alt" class="tel-camada" onclick="cliqueNoTelefone()" alt="Telefone Alternativo" data-i18n-alt="alternatePhone">
         </div>
         
-        <img src="friend.png" id="friend-asset" class="friend-catcher" alt="Friend">
-        <img src="lancer.gif" id="lancer-asset" class="lancer-bike" onclick="cliqueNoLancerSplat()" alt="Lancer">
-        <img src="pink.png" id="pink-asset" class="pink-mewmew" alt="Pink">
+        <img src="friend.png" id="friend-asset" class="friend-catcher" alt="Friend" data-i18n-alt="friend">
+        <img src="lancer.gif" id="lancer-asset" class="lancer-bike" onclick="cliqueNoLancerSplat()" alt="Lancer" data-i18n-alt="lancer">
+        <img src="pink.png" id="pink-asset" class="pink-mewmew" alt="Pink" data-i18n-alt="pink">
         <img src="gaster.png" id="gaster-asset" class="gaster-body" alt="Gaster">
         
         <div id="area-botoes-config-jogo">
-            <button class="btn-game-control" style="border-color: cyan;" onclick="abrirMenuDePausaOpa()">MENU RÁPIDO</button>
+            <button class="btn-game-control" data-i18n="quickMenu" style="border-color: cyan;" onclick="abrirMenuDePausaOpa()">MENU RÁPIDO</button>
         </div>
         <div class="container">
             <div id="fala-spamton">OLÁ, [Cliente Valioso]!</div>
-            <small style="color: #bbb; text-shadow: 1px 1px black; font-size: 14px;">(CLIQUE EM MIM PARA GERAR [Kromer]!)</small>
-            <img id="sprite-spamton" src="spamton_sprite_frame1.png" alt="Sprite do Spamton">
+            <small id="instrucao-clique" data-i18n="clickForKromer" style="color: #bbb; text-shadow: 1px 1px black; font-size: 14px;">(CLIQUE EM MIM PARA GERAR [Kromer]!)</small>
+            <img id="sprite-spamton" src="spamton_sprite_frame1.png" alt="Sprite do Spamton" data-i18n-alt="spamtonSprite">
             <div id="kromer">Kromer: 0</div>
             <div id="painel-melhorias">Melhorias: (+0 kromer por segundo), (+1 kromer por clique)</div>
             <div class="loja-container">
@@ -448,10 +453,179 @@
         const falasGritoCheat = ["NÃO SE TRAPACEIA NOS NEGÓCIOS!!!", "VOCÊ FOI... [Bloqueado] PARA SEMPRE!!!", "HA_HA_HA_HA_HA!!! PEGO NO FLAGRA!!!"];
         const falasTelaMorte = ["VOCÊ MORREU!<br>[TRAPACEIRO DEFINITIVO]!", "SISTEMA REINICIADO!<br>[PUNIÇÃO DO BIG SHOT]!", "FIM DE JOGO!<br>[CONTRATO RESCINDIDO À FORÇA]!"];
         const spriteFrames = ["spamton_sprite_frame1.png", "spamton_sprite_frame2.png"];
+        const idiomaIngles = {
+            ui: {
+                gameTitle: "Mini Kromer Shop<br>[BIG SHOT EDITION!]",
+                pageTitle: "Mini Kromer Shop [BIG SHOT EDITION!]",
+                play: "PLAY",
+                settings: "SETTINGS",
+                credits: "CREDITS",
+                howToPlay: "HOW TO PLAY",
+                settingsTitle: "SETTINGS",
+                deleteProgress: "DELETE PROGRESS",
+                back: "BACK",
+                quickMenu: "QUICK MENU",
+                resume: "RESUME",
+                mainMenu: "MAIN MENU",
+                clickForKromer: "(CLICK ME TO MAKE [Kromer]!)",
+                phone: "Phone",
+                alternatePhone: "Alternate Phone",
+                spamtonSprite: "Spamton sprite",
+                friend: "Friend",
+                lancer: "Lancer",
+                pink: "Pink",
+                musicOn: "MUSIC: ON",
+                musicOff: "MUSIC: OFF",
+                laughsOn: "LAUGHS: ON",
+                laughsOff: "LAUGHS: OFF",
+                languagePortuguese: "LANGUAGE: PORTUGUESE",
+                languageEnglish: "LANGUAGE: ENGLISH",
+                kromer: "Kromer",
+                upgrades: "Upgrades: (+{kps} Kromer per second), (+{kpc} Kromer per click)",
+                increaseKps: "[INCREASES KPS]<br>BUY {item} ({cost} Kromer)",
+                increaseKpc: "[INCREASES KPC]<br>BUY {item} ({cost} Kromer)",
+                hireFriend: "HIRE [PIPIS CATCHER] (LEVEL {level}) ({cost} KROMER)",
+                hireLancer: "HIRE [JACK OF SPADES CARD] (LEVEL {level}) ({cost} KROMER)",
+                hirePink: "HIRE [MEW MEW FIGURINE] (LEVEL {level}) ({cost} KROMER)",
+                hireGaster: "HIRE [ROYAL SCIENTIST] (LEVEL {level}) ({cost} KROMER)",
+                gotKps: "(GOT +{amount} KPS)!",
+                gotKpc: "(GOT +{amount} KPC)!",
+                welcome: "HELLO, [Valued Customer]!",
+                copyrightNotice: "YOU DIED!<br>[ULTIMATE CHEATER]!"
+            },
+            opening: [
+                "HELLO, [VALUED VISITOR]! YOU'RE JUST IN TIME!",
+                "COME ON IN! THE [SHOP] IS OPEN!",
+                "A [BIG SHOT] LIKE YOU WAS EXPECTED!",
+                "WELCOME TO YOUR NEXT [BAD DECISION]!",
+                "YOU LOOK LIKE YOU NEED MORE [KROMER]!",
+                "STEP RIGHT UP, [CUSTOMER]! BUSINESS IS [BOOMING]!",
+                "YOUR JOURNEY TO [QUESTIONABLE WEALTH] STARTS HERE!",
+                "HELLO! THE [PLAY] BUTTON WON'T CLICK ITSELF!",
+                "COME ON IN! NO NEED TO READ THE [FINE PRINT]!",
+                "TODAY'S A GREAT DAY TO MAKE A [DEAL]!",
+                "[FORTUNE] IS JUST A CLICK AWAY! MORE OR LESS!",
+                "WELCOME! IS YOUR WALLET READY TO [SUFFER]?",
+                "YOU MADE IT! NOW ALL YOU NEED IS [MONEY]!",
+                "COME SEE THE [SHOP] WITH THE MOST QUESTIONABLE DEALS!",
+                "HELLO, [CUSTOMER]! I KNEW YOU'D SHOW UP!",
+                "GET READY TO BE A [BIG SHOT] IN RECORD... SOME AMOUNT OF TIME!",
+                "WE'VE GOT [KROMER], [PIPIS], AND ZERO GUARANTEES!",
+                "CLEAN RECORD, EMPTY POCKETS? YOU'RE IN THE RIGHT PLACE!",
+                "DON'T BE SHY! THE [BUTTONS] DON'T BITE!",
+                "YOUR FUTURE IS BRIGHT! AND SO IS MY [COMMISSION]!",
+                "THE [SHOP] OPENED JUST FOR YOU! (NOT REALLY, BUT COME IN!)",
+                "HELLO! YOU LOOK READY FOR A [ONE-TIME OPPORTUNITY]!",
+                "BE A [PROFESSIONAL]: CLICK FIRST, ASK QUESTIONS LATER!",
+                "WELCOME TO THE PLACE WHERE EVERY CLICK MAKES [KROMER]!",
+                "YOU'RE ONE [PLAY] BUTTON AWAY FROM A GREAT [DEAL]!"
+            ],
+            spamton: [
+                "HEHEHEHE!! WANT MORE [Kromer]?!",
+                "[Lifetime deal]?? TODAY ONLY FOR AN [Unbelievable price]!!!",
+                "NO MONEY? HOW SAD! [Buy] SOMETHING!",
+                "I'VE GOT WHAT YOU NEED! [BUSINESS IS BOOMING]!!!",
+                "BECOME A [Big Shot]! BUY NOW!",
+                "KRIS? ARE YOU THERE? THEN BUY MORE HAHAHAHA!!!",
+                "Mike...",
+                "KRIS! DON'T LISTEN TO WHAT THEY SAY ON [TV]!",
+                "BUY!! NO [Kromer]? BUY MORE!",
+                "HELLO, [Valued Customer]!"
+            ],
+            success: [
+                "THANK YOU, [SATISFIED CUSTOMER]!!",
+                "A [Spectacular] JOB!! DEAL DONE!",
+                "A PLEASURE DOING [BUSINESS] WITH YOU!!",
+                "THIS WILL MAKE YOUR [Kromer] BOIL!!!"
+            ],
+            insufficient: [
+                "NOT ENOUGH [MONEY]! COME BACK WHEN YOU'RE A [BIG SHOT]!",
+                "NO [Kromer]? HOW RE_AL SAD HAHAHA!",
+                "COME BACK WITH POCKETS FULL OF [Fast Cash]!"
+            ],
+            cheatWarning: [
+                "YOU THINK YOU CAN CHEAT A [Big Shot]?!",
+                "TOO MANY CLI_CKS!! ARE THESE [SILLY STRINGS]?!",
+                "SUSPICIOUS CONNECTION!! WHERE'S YOUR [Fair Play]?!"
+            ],
+            cheatShout: [
+                "NO CHEATING IN BUSINESS!!!",
+                "YOU'VE BEEN... [Blocked] FOREVER!!!",
+                "HA_HA_HA_HA_HA!!! CAUGHT IN THE ACT!!!"
+            ],
+            death: [
+                "YOU DIED!<br>[ULTIMATE CHEATER]!",
+                "SYSTEM REBOOTED!<br>[BIG SHOT'S PUNISHMENT]!",
+                "GAME OVER!<br>[CONTRACT TERMINATED BY FORCE]!"
+            ],
+            kpsItems: [
+                "BIG SHOT [Specil]",
+                "PET PIPIS",
+                "[Hyperlink Blocked]",
+                "SCISSORS FOR [Silly Strings]",
+                "STATUE OF [PURE KROMER]"
+            ],
+            kpcItems: [
+                "CLICK FOR A [Big Deal]",
+                "MOUSE WITHOUT [Specifications]",
+                "CONTAINER FOR [Heart-Shaped Object]!",
+                "SECRET TO [Sales]",
+                "KEY TO THE [Dark Basement]"
+            ],
+            howToPlay: `*KROMER*
+Kromer is the currency you use to progress. Click Spamton to make 1 Kromer. Don't worry, earning Kromer gets easier later.
+*THE SHOP*
+The shop increases how much Kromer you earn. The top button increases KPS (Kromer per second), and the bottom button increases KPC (Kromer per click). A third blue button occasionally appears and offers one of four power-ups.
+*POWER-UPS*
+Power-ups are other Darkners you can hire and level up. First, here's a mechanic they need to work well.
+*PIPIS*
+Clicking Spamton makes little $ appear. They started as decoration during development, but became an important part of power-up progression. Each $ has a small chance to be replaced by a Pipis.
+*IMAGE_FRIEND*
+Friend is important for the other power-ups: whenever a Pipis appears, Friend catches it and gives you Kromer. Leveling up Friend slightly increases the chance that a $ becomes a Pipis.
+*LANCER*
+Lancer is a great companion if you get lonely. He brought his motorbike to improve air pollution and makes a funny sound when clicked. He also occasionally throws Pipis for Friend to catch. Higher levels throw more Pipis at once.
+*GASTER*
+Also known as the Mystery Man, Gaster occasionally turns the screen monochrome while throwing Pipis for Friend. Higher levels throw more Pipis.
+*PINK*
+Or Mew Mew, if you only play Undertale. Pink is useful if you've invested in KPC and want to leave the game running AFK: she acts like your mouse and generates Kromer every second based on KPC instead of KPS. Higher levels generate more $ and increase the chance of throwing Pipis.
+*MENUS AND SETTINGS*
+You thought I wouldn't explain these? Of course I would!
+*MAIN MENU*
+Where it all begins. There are a few buttons here that might help :)
+*"PLAY" BUTTON*
+Plays the game.
+*"SETTINGS" BUTTON*
+Turn music and your hired Darkners' laughs on or off, change the language, or reset your progress. (We've reset enough in Undertale already.)
+*"CREDITS" BUTTON*
+Shows the names of the people who made this game work. (Don't tell anyone, but I copied and stitched together code from a bunch of websites.)
+*"HOW TO PLAY" BUTTON*
+Brings you to this guide!
+*QUICK MENU*
+A shorter version of the main menu inside the game, so you can open it while watching the chaos!
+*LANGUAGE SETTING*
+Choose English or Portuguese in Settings. Your choice is saved on this device and changes the game's menus, dialogue, shop items, and this guide.
+*EXTRAS*
+Some simple features that don't deserve a bigger section of their own (what a shame).
+*PHONE*
+A simple phone that sends you somewhere. Click it... or maybe don't.
+*DIALOGUE*
+Text above Spamton that tells you what's happening in the game. Sometimes it's just Spamton talking to you. Who knows?
+*ANTI-CHEAT*
+You'll find out eventually. It stops you from being a filthy cheater (and messes with the phone connection too). Things took a weird route, huh?
+*THE END*
+That's all for now. Go play and become a [[BIG SHOT]]!!1`
+        };
+        let idiomaAtual = localStorage.getItem("cfg_idioma") === "en" ? "en" : "pt";
+        function textoIdioma(chave, textoPortugues) {
+            return idiomaAtual === "en" ? (idiomaIngles.ui[chave] || textoPortugues) : textoPortugues;
+        }
+        function listaIdioma(chave, listaPortugues) {
+            return idiomaAtual === "en" ? (idiomaIngles[chave] || listaPortugues) : listaPortugues;
+        }
 
         const kromerLabel = document.getElementById("kromer");
         const textoAbertura = document.getElementById("texto-abertura");
-        textoAbertura.textContent = falasAbertura[Math.floor(Math.random() * falasAbertura.length)];
+        textoAbertura.textContent = listaIdioma("opening", falasAbertura)[Math.floor(Math.random() * falasAbertura.length)];
         const preferenciaMovimentoReduzido = window.matchMedia("(prefers-reduced-motion: reduce)");
         const periodoInclinacao = Math.random() * 1800 + 1800;
         const periodoEscala = Math.random() * 2600 + 2200;
@@ -504,7 +678,7 @@
         let musicaHabilitada = true;
         let nivelPowerUpPipis = 0, chancePipisBase = 0.1997, custoPowerUp = 0, nivelLancer = 0, nivelPink = 0, nivelGaster = 0, tipoSorteadoPowerUp = "";
         let weirdRouteLevel = 0;
-        let custoItemKPS = 0, custoItemKPC = 0;
+        let custoItemKPS = 0, custoItemKPC = 0, indiceItemKPS = 0, indiceItemKPC = 0;
     </script>
     <script>
         function abrirSubTela(id) { document.getElementById(id).style.display = "flex"; }
@@ -547,11 +721,26 @@
 
         function atualizarRotulosConfiguracao() {
             document.querySelectorAll(".cfg-risadas").forEach(function(botao) {
-                botao.textContent = risadasMutadas ? "RISADAS: OFF" : "RISADAS: ON";
+                botao.textContent = risadasMutadas
+                    ? textoIdioma("laughsOff", "RISADAS: OFF")
+                    : textoIdioma("laughsOn", "RISADAS: ON");
             });
             document.querySelectorAll(".cfg-musica").forEach(function(botao) {
-                botao.textContent = musicaHabilitada ? "MÚSICA: ON" : "MÚSICA: OFF";
+                botao.textContent = musicaHabilitada
+                    ? textoIdioma("musicOn", "MÚSICA: ON")
+                    : textoIdioma("musicOff", "MÚSICA: OFF");
             });
+            document.querySelectorAll(".cfg-idioma").forEach(function(botao) {
+                botao.textContent = idiomaAtual === "en"
+                    ? textoIdioma("languageEnglish", "IDIOMA: INGLÊS")
+                    : textoIdioma("languagePortuguese", "IDIOMA: PORTUGUÊS");
+            });
+        }
+
+        function alternarIdioma() {
+            idiomaAtual = idiomaAtual === "en" ? "pt" : "en";
+            localStorage.setItem("cfg_idioma", idiomaAtual);
+            aplicarIdioma();
         }
 
         function alternarMutarRisadas() {
@@ -574,6 +763,43 @@
         }
         atualizarRotulosConfiguracao();
 
+        function aplicarIdioma() {
+            document.documentElement.lang = idiomaAtual === "en" ? "en" : "pt-BR";
+            document.title = textoIdioma("pageTitle", "Mini Lojinha de Kromer [BIG SHOT EDITION!]");
+
+            document.querySelectorAll("[data-i18n]").forEach(function(elemento) {
+                if (!elemento.dataset.textoPortugues) elemento.dataset.textoPortugues = elemento.textContent;
+                elemento.textContent = idiomaAtual === "en"
+                    ? textoIdioma(elemento.dataset.i18n, elemento.dataset.textoPortugues)
+                    : elemento.dataset.textoPortugues;
+            });
+            document.querySelectorAll("[data-i18n-html]").forEach(function(elemento) {
+                if (!elemento.dataset.htmlPortugues) elemento.dataset.htmlPortugues = elemento.innerHTML;
+                elemento.innerHTML = idiomaAtual === "en"
+                    ? textoIdioma(elemento.dataset.i18nHtml, elemento.dataset.htmlPortugues)
+                    : elemento.dataset.htmlPortugues;
+            });
+            document.querySelectorAll("[data-i18n-alt]").forEach(function(elemento) {
+                if (!elemento.dataset.altPortugues) elemento.dataset.altPortugues = elemento.alt;
+                elemento.alt = idiomaAtual === "en"
+                    ? textoIdioma(elemento.dataset.i18nAlt, elemento.dataset.altPortugues)
+                    : elemento.dataset.altPortugues;
+            });
+
+            atualizarRotulosConfiguracao();
+            textoAbertura.textContent = listaIdioma("opening", falasAbertura)[Math.floor(Math.random() * falasAbertura.length)];
+            document.getElementById("instrucao-clique").textContent = textoIdioma("clickForKromer", "(CLIQUE EM MIM PARA GERAR [Kromer]!)");
+            atualizarRotuloKromer();
+            atualizarPainelTexto();
+            renderizarBotoesLoja();
+            if (!cheatDetectado) {
+                falaSpamtonDiv.textContent = textoIdioma("welcome", "OLÁ, [Cliente Valioso]!");
+                falaSpamtonDiv.style.color = "yellow";
+                if (botaoPowerUp.style.display !== "none") renderizarBotaoPowerUp();
+            }
+            textoMorteElement.innerHTML = textoIdioma("copyrightNotice", "VOCÊ MORREU!<br>[TRAPACEIRO DEFINITIVO]!");
+            if (typeof renderizarTextoComoJogar === "function") renderizarTextoComoJogar();
+        }
         function cliqueNoTelefone() {
             if (telaDeMorteVisivel === true) {
                 if (Math.random() <= 0.10) { window.open(CONFIG_LINKS.tv, "_blank"); }
@@ -589,6 +815,7 @@
             let backupWeirdRoute = weirdRouteLevel;
             
             localStorage.clear();
+            localStorage.setItem("cfg_idioma", idiomaAtual);
             
             localStorage.setItem("save_wrd", backupWeirdRoute);
             localStorage.setItem("cfg_save_risadas", "false");
@@ -602,14 +829,14 @@
             document.getElementById("tela-pausa").style.display = "none";
             spriteSpamtonImg.src = "spamton_sprite_frame3.png";
             filterTinta.style.backgroundColor = "rgba(255, 0, 0, 1)";
-            falaSpamtonDiv.textContent = falasAvisoCheat[Math.floor(Math.random() * falasAvisoCheat.length)];
+            falaSpamtonDiv.textContent = listaIdioma("cheatWarning", falasAvisoCheat)[Math.floor(Math.random() * falasAvisoCheat.length)];
             falaSpamtonDiv.style.color = "red";
             botaoKPS.style.pointerEvents = "none";
             botaoKPC.style.pointerEvents = "none";
             botaoPowerUp.style.pointerEvents = "none";
             
             setTimeout(function() {
-                falaSpamtonDiv.textContent = falasGritoCheat[Math.floor(Math.random() * falasGritoCheat.length)]; 
+                falaSpamtonDiv.textContent = listaIdioma("cheatShout", falasGritoCheat)[Math.floor(Math.random() * falasGritoCheat.length)];
                 setTimeout(function() {
                     spriteSpamtonImg.className = "spamton-ataque-frenetico";
                     let loopRapido = setInterval(function() { 
@@ -632,7 +859,7 @@
                     
                     setTimeout(function() {
                         clearInterval(loopRapido);
-                        textoMorteElement.innerHTML = falasTelaMorte[Math.floor(Math.random() * falasTelaMorte.length)];
+                        textoMorteElement.innerHTML = listaIdioma("death", falasTelaMorte)[Math.floor(Math.random() * falasTelaMorte.length)];
                         
                         telaMorte.style.display = "flex";
                         telaDeMorteVisivel = true;
@@ -746,7 +973,7 @@
             if (document.getElementById("area-jogo").style.display !== "block") return;
             pinkSaltoEfeito();
             kromer += (kromerPorClique * nivelPink);
-            kromerLabel.textContent = `Kromer: ${Math.floor(kromer)}`;
+            atualizarRotuloKromer();
             let chancePipisPinkMew = chancePipisBase * (10 + (nivelPink - 1));
             for (let i = 0; i < nivelPink; i++) {
                 setTimeout(function() {
@@ -902,7 +1129,7 @@
                         }
                         
                         exibirFeedbackKromerFriend(vS, pElem.ehAlt === true, pImp);
-                        kromerLabel.textContent = `Kromer: ${Math.floor(kromer)}`;
+                        atualizarRotuloKromer();
                         
                         dispararSomFriend();
                         salvarDadosNoNavegador();
@@ -946,7 +1173,7 @@
                 if (nivelLancer > 0) lancerAsset.style.display = "block";
                 if (nivelPink > 0) pinkAsset.style.display = "block";
                 if (nivelGaster > 0) gasterAsset.style.display = "block";
-                kromerLabel.textContent = `Kromer: ${Math.floor(kromer)}`;
+                atualizarRotuloKromer();
             }
             if (localStorage.getItem("cfg_save_risadas") !== null) {
                 risadasMutadas = localStorage.getItem("cfg_save_risadas") === "true";
@@ -959,7 +1186,15 @@
         }
 
         function animarSprite() { if (!cheatDetectado) { frameAtualIndex = (frameAtualIndex + 1) % spriteFrames.length; spriteSpamtonImg.src = spriteFrames[frameAtualIndex]; } }
-        function atualizarPainelTexto() { painelMelhorias.textContent = `Melhorias: (+${kromerPorSegundo} kromer por segundo), (+${kromerPorClique} kromer por clique)`; }
+        function atualizarRotuloKromer() {
+            kromerLabel.textContent = `${textoIdioma("kromer", "Kromer")}: ${Math.floor(kromer)}`;
+        }
+        function atualizarPainelTexto() {
+            painelMelhorias.textContent = textoIdioma(
+                "upgrades",
+                `Melhorias: (+${kromerPorSegundo} kromer por segundo), (+${kromerPorClique} kromer por clique)`
+            ).replace("{kps}", kromerPorSegundo).replace("{kpc}", kromerPorClique);
+        }
         function alternarCoresBotoes() { if (!cheatDetectado) { let c = botaoKPS.classList.contains("cor-rosa"); botaoKPS.className = c ? "botao-loja cor-amarela" : "botao-loja cor-rosa" ; botaoKPC.className = c ? "botao-loja cor-rosa" : "botao-loja cor-amarela" ; } }
         
         function dispararAparicaoBotaoAzul() {
@@ -970,13 +1205,24 @@
             if (window.crypto && window.crypto.getRandomValues) { window.crypto.getRandomValues(buffer); tS = pool[buffer % pool.length]; }
             else { tS = pool[Math.floor(Math.random() * pool.length)]; }
             window.tipoSorteadoPowerUpGlobal = tS;
-            switch (tS) {
-                case "friend": botaoPowerUp.innerHTML = `CONTRATAR [PEGADOR DE PROTEINA] (NÍVEL ${nivelPowerUpPipis + 1}) (${custoPowerUp} KROMER)`; break;
-                case "lancer": botaoPowerUp.innerHTML = `CONTRATAR [CARTA VALETE DE ESPADAS] (NÍVEL ${nivelLancer + 1}) (${custoPowerUp} KROMER)`; break;
-                case "pink": botaoPowerUp.innerHTML = `CONTRATAR [ESTATUETA MEW MEW] (NÍVEL ${nivelPink + 1}) (${custoPowerUp} KROMER)`; break;
-                case "gaster": botaoPowerUp.innerHTML = `CONTRATAR [CIENTISTA REAL] (NÍVEL ${nivelGaster + 1}) (${custoPowerUp} KROMER)`; break;
-            }
+            renderizarBotaoPowerUp();
             botaoPowerUp.style.display = "block";
+        }
+
+        function renderizarBotaoPowerUp() {
+            const tS = window.tipoSorteadoPowerUpGlobal || tipoSorteadoPowerUp;
+            const modelos = {
+                friend: ["hireFriend", "CONTRATAR [PEGADOR DE PROTEINA] (NÍVEL {level}) ({cost} KROMER)", nivelPowerUpPipis + 1],
+                lancer: ["hireLancer", "CONTRATAR [CARTA VALETE DE ESPADAS] (NÍVEL {level}) ({cost} KROMER)", nivelLancer + 1],
+                pink: ["hirePink", "CONTRATAR [ESTATUETA MEW MEW] (NÍVEL {level}) ({cost} KROMER)", nivelPink + 1],
+                gaster: ["hireGaster", "CONTRATAR [CIENTISTA REAL] (NÍVEL {level}) ({cost} KROMER)", nivelGaster + 1]
+            };
+            const modelo = modelos[tS];
+            if (modelo) {
+                botaoPowerUp.innerHTML = textoIdioma(modelo[0], modelo[1])
+                    .replace("{level}", modelo[2])
+                    .replace("{cost}", custoPowerUp);
+            }
         }
 
         function comprarPowerUp() {
@@ -989,12 +1235,12 @@
                 else if (tS === "pink") { nivelPink++; pinkAsset.style.display = "block"; }
                 else if (tS === "gaster") { nivelGaster++; gasterAsset.style.display = "block"; }
                 botaoPowerUp.style.display = "none";
-                falaSpamtonDiv.textContent = falasSucessoComprar[Math.floor(Math.random() * falasSucessoComprar.length)];
+                falaSpamtonDiv.textContent = listaIdioma("success", falasSucessoComprar)[Math.floor(Math.random() * falasSucessoComprar.length)];
                 falaSpamtonDiv.style.color = "lightgreen";
-                kromerLabel.textContent = `Kromer: ${Math.floor(kromer)}`;
+                atualizarRotuloKromer();
                 atualizarPainelTexto(); salvarDadosNoNavegador();
             } else {
-                falaSpamtonDiv.textContent = falasFaltaDinheiro[Math.floor(Math.random() * falasFaltaDinheiro.length)];
+                falaSpamtonDiv.textContent = listaIdioma("insufficient", falasFaltaDinheiro)[Math.floor(Math.random() * falasFaltaDinheiro.length)];
                 falaSpamtonDiv.style.color = "red";
             }
             botaoPowerUp.blur();
@@ -1005,12 +1251,12 @@
                 if (musicaHabilitada && !musicaNativa.paused) { musicaNativa.volume = 0.3; musicaNativa.play().catch(function() {}); }
                 kromer -= custoItemKPS;
                 let g = Math.floor(Math.random() * 5) + 1; kromerPorSegundo += g;
-                falaSpamtonDiv.textContent = `${falasSucessoComprar[Math.floor(Math.random() * falasSucessoComprar.length)]} (GANHOU +${g} KPS)!`;
+                falaSpamtonDiv.textContent = `${listaIdioma("success", falasSucessoComprar)[Math.floor(Math.random() * falasSucessoComprar.length)]} ${textoIdioma("gotKps", "(GANHOU +{amount} KPS)!").replace("{amount}", g)}`;
                 falaSpamtonDiv.style.color = "lightgreen";
-                kromerLabel.textContent = `Kromer: ${Math.floor(kromer)}`;
+                atualizarRotuloKromer();
                 atualizarPainelTexto(); gerarItemKPS(); salvarDadosNoNavegador();
             } else {
-                falaSpamtonDiv.textContent = falasFaltaDinheiro[Math.floor(Math.random() * falasFaltaDinheiro.length)];
+                falaSpamtonDiv.textContent = listaIdioma("insufficient", falasFaltaDinheiro)[Math.floor(Math.random() * falasFaltaDinheiro.length)];
                 falaSpamtonDiv.style.color = "red";
             }
             botaoKPS.blur();
@@ -1022,12 +1268,12 @@
                 if (musicaHabilitada && !musicaNativa.paused) { musicaNativa.volume = 0.3; musicaNativa.play().catch(function() {}); }
                 kromer -= custoItemKPC;
                 let g = Math.floor(Math.random() * 5) + 1; kromerPorClique += g;
-                falaSpamtonDiv.textContent = `${falasSucessoComprar[Math.floor(Math.random() * falasSucessoComprar.length)]} (GANHOU +${g} KPC)!`;
+                falaSpamtonDiv.textContent = `${listaIdioma("success", falasSucessoComprar)[Math.floor(Math.random() * falasSucessoComprar.length)]} ${textoIdioma("gotKpc", "(GANHOU +{amount} KPC)!").replace("{amount}", g)}`;
                 falaSpamtonDiv.style.color = "lightgreen";
-                kromerLabel.textContent = `Kromer: ${Math.floor(kromer)}`;
+                atualizarRotuloKromer();
                 atualizarPainelTexto(); gerarItemKPC(); salvarDadosNoNavegador();
             } else {
-                falaSpamtonDiv.textContent = falasFaltaDinheiro[Math.floor(Math.random() * falasFaltaDinheiro.length)];
+                falaSpamtonDiv.textContent = listaIdioma("insufficient", falasFaltaDinheiro)[Math.floor(Math.random() * falasFaltaDinheiro.length)];
                 falaSpamtonDiv.style.color = "red";
             }
             botaoKPC.blur();
@@ -1039,19 +1285,37 @@
             if (cliquesNesseSegundo > 15) { executarPunicaoCheat(); return; }
             dispararRisadaLocal(false); criarParticulaFisica();
             kromer += kromerPorClique;
-            kromerLabel.textContent = `Kromer: ${Math.floor(kromer)}`;
+            atualizarRotuloKromer();
             salvarDadosNoNavegador();
         }
 
-        function atualizarKromer() { if (!cheatDetectado) { kromer += kromerPorSegundo; kromerLabel.textContent = `Kromer: ${Math.floor(kromer)}`; produzirPassivoPinkMewMew(); salvarDadosNoNavegador(); } }
-        function gerarItemKPS() { custoItemKPS = (Math.floor(Math.random() * 10) + 1) * (kromerPorSegundo === 0 ? 1 : kromerPorSegundo); botaoKPS.innerHTML = `[AUMENTA KPS]<br>COMPRAR ${itensKPS[Math.floor(Math.random() * itensKPS.length)].nome} (${custoItemKPS} Kromer)`; }
-        function gerarItemKPC() { custoItemKPC = (Math.floor(Math.random() * 10) + 1) * kromerPorClique; botaoKPC.innerHTML = `[AUMENTA KPC]<br>COMPRAR ${itensKPC[Math.floor(Math.random() * itensKPC.length)].nome} (${custoItemKPC} Kromer)`; }
-        function deletarProgressoManual() { localStorage.clear(); location.reload(); }
-        function atualizarFalaSpamton() { if (!cheatDetectado) { falaSpamtonDiv.textContent = falasSpamton[Math.floor(Math.random() * falasSpamton.length)]; falaSpamtonDiv.style.color = "yellow"; } }
+        function atualizarKromer() { if (!cheatDetectado) { kromer += kromerPorSegundo; atualizarRotuloKromer(); produzirPassivoPinkMewMew(); salvarDadosNoNavegador(); } }
+        function renderizarBotoesLoja() {
+            const nomeItemKPS = idiomaAtual === "en" ? idiomaIngles.kpsItems[indiceItemKPS] : itensKPS[indiceItemKPS].nome;
+            const nomeItemKPC = idiomaAtual === "en" ? idiomaIngles.kpcItems[indiceItemKPC] : itensKPC[indiceItemKPC].nome;
+            botaoKPS.innerHTML = textoIdioma("increaseKps", "[AUMENTA KPS]<br>COMPRAR {item} ({cost} Kromer)").replace("{item}", nomeItemKPS).replace("{cost}", custoItemKPS);
+            botaoKPC.innerHTML = textoIdioma("increaseKpc", "[AUMENTA KPC]<br>COMPRAR {item} ({cost} Kromer)").replace("{item}", nomeItemKPC).replace("{cost}", custoItemKPC);
+        }
+        function gerarItemKPS() {
+            custoItemKPS = (Math.floor(Math.random() * 10) + 1) * (kromerPorSegundo === 0 ? 1 : kromerPorSegundo);
+            indiceItemKPS = Math.floor(Math.random() * itensKPS.length);
+            renderizarBotoesLoja();
+        }
+        function gerarItemKPC() {
+            custoItemKPC = (Math.floor(Math.random() * 10) + 1) * kromerPorClique;
+            indiceItemKPC = Math.floor(Math.random() * itensKPC.length);
+            renderizarBotoesLoja();
+        }
+        function deletarProgressoManual() {
+            localStorage.clear();
+            localStorage.setItem("cfg_idioma", idiomaAtual);
+            location.reload();
+        }
+        function atualizarFalaSpamton() { if (!cheatDetectado) { falaSpamtonDiv.textContent = listaIdioma("spamton", falasSpamton)[Math.floor(Math.random() * falasSpamton.length)]; falaSpamtonDiv.style.color = "yellow"; } }
         
         function rolarFalaInicialComPeso() {
             if (!cheatDetectado) {
-                if (Math.random() <= 0.70) { falaSpamtonDiv.textContent = "OLÁ, [Cliente Valioso]!"; falaSpamtonDiv.style.color = "yellow"; }
+                if (Math.random() <= 0.70) { falaSpamtonDiv.textContent = textoIdioma("welcome", "OLÁ, [Cliente Valioso]!"); falaSpamtonDiv.style.color = "yellow"; }
                 else { atualizarFalaSpamton(); }
             }
         }
@@ -1061,7 +1325,7 @@
         botaoPowerUp.addEventListener("click", comprarPowerUp);
         spriteSpamtonImg.addEventListener("click", cliqueManual);
         
-        document.addEventListener("DOMContentLoaded", function() { carregarDadosDoNavegador(); gerarItemKPS(); gerarItemKPC(); rolarFalaInicialComPeso(); atualizarPainelTexto(); });
+        document.addEventListener("DOMContentLoaded", function() { aplicarIdioma(); carregarDadosDoNavegador(); gerarItemKPS(); gerarItemKPC(); rolarFalaInicialComPeso(); atualizarPainelTexto(); });
         document.addEventListener("visibilitychange", function() { if (document.hidden) cliquesNesseSegundo = 0; });
         
         setInterval(atualizarKromer, 1000);
@@ -1080,7 +1344,15 @@
             
             const textoComoJogarCru = "*KROMER*\nKromer é a moeda que você usará para progredir nesse jogo, para começar, clique no Spamton para gerar 1 kromer, não se preocupe, conseguir kromer será mais fácil depois\n*LOJA*\nA loja é o lugar onde sua produção de kromer aumentará ao longo do tempo, inicialmente ela tem dois botões, o de cima aumenta KPS (kromer por segundo), o de baixo aumenta KPC (kromer por clique), ocasionalmente um terceiro botão azul vai aparecer e vai conceder um dos 4 power-ups\n*POWER-UPS*\nPower-ups são outros darkners que você pode contratar e evoluir, mas antes de explicar como cada um deles funciona eu vou explicar algo necessário para eles funcionarem\n*PIPIS*\nQuando você gera kromer ao clicar no Spamton, alguns $ aparecem, eles começaram sendo uma decoração durante o desenvolvimento do jogo mais viraram uma função excencial para progredir com power-ups, a cada $ que aparece, há uma pequena chance do $ ser substituído por um pipis, no começo eles parecem um easter egg legal mas em breve terão importância\n*IMAGE_FRIEND*\nEsse darkner é o mais importante para os outros power-ups funcionarem bem, quando um pipis aparece na tela, o FRIEND irá imediatamente pegá-lo para conceder uma quantia de kromer em troca, conforme o FRIEND evolui, a chance de um pipis aparecer no lugar de um $ aumenta levemente, isso ajudará depois\n*LANCER*\nLancer é um ótimo companheiro caso você se sinta sozinho nessa jornada, ele trouxe sua bicicleta motorizada para melhorar a poluição do ambiente e faz um som engraçado quando você clica nele, mas ele não está lá só pra brincar, ocasionalmente ele joga alguns pipis para o FRIEND pegar (eu não disse que ele seria importante?), conforme Lancer evolui, ele joga mais pipis de uma vez (legal né?)\n*GASTER*\nTambém conhecido como Homem Misterioso, Gaster ocasionalmente deixará sua tela monocromática, enquanto joga alguns pipis para o FRIEND pegar, conforme o Gaster evolui, ele joga mais pipis também\n*PINK*\nOu Mew Mew pra quem só joga Undertale, ela é um passo importante para progressão, suponhamos que você gastou muito kromer em KPC, mas quer deixar o jogo rodando afk, não se preocupe! Pink age como o seu mouse, e gera kromer a cada segundo, mas ao invés de gerar a quantia baseada em KPS, ela gera baseada em KPC, ou seja, ela clica por você, conforme a Pink evolui, ela gera mais $ e as chances de pipis gerados por ela aumenta\n*MENUS E CONFIGURAÇÕES*\nVocê acha que eu não ia citar isso? claro que não! eu vou explicar agora!\n*MENU PRINCIPAL*\nO lugar onde tudo começa, aqui tem alguns botões que podem ou não ajudar :)\n*BOTÃO \"JOGAR\"*\nFaz você jogar\n*BOTÃO \"CONFIGURAÇÕES\"*\nAqui você pode ligar ou desligar a música e as risadas dos darkners que você contratou, também tem como resetar o progresso aqui mas a gente já resetou demais em Undertale\n*BOTÃO \"CRÉDITOS\"*\nAqui temos os nomes dos criadores desse jogo, que se dedicaram muito para fazer tudo funcionar (não conta pra ninguém mas eu copiei muito código de muitos sites e remendei tudo junto)\n*BOTÃO \"COMO JOGAR\"*\nTraz você pra esse submenu!\n*MENU DE PAUSA*\nBasicamente uma curta versão do menu principal mas ele fica dentro do jogo pra você acessar enquanto assiste o caos!\n*EXTRAS*\nDaqui pra frente tem algumas features simples que não merecem um tópico maior (que pena)\n*TELEFONE*\nUm simples telefone para mandar você pra algum lugar, clique nele, talvez não\n*DIÁLOGO*\nUm texto em cima do Spamton informando o que está acontecendo no jogo, e as vezes é só o Spamton falando com você, quem sabe?\n*ANTI-CHEAT*\nAlguma hora você vai descobrir, ele impede você de ser um trapaceiro sujo (e também atrapalha a conexão telefônica), bem, as coisas tomaram uma rota estranha não é?\n*FIM*\nÉ só isso por enquanto, agora vá jogar e se torne um [[BIG SHOT]]!!1";
             
-            const linhas = textoComoJogarCru.split("\n");
+            let textoComoJogarPortugues = textoComoJogarCru.replace(
+                "*MENU DE PAUSA*\nBasicamente uma curta versão do menu principal mas ele fica dentro do jogo pra você acessar enquanto assiste o caos!\n*EXTRAS*",
+                "*MENU DE PAUSA*\nBasicamente uma curta versão do menu principal mas ele fica dentro do jogo pra você acessar enquanto assiste o caos!\n*CONFIGURAÇÃO DE IDIOMA*\nEscolha inglês ou português em Configurações. Sua escolha fica salva neste dispositivo e altera os menus, diálogos, itens da loja e este guia.\n*EXTRAS*"
+            );
+            textoComoJogarPortugues = textoComoJogarPortugues.replace(
+                "contratou, também tem como resetar",
+                "contratou, mudar o idioma e também resetar"
+            );
+            const linhas = (idiomaAtual === "en" ? idiomaIngles.howToPlay : textoComoJogarPortugues).split("\n");
             container.innerHTML = "";
             
             linhas.forEach(function(linha) {
