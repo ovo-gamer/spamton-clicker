@@ -13,11 +13,11 @@
             text-align: center;
             margin: 0; padding: 0;
             overflow: hidden;
-            height: 100vh; width: 100vw;
+            height: 100vh; height: 100dvh; width: 100vw;
         }
         #filtro-tinta-vermelha {
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
             background-color: rgba(255, 0, 0, 0);
             z-index: 99999998 !important;
             pointer-events: none;
@@ -26,7 +26,7 @@
         }
         #filtro-tinta-preto-e-branco {
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
             backdrop-filter: grayscale(0%);
             z-index: 99999997 !important;
             pointer-events: none;
@@ -36,7 +36,7 @@
     <style>
         #tela-titulo {
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
             background-color: #0022aa;
             z-index: 99999990;
             display: flex; flex-direction: column;
@@ -93,7 +93,7 @@
         .volume-controle output { min-width: 4ch; }
         .sub-tela {
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
             background-color: #001188; z-index: 99999995;
             display: none; flex-direction: column;
             align-items: center; justify-content: center; gap: 20px;
@@ -159,7 +159,13 @@
             margin: 0 auto 4px;
             object-fit: contain;
             image-rendering: pixelated;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            cursor: pointer;
         }
+        #trofeu-spamton:focus-visible { outline: 2px solid cyan; outline-offset: 3px; }
+        #trofeu-spamton img { display: block; width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
         .conquistas-resumo {
             color: cyan;
             font-size: 18px;
@@ -225,11 +231,89 @@
             margin-bottom: 10px;
             display: block;
         }
+        #tela-missoes-trofeu {
+            position: fixed;
+            inset: 0;
+            height: 100vh;
+            height: 100dvh;
+            z-index: 99999980;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            box-sizing: border-box;
+            background: rgba(0, 17, 136, 0.55);
+            backdrop-filter: blur(4px);
+        }
+        .missoes-painel {
+            width: min(94vw, 700px);
+            max-height: 88vh;
+            max-height: 88dvh;
+            overflow-y: auto;
+            padding: 18px;
+            box-sizing: border-box;
+            border: 2px solid white;
+            background: rgba(0, 0, 0, 0.78);
+            text-align: center;
+        }
+        .missoes-titulo {
+            margin: 0 0 8px;
+            color: cyan;
+            font-size: clamp(20px, 5vw, 28px);
+            text-shadow: 2px 2px black;
+        }
+        .missoes-resumo { margin: 0 0 14px; color: white; font-weight: bold; }
+        .missoes-lista { display: grid; gap: 8px; }
+        .missao-cartao {
+            padding: 10px;
+            border: 1px solid rgba(255,255,255,.65);
+            background: rgba(0, 85, 255, .22);
+            text-align: left;
+        }
+        .missao-cartao.concluida { border-color: #00ffcc; opacity: .76; }
+        .missao-titulo { color: yellow; font-weight: bold; margin-bottom: 4px; }
+        .missao-progresso { color: white; font-size: 14px; }
+        .missoes-notificacao { min-height: 1.3em; margin: 12px 0; color: #00ffcc; font-weight: bold; }
+        .pipis-prateleira {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 8px;
+            margin: 12px 0 16px;
+        }
+        .pipis-slot {
+            min-height: 64px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            border: 1px solid rgba(255,255,255,.45);
+            background: rgba(255,255,255,.06);
+            color: white;
+            font-size: 11px;
+        }
+        .pipis-sprite {
+            width: 40px;
+            height: 30px;
+            background-color: var(--pipis-color, #334);
+            -webkit-mask: url("pipis_blank.png") center / contain no-repeat;
+            mask: url("pipis_blank.png") center / contain no-repeat;
+            image-rendering: pixelated;
+        }
+        .pipis-slot.vazio .pipis-sprite { opacity: .18; }
+        .missoes-recompensa { color: yellow; font-weight: bold; margin: 8px 0 14px; }
+        @media (max-width: 700px) {
+            #tela-missoes-trofeu { padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)); }
+            .missoes-painel { width: 100%; max-height: 90vh; max-height: 90dvh; padding: 12px; }
+            .pipis-prateleira { gap: 5px; }
+            .pipis-slot { min-height: 54px; font-size: 9px; }
+            .pipis-sprite { width: 32px; height: 24px; }
+        }
     </style>
     <style>
         #tela-pausa {
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
             background-color: rgba(0, 17, 136, 0.55);
             z-index: 99999980;
             display: none; flex-direction: column;
@@ -238,7 +322,7 @@
         }
         #tela-config-pausa {
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
             background-color: rgba(0, 17, 136, 0.55);
             z-index: 99999985;
             display: none; flex-direction: column;
@@ -246,7 +330,7 @@
             backdrop-filter: blur(4px);
         }
         #area-jogo {
-            display: none; width: 100%; height: 100vh; position: relative; image-rendering: pixelated;
+            display: none; width: 100%; height: 100vh; height: 100dvh; position: relative; image-rendering: pixelated;
             background-image: url('loja_background.png');
             background-size: cover; background-position: center; background-repeat: no-repeat;
             z-index: 1;
@@ -266,7 +350,7 @@
             background-color: rgba(0, 0, 0, 0); z-index: 0;
         }
         .container {
-            position: relative; width: 100%; height: 100vh;
+            position: relative; width: 100%; height: 100vh; height: 100dvh;
             display: flex; flex-direction: column;
             align-items: center; justify-content: center; z-index: 3 !important;
             background: transparent !important;
@@ -375,7 +459,7 @@
             50% { transform: translateY(-80%); }
             100% { transform: translateY(-50%); }
         }
-        #tela-morte { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: black; z-index: 2147483647 !important; display: none; opacity: 0; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease-in-out !important; }
+        #tela-morte { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; background-color: black; z-index: 2147483647 !important; display: none; opacity: 0; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease-in-out !important; }
         #texto-morte { color: red; font-size: 40px; font-weight: bold; text-shadow: 3px 3px 0px #300; font-family: 'Courier New', Courier, monospace; line-height: 1.5; transition: opacity 0.5s ease-in-out !important; }
         #easter-egg-spamdance {
             position: fixed;
@@ -400,6 +484,7 @@
                 box-sizing: border-box;
                 gap: clamp(8px, 2.5vh, 18px);
                 padding: 16px;
+                padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
                 overflow-y: auto;
             }
             #titulo-jogo,
@@ -428,7 +513,7 @@
             .conquistas-scroll { max-height: 55vh; }
             .estrela-conquista { width: 30px; height: 30px; }
             .trofeu-conquistas { width: 52px; height: 52px; }
-            #trofeu-spamton { width: 38px; height: 38px; }
+            #trofeu-spamton { width: 44px; height: 44px; }
             .conquista-cartao { gap: 8px; padding: 8px; }
             .conquista-cartao img { flex-basis: 40px; width: 40px; height: 40px; }
             #fala-spamton {
@@ -577,7 +662,9 @@
             <button class="btn-game-control" data-i18n="quickMenu" style="border-color: cyan;" onclick="abrirMenuDePausaOpa()">MENU RÁPIDO</button>
         </div>
         <div class="container">
-            <img id="trofeu-spamton" src="golden_certain_crt.png" alt="Troféu de todas as conquistas">
+            <button id="trofeu-spamton" type="button" aria-label="Abrir missões e coleção" title="Missões e coleção" onclick="abrirMenuMissoesTrofeu()">
+                <img src="golden_certain_crt.png" alt="" aria-hidden="true">
+            </button>
             <div id="fala-spamton">OLÁ, [Cliente Valioso]!</div>
             <small id="instrucao-clique" data-i18n="clickForKromer" style="color: #bbb; text-shadow: 1px 1px black; font-size: 14px;">(CLIQUE EM MIM PARA GERAR [Kromer]!)</small>
             <img id="sprite-spamton" src="spamton_sprite_frame1.png" alt="Sprite do Spamton" data-i18n-alt="spamtonSprite">
@@ -588,6 +675,17 @@
                 <button id="botao-kpc" class="botao-loja cor-amarela"></button>
                 <button id="botao-powerup" class="botao-loja cor-azul"></button>
             </div>
+        </div>
+    </div>
+    <div id="tela-missoes-trofeu" role="dialog" aria-modal="true" aria-labelledby="titulo-missoes-trofeu">
+        <div class="missoes-painel">
+            <h2 class="missoes-titulo" id="titulo-missoes-trofeu"></h2>
+            <div class="missoes-resumo" id="resumo-missoes-trofeu"></div>
+            <div class="missoes-lista" id="lista-missoes-diarias"></div>
+            <div class="missoes-notificacao" id="notificacao-missoes-trofeu" aria-live="polite"></div>
+            <div class="pipis-prateleira" id="prateleira-pipis"></div>
+            <div class="missoes-recompensa" id="recompensa-prateleira-pipis"></div>
+            <button class="botao-menu" data-i18n="back" style="background-color:#444" onclick="fecharMenuMissoesTrofeu()">VOLTAR</button>
         </div>
     </div>
     <audio id="som-ambiente" src="dialtone.mp3" loop></audio>
@@ -896,10 +994,10 @@
             kpc: { pt: "Kromer por clique (KPC)", en: "Kromer per click (KPC)" },
             upgrades: { pt: "Melhorias da loja", en: "Shop Upgrades" },
             pipis: { pt: "Pipis coletados", en: "Pipis Collected" },
-            hires: { pt: "Contratações de Darkners", en: "Darkner Hires" },
-            level5: { pt: "Darkners nível 5", en: "Darkners at Level 5" },
-            level10: { pt: "Darkners nível 10", en: "Darkners at Level 10" },
-            level25: { pt: "Darkners nível 25", en: "Darkners at Level 25" },
+            friend: { pt: "Friend", en: "Friend" },
+            lancer: { pt: "Lancer", en: "Lancer" },
+            pink: { pt: "Pink", en: "Pink" },
+            gaster: { pt: "Gaster", en: "Gaster" },
             team: { pt: "Equipe", en: "Team" },
             hireCount: { pt: "Contratações e melhorias", en: "Hires and Level-Ups" },
             playtime: { pt: "Tempo de jogo", en: "Play Time" },
@@ -925,27 +1023,18 @@
         const marcosKromer = [
             ["krm_10m", 10000000, "Cofre de dez milhões", "Ten-Million Vault"],
             ["krm_100m", 100000000, "Fortuna colossal", "Colossal Fortune"],
-            ["krm_50m", 50000000, "Kromer sem fim", "Endless Kromer"],
-            ["krm_1b", 1000000000, "Bilionário BIG SHOT", "Kromer Billionaire"],
-            ["krm_10b", 10000000000, "Magnata de dez bilhões", "Ten-Billion Tycoon"],
-            ["krm_1t", 1000000000000, "Trilionário", "Kromer Trillionaire"]
+            ["krm_50m", 50000000, "Kromer sem fim", "Endless Kromer"]
         ];
         const marcosKPS = [
             ["kps_1k", 1000, "Fluxo de Kromer", "Kromer Flow"],
             ["kps_10k", 10000, "Torrente de Kromer", "Kromer Flood"],
-            ["kps_100k", 100000, "Rio de Kromer", "Kromer River"],
-            ["kps_1m", 1000000, "Usina de Kromer", "Kromer Power Plant"],
-            ["kps_50m", 50000000, "Fábrica de Kromer", "Kromer Factory"],
-            ["kps_1b", 1000000000, "KPS astronômico", "Astronomical KPS"]
+            ["kps_100k", 100000, "Rio de Kromer", "Kromer River"]
         ];
         const marcosKPC = [
             ["kpc_2", 2, "Primeiro grande clique", "First Big Click"],
             ["kpc_500", 500, "Clique poderoso", "Powerful Click"],
             ["kpc_10k", 10000, "Clique de alto valor", "High-Value Click"],
-            ["kpc_100k", 100000, "Clique colossal", "Colossal Click"],
-            ["kpc_1m", 1000000, "Clique milionário", "Million-Kromer Click"],
-            ["kpc_50m", 50000000, "Toque de Midas", "Midas Touch"],
-            ["kpc_1b", 1000000000, "Um clique bilionário", "One-Billion-Kromer Click"],
+            ["kpc_100k", 100000, "Clique colossal", "Colossal Click"]
         ];
         const marcosCliques = [
             ["click_25k", 25000, "Cliques em série", "Clicking Spree"],
@@ -1046,12 +1135,65 @@
                 descricaoEn: `Open the quick menu ${meta} times.`,
                 verificar: () => dadosConquistas.menusRapidosAbertos >= meta
             })),
+            {
+                id: "misc_clicks_500k", categoria: "clicks", meta: 500000, titulo: "O botão aguenta?", tituloEn: "Can the Button Take It?",
+                descricao: "Clique no Spamton 500.000 vezes.", descricaoEn: "Click Spamton 500,000 times.",
+                verificar: () => dadosConquistas.cliques >= 500000
+            },
+            {
+                id: "misc_pipis_250k", categoria: "pipis", meta: 250000, titulo: "Maré de Pipis", tituloEn: "Pipis Tide",
+                descricao: "Faça Friend coletar 250.000 Pipis.", descricaoEn: "Have Friend collect 250,000 Pipis.",
+                verificar: () => dadosConquistas.pipisColetados >= 250000
+            },
+            {
+                id: "misc_playtime_2h", categoria: "playtime", meta: 7200, titulo: "Turno prolongado", tituloEn: "Long Shift",
+                descricao: "Jogue por 2 horas no total.", descricaoEn: "Play for 2 hours in total.",
+                verificar: () => dadosConquistas.tempoJogado >= 7200
+            },
+            {
+                id: "misc_hires_750", categoria: "hireCount", meta: 750, titulo: "Gerente incansável", tituloEn: "Tireless Manager",
+                descricao: "Contrate ou evolua Darkners 750 vezes.", descricaoEn: "Hire or level up Darkners 750 times.",
+                verificar: () => dadosConquistas.compras >= 750
+            },
+            {
+                id: "misc_quickmenu_1000", categoria: "quickMenu", meta: 1000, titulo: "Pausa para todo negócio", tituloEn: "A Break for Every Deal",
+                descricao: "Abra o menu rápido 1.000 vezes.", descricaoEn: "Open the quick menu 1,000 times.",
+                verificar: () => dadosConquistas.menusRapidosAbertos >= 1000
+            },
+            {
+                id: "misc_all_darkners_5", categoria: "team", meta: 5, titulo: "Equipe de nível 5", tituloEn: "Level 5 Team",
+                descricao: "Melhore todos os quatro Darkners até o nível 5.", descricaoEn: "Level up all four Darkners to level 5.",
+                verificar: () => nivelPowerUpPipis >= 5 && nivelLancer >= 5 && nivelPink >= 5 && nivelGaster >= 5
+            },
+            {
+                id: "misc_all_darkners_10", categoria: "team", meta: 10, titulo: "Equipe de nível 10", tituloEn: "Level 10 Team",
+                descricao: "Melhore todos os quatro Darkners até o nível 10.", descricaoEn: "Level up all four Darkners to level 10.",
+                verificar: () => nivelPowerUpPipis >= 10 && nivelLancer >= 10 && nivelPink >= 10 && nivelGaster >= 10
+            },
+            {
+                id: "misc_shop_upgrades_200", categoria: "upgrades", meta: 200, titulo: "Reforma da loja", tituloEn: "Shop Makeover",
+                descricao: "Compre 200 melhorias de KPS e KPC no total.", descricaoEn: "Buy 200 KPS and KPC upgrades in total.",
+                verificar: () => dadosConquistas.comprasKPS + dadosConquistas.comprasKPC >= 200
+            },
+            {
+                id: "misc_spent_5m", categoria: "spending", meta: 5000000, titulo: "Investimento sério", tituloEn: "Serious Investment",
+                descricao: "Gaste 5.000.000 Kromer no total.", descricaoEn: "Spend 5,000,000 Kromer in total.",
+                verificar: () => dadosConquistas.kromerGastos >= 5000000
+            },
+            {
+                id: "misc_playtime_5h", categoria: "playtime", meta: 18000, titulo: "Turno dobrado", tituloEn: "Double Shift",
+                descricao: "Jogue por 5 horas no total.", descricaoEn: "Play for 5 hours in total.",
+                verificar: () => dadosConquistas.tempoJogado >= 18000
+            },
+            {
+                id: "misc_quickmenu_2500", categoria: "quickMenu", meta: 2500, titulo: "Pausa recorrente", tituloEn: "Frequent Breaks",
+                descricao: "Abra o menu rápido 2.500 vezes.", descricaoEn: "Open the quick menu 2,500 times.",
+                verificar: () => dadosConquistas.menusRapidosAbertos >= 2500
+            },
             ...[
                 [10000, "Primeiro grande gasto", "First Big Spend"],
                 [100000, "Dinheiro bem investido", "Money Well Spent"],
-                [1000000, "Gastador milionário", "Million-Kromer Spender"],
-                [1000000000, "Investimento bilionário", "Billion-Kromer Investment"],
-                [1000000000000, "Valeu cada Kromer", "Worth Every Kromer"]
+                [1000000, "Gastador milionário", "Million-Kromer Spender"]
             ].map(([meta, titulo, tituloEn]) => ({
                 id: `spent_${meta}`, categoria: "spending", meta, titulo, tituloEn,
                 descricao: `Gaste ${meta.toLocaleString("pt-BR")} Kromer no total.`,
@@ -1068,14 +1210,15 @@
         const conquistasDarkners = [];
         dadosDarknersConquistas.forEach(darkner => {
             conquistasDarkners.push({
-                id: `${darkner.id}_1`, categoria: "hires",
-                titulo: `${darkner.nome} contratado`, tituloEn: `${darkner.nomeEn} Hired`,
+                id: `${darkner.id}_1`, categoria: darkner.id, meta: 1,
+                titulo: `${darkner.nome} ${darkner.id === "pink" ? "contratada" : "contratado"}`,
+                tituloEn: `${darkner.nomeEn} Hired`,
                 descricao: `Contrate ${darkner.nome}.`, descricaoEn: `Hire ${darkner.nomeEn}.`,
                 verificar: () => darkner.nivel() >= 1
             });
             [5, 10, 25].forEach(nivel => {
                 conquistasDarkners.push({
-                    id: `${darkner.id}_${nivel}`, categoria: `level${nivel}`,
+                    id: `${darkner.id}_${nivel}`, categoria: darkner.id, meta: nivel,
                     titulo: `${darkner.nome} nível ${nivel}`, tituloEn: `${darkner.nomeEn} Level ${nivel}`,
                     descricao: `Evolua ${darkner.nome} até o nível ${nivel}.`,
                     descricaoEn: `Level up ${darkner.nomeEn} to level ${nivel}.`,
@@ -1378,7 +1521,11 @@
             if (trofeuMenu) trofeuMenu.hidden = !possuiTrofeu;
             if (trofeuJogo) {
                 trofeuJogo.style.display = possuiTrofeu ? "block" : "none";
-                trofeuJogo.alt = idiomaAtual === "en" ? "All achievements trophy" : "Troféu de todas as conquistas";
+                trofeuJogo.setAttribute(
+                    "aria-label",
+                    idiomaAtual === "en" ? "Open trophy missions and Pipis collection" : "Abrir missões do troféu e coleção de Pipis"
+                );
+                trofeuJogo.title = idiomaAtual === "en" ? "Trophy missions and Pipis collection" : "Missões do troféu e coleção de Pipis";
             }
         }
         function renderizarConquistas() {
@@ -1432,6 +1579,251 @@
                 lista.appendChild(secao);
             });
             atualizarVisualProgressoConquistas();
+        }
+        const CHAVE_MISSOES_TROFEU = "save_missoes_trofeu";
+        const CORES_PIPIS = [
+            { id: "red", nome: "Red", nomePt: "Vermelho", cor: "#ff3b30" },
+            { id: "orange", nome: "Orange", nomePt: "Laranja", cor: "#ff9500" },
+            { id: "yellow", nome: "Yellow", nomePt: "Amarelo", cor: "#ffe600" },
+            { id: "green", nome: "Green", nomePt: "Verde", cor: "#34c759" },
+            { id: "cyan", nome: "Cyan", nomePt: "Ciano", cor: "#00e5ff" },
+            { id: "blue", nome: "Blue", nomePt: "Azul", cor: "#3478f6" },
+            { id: "purple", nome: "Purple", nomePt: "Roxo", cor: "#af52de" },
+            { id: "pink", nome: "Pink", nomePt: "Rosa", cor: "#ff2d91" },
+            { id: "white", nome: "White", nomePt: "Branco", cor: "#f2f2f7" },
+            { id: "gold", nome: "Gold", nomePt: "Dourado", cor: "#d9a400" }
+        ];
+        const TIPOS_MISSAO_DIARIA = [
+            { tipo: "clicks", min: 20, max: 100 },
+            { tipo: "kromer", min: 500, max: 5000, step: 500 },
+            { tipo: "upgrades", min: 1, max: 4 },
+            { tipo: "pipis", min: 1, max: 5 },
+            { tipo: "hires", min: 1, max: 2 },
+            { tipo: "spent", min: 250, max: 3000, step: 250 }
+        ];
+        let estadoMissoesTrofeu = {
+            data: "",
+            progressoDiario: {},
+            concluidas: [],
+            progressoPipis: 0,
+            pipis: [],
+            conjuntosCompletos: 0
+        };
+        let notificacaoMissoesTrofeu = null;
+        let cacheDataMissoes = "";
+        let cacheMissoesDiarias = [];
+        let estadoMissoesCarregado = false;
+        function dataUtcAtual() {
+            return new Date().toISOString().slice(0, 10);
+        }
+        function criarSorteadorComSemente(semente) {
+            let estado = 2166136261;
+            for (let indice = 0; indice < semente.length; indice++) {
+                estado = Math.imul(estado ^ semente.charCodeAt(indice), 16777619);
+            }
+            return function() {
+                estado += 0x6D2B79F5;
+                let valor = estado;
+                valor = Math.imul(valor ^ (valor >>> 15), valor | 1);
+                valor ^= valor + Math.imul(valor ^ (valor >>> 7), valor | 61);
+                return ((valor ^ (valor >>> 14)) >>> 0) / 4294967296;
+            };
+        }
+        function obterMissoesDiarias(data) {
+            if (cacheDataMissoes === data) return cacheMissoesDiarias;
+            const aleatorio = criarSorteadorComSemente(data);
+            const disponiveis = TIPOS_MISSAO_DIARIA.slice();
+            cacheMissoesDiarias = [];
+            for (let indice = 0; indice < 3; indice++) {
+                const selecionada = disponiveis.splice(Math.floor(aleatorio() * disponiveis.length), 1)[0];
+                const unidades = Math.floor(aleatorio() * (selecionada.max - selecionada.min + 1));
+                const meta = selecionada.min + unidades;
+                const valor = selecionada.step ? Math.ceil(meta / selecionada.step) * selecionada.step : meta;
+                cacheMissoesDiarias.push({ tipo: selecionada.tipo, meta: Math.min(selecionada.max, valor) });
+            }
+            cacheDataMissoes = data;
+            return cacheMissoesDiarias;
+        }
+        function salvarEstadoMissoesTrofeu() {
+            if (!cheatDetectado) {
+                localStorage.setItem(CHAVE_MISSOES_TROFEU, JSON.stringify(estadoMissoesTrofeu));
+            }
+        }
+        function garantirDataMissoesAtual() {
+            const hoje = dataUtcAtual();
+            if (estadoMissoesTrofeu.data === hoje) return;
+            estadoMissoesTrofeu.data = hoje;
+            estadoMissoesTrofeu.progressoDiario = {};
+            estadoMissoesTrofeu.concluidas = [];
+            obterMissoesDiarias(hoje);
+            salvarEstadoMissoesTrofeu();
+        }
+        function carregarEstadoMissoesTrofeu() {
+            const salvo = localStorage.getItem(CHAVE_MISSOES_TROFEU);
+            if (salvo !== null) {
+                try {
+                    const dados = JSON.parse(salvo);
+                    if (!dados || typeof dados !== "object" || Array.isArray(dados)) {
+                        throw new TypeError("Invalid trophy mission save.");
+                    }
+                    estadoMissoesTrofeu = {
+                        data: typeof dados.data === "string" ? dados.data : "",
+                        progressoDiario: {},
+                        concluidas: Array.isArray(dados.concluidas)
+                            ? [...new Set(dados.concluidas.filter(tipo => TIPOS_MISSAO_DIARIA.some(missao => missao.tipo === tipo)))]
+                            : [],
+                        progressoPipis: Number.isSafeInteger(dados.progressoPipis) && dados.progressoPipis >= 0 && dados.progressoPipis < 3
+                            ? dados.progressoPipis : 0,
+                        pipis: Array.isArray(dados.pipis)
+                            ? [...new Set(dados.pipis.filter(id => CORES_PIPIS.some(cor => cor.id === id)))].slice(0, 9)
+                            : [],
+                        conjuntosCompletos: Number.isSafeInteger(dados.conjuntosCompletos) && dados.conjuntosCompletos >= 0
+                            ? dados.conjuntosCompletos : 0
+                    };
+                    if (dados.progressoDiario && typeof dados.progressoDiario === "object") {
+                        TIPOS_MISSAO_DIARIA.forEach(({ tipo }) => {
+                            const valor = Number(dados.progressoDiario[tipo]);
+                            estadoMissoesTrofeu.progressoDiario[tipo] = Number.isFinite(valor) && valor >= 0 ? valor : 0;
+                        });
+                    }
+                } catch (erro) {
+                    console.error("Could not load saved trophy missions.", erro);
+                }
+            }
+            estadoMissoesCarregado = true;
+            garantirDataMissoesAtual();
+            renderizarMissoesTrofeu();
+        }
+        function textoMissao(tipo, meta) {
+            const textos = {
+                clicks: idiomaAtual === "en" ? `Click Spamton ${meta} times.` : `Clique no Spamton ${meta} vezes.`,
+                kromer: idiomaAtual === "en" ? `Earn ${meta.toLocaleString("en-US")} Kromer.` : `Ganhe ${meta.toLocaleString("pt-BR")} Kromer.`,
+                upgrades: idiomaAtual === "en" ? `Buy ${meta} shop upgrade${meta === 1 ? "" : "s"}.` : `Compre ${meta} melhoria${meta === 1 ? "" : "s"} da loja.`,
+                pipis: idiomaAtual === "en" ? `Have Friend catch ${meta} Pipis.` : `Faça Friend pegar ${meta} Pipis.`,
+                hires: idiomaAtual === "en" ? `Hire or level up ${meta} Darkner${meta === 1 ? "" : "s"}.` : `Contrate ou evolua ${meta} Darkner${meta === 1 ? "" : "s"}.`,
+                spent: idiomaAtual === "en" ? `Spend ${meta.toLocaleString("en-US")} Kromer in the shop.` : `Gaste ${meta.toLocaleString("pt-BR")} Kromer na loja.`
+            };
+            return textos[tipo];
+        }
+        function renderizarMissoesTrofeu() {
+            const painel = document.getElementById("tela-missoes-trofeu");
+            if (!painel || !estadoMissoesCarregado) return;
+            garantirDataMissoesAtual();
+            document.getElementById("titulo-missoes-trofeu").textContent =
+                idiomaAtual === "en" ? "TROPHY MISSIONS" : "MISSÕES DO TROFÉU";
+            document.getElementById("resumo-missoes-trofeu").textContent = idiomaAtual === "en"
+                ? `Daily missions completed toward a Pipis: ${estadoMissoesTrofeu.progressoPipis}/3`
+                : `Missões diárias concluídas para ganhar um Pipis: ${estadoMissoesTrofeu.progressoPipis}/3`;
+            const lista = document.getElementById("lista-missoes-diarias");
+            lista.replaceChildren();
+            obterMissoesDiarias(estadoMissoesTrofeu.data).forEach(missao => {
+                const concluiu = estadoMissoesTrofeu.concluidas.includes(missao.tipo);
+                const progresso = Math.min(missao.meta, estadoMissoesTrofeu.progressoDiario[missao.tipo] || 0);
+                const cartao = document.createElement("article");
+                cartao.className = `missao-cartao${concluiu ? " concluida" : ""}`;
+                const titulo = document.createElement("div");
+                titulo.className = "missao-titulo";
+                titulo.textContent = idiomaAtual === "en"
+                    ? `MISSION ${lista.children.length + 1}${concluiu ? " — COMPLETE" : ""}`
+                    : `MISSÃO ${lista.children.length + 1}${concluiu ? " — CONCLUÍDA" : ""}`;
+                const descricao = document.createElement("div");
+                descricao.className = "missao-progresso";
+                descricao.textContent = `${textoMissao(missao.tipo, missao.meta)} ${Math.floor(progresso).toLocaleString(idiomaAtual === "en" ? "en-US" : "pt-BR")}/${missao.meta.toLocaleString(idiomaAtual === "en" ? "en-US" : "pt-BR")}`;
+                cartao.append(titulo, descricao);
+                lista.appendChild(cartao);
+            });
+            const notificacao = document.getElementById("notificacao-missoes-trofeu");
+            if (notificacaoMissoesTrofeu && notificacaoMissoesTrofeu.tipo === "pipis") {
+                const cor = CORES_PIPIS.find(item => item.id === notificacaoMissoesTrofeu.cor);
+                notificacao.textContent = idiomaAtual === "en"
+                    ? `Mission streak complete! You got a ${cor.nome} Pipis.`
+                    : `Sequência de missões completa! Você ganhou um Pipis ${cor.nomePt}.`;
+            } else if (notificacaoMissoesTrofeu && notificacaoMissoesTrofeu.tipo === "shelf") {
+                const valor = notificacaoMissoesTrofeu.recompensa.toLocaleString(idiomaAtual === "en" ? "en-US" : "pt-BR");
+                notificacao.textContent = idiomaAtual === "en"
+                    ? `All 10 colors collected! The shelf paid ${valor} Kromer!`
+                    : `Todas as 10 cores coletadas! A prateleira pagou ${valor} Kromer!`;
+            } else {
+                notificacao.textContent = "";
+            }
+            const prateleira = document.getElementById("prateleira-pipis");
+            prateleira.replaceChildren();
+            for (let indice = 0; indice < 10; indice++) {
+                const corId = estadoMissoesTrofeu.pipis[indice];
+                const cor = CORES_PIPIS.find(item => item.id === corId);
+                const slot = document.createElement("div");
+                slot.className = `pipis-slot${cor ? "" : " vazio"}`;
+                const sprite = document.createElement("div");
+                sprite.className = "pipis-sprite";
+                if (cor) {
+                    sprite.style.setProperty("--pipis-color", cor.cor);
+                    sprite.setAttribute("role", "img");
+                    sprite.setAttribute("aria-label", idiomaAtual === "en" ? `${cor.nome} Pipis` : `Pipis ${cor.nomePt}`);
+                } else {
+                    sprite.setAttribute("aria-hidden", "true");
+                }
+                const rotulo = document.createElement("span");
+                rotulo.textContent = cor
+                    ? (idiomaAtual === "en" ? cor.nome : cor.nomePt)
+                    : (idiomaAtual === "en" ? "Empty" : "Vazio");
+                slot.append(sprite, rotulo);
+                prateleira.appendChild(slot);
+            }
+            document.getElementById("recompensa-prateleira-pipis").textContent = idiomaAtual === "en"
+                ? `Collect all 10 colors for a random reward of up to 10,000 Kromer. Completed shelves can be collected again.`
+                : `Junte as 10 cores para ganhar uma recompensa aleatória de até 10.000 Kromer. Você pode completar a prateleira novamente.`;
+        }
+        function abrirMenuMissoesTrofeu() {
+            const possuiTrofeu = dadosConquistas.desbloqueadas.length === listaConquistas.length;
+            if (!possuiTrofeu || cheatDetectado) return;
+            notificacaoMissoesTrofeu = null;
+            renderizarMissoesTrofeu();
+            document.getElementById("tela-missoes-trofeu").style.display = "flex";
+        }
+        function fecharMenuMissoesTrofeu() {
+            document.getElementById("tela-missoes-trofeu").style.display = "none";
+        }
+        function concederPipisDeMissao() {
+            const coresDisponiveis = CORES_PIPIS.filter(cor => !estadoMissoesTrofeu.pipis.includes(cor.id));
+            const cor = coresDisponiveis[Math.floor(Math.random() * coresDisponiveis.length)];
+            estadoMissoesTrofeu.pipis.push(cor.id);
+            notificacaoMissoesTrofeu = { tipo: "pipis", cor: cor.id };
+            if (estadoMissoesTrofeu.pipis.length === 10) {
+                const recompensa = Math.floor(Math.random() * 9001) + 1000;
+                estadoMissoesTrofeu.pipis = [];
+                estadoMissoesTrofeu.conjuntosCompletos++;
+                kromer += recompensa;
+                atualizarRotuloKromer();
+                salvarDadosNoNavegador();
+                notificacaoMissoesTrofeu = { tipo: "shelf", recompensa: recompensa };
+            }
+        }
+        function registrarProgressoMissoes(ganhos) {
+            if (!estadoMissoesCarregado || cheatDetectado || dadosConquistas.desbloqueadas.length !== listaConquistas.length) return;
+            garantirDataMissoesAtual();
+            let alterou = false;
+            const missoes = obterMissoesDiarias(estadoMissoesTrofeu.data);
+            missoes.forEach(missao => {
+                const quantidade = Number(ganhos[missao.tipo]) || 0;
+                if (quantidade <= 0 || estadoMissoesTrofeu.concluidas.includes(missao.tipo)) return;
+                estadoMissoesTrofeu.progressoDiario[missao.tipo] =
+                    (estadoMissoesTrofeu.progressoDiario[missao.tipo] || 0) + quantidade;
+                if (estadoMissoesTrofeu.progressoDiario[missao.tipo] >= missao.meta) {
+                    estadoMissoesTrofeu.concluidas.push(missao.tipo);
+                    estadoMissoesTrofeu.progressoPipis++;
+                    if (estadoMissoesTrofeu.progressoPipis >= 3) {
+                        estadoMissoesTrofeu.progressoPipis = 0;
+                        concederPipisDeMissao();
+                    }
+                }
+                alterou = true;
+            });
+            if (alterou) {
+                salvarEstadoMissoesTrofeu();
+                if (document.getElementById("tela-missoes-trofeu").style.display === "flex") {
+                    renderizarMissoesTrofeu();
+                }
+            }
         }
         function anunciarConquista(conquista) {
             filaBragConquistas.push({
@@ -1684,6 +2076,7 @@
             renderizarFalaMorte();
             if (typeof renderizarTextoComoJogar === "function") renderizarTextoComoJogar();
             renderizarConquistas();
+            renderizarMissoesTrofeu();
         }
         function cliqueNoTelefone() {
             if (telaDeMorteVisivel === true) {
@@ -1864,7 +2257,9 @@
             if (cheatDetectado || nivelPink === 0) return;
             if (document.getElementById("area-jogo").style.display !== "block") return;
             pinkSaltoEfeito();
-            kromer += (kromerPorClique * nivelPink);
+            const ganhoPink = kromerPorClique * nivelPink;
+            kromer += ganhoPink;
+            registrarProgressoMissoes({ kromer: ganhoPink });
             atualizarRotuloKromer();
             let chancePipisPinkMew = chancePipisBase * (10 + (nivelPink - 1));
             for (let i = 0; i < nivelPink; i++) {
@@ -1966,18 +2361,17 @@
 
             const tx = document.createElement("div");
             tx.textContent = `${ehAlt ? "-" : "+"}${valor}`;
-            tx.style.cssText = `position: fixed; left: ${Math.max(60, Math.min(window.innerWidth - 60, posicaoX))}px; bottom: ${Math.min(64 + slot * 26, Math.max(12, window.innerHeight - 28))}px; display: block; visibility: visible; color: ${ehAlt ? "#ff3333" : "#00ffcc"}; font-family: 'Courier New', monospace; font-weight: bold; font-size: 16px; line-height: 1.2; white-space: nowrap; text-shadow: 2px 2px 0px #000; z-index: 2147483647; pointer-events: none; opacity: 1; transform: translate(-50%, 0);`;
+            tx.style.cssText = `position: fixed; left: ${Math.max(60, Math.min(window.innerWidth - 60, posicaoX))}px; bottom: ${64 + slot * 26}px; color: ${ehAlt ? "#ff3333" : "#00ffcc"}; font-family: 'Courier New', monospace; font-weight: bold; font-size: 16px; text-shadow: 2px 2px 0px #000; z-index: 99999999; pointer-events: none; opacity: 1; transform: translate(-50%, 0); transition: transform 0.7s ease-out, opacity 0.7s ease-out;`;
             document.body.appendChild(tx);
 
-            setTimeout(function() {
-                tx.style.transition = "transform 0.3s ease-out, opacity 0.3s ease-out";
+            requestAnimationFrame(function() {
                 tx.style.transform = "translate(-50%, -25px)";
                 tx.style.opacity = "0";
-            }, 1000);
+            });
             setTimeout(function() {
                 tx.remove();
                 slotsFeedbackKromerAtivos.delete(slot);
-            }, 1320);
+            }, 720);
         }
 
         function executarMecanicaFriendDuplicavel(pElem, x, y, vx, vy, grav, initRot, vRot) {
@@ -2035,6 +2429,7 @@
                         } else {
                             kromer += vS;
                             dadosConquistas.pipisColetados++;
+                            registrarProgressoMissoes({ pipis: 1, kromer: vS });
                         }
                         atualizarRotuloKromer();
                         salvarConquistas();
@@ -2148,6 +2543,7 @@
                 else if (tS === "gaster") { nivelGaster++; gasterAsset.style.display = "block"; }
                 dadosConquistas.compras++;
                 botaoPowerUp.style.display = "none";
+                registrarProgressoMissoes({ hires: 1, spent: custoPowerUp });
                 definirFalaSpamton("success");
                 atualizarRotuloKromer();
                 atualizarPainelTexto(); salvarDadosNoNavegador();
@@ -2164,6 +2560,7 @@
                 kromer -= custoItemKPS;
                 dadosConquistas.kromerGastos += custoItemKPS;
                 let g = Math.floor(Math.random() * 5) + 1; kromerPorSegundo += g;
+                registrarProgressoMissoes({ upgrades: 1, spent: custoItemKPS });
                 definirFalaSpamton("purchaseKps", {
                     indice: Math.floor(Math.random() * falasSucessoComprar.length),
                     valor: g
@@ -2185,6 +2582,7 @@
                 kromer -= custoItemKPC;
                 dadosConquistas.kromerGastos += custoItemKPC;
                 let g = Math.floor(Math.random() * 5) + 1; kromerPorClique += g;
+                registrarProgressoMissoes({ upgrades: 1, spent: custoItemKPC });
                 definirFalaSpamton("purchaseKpc", {
                     indice: Math.floor(Math.random() * falasSucessoComprar.length),
                     valor: g
@@ -2206,6 +2604,7 @@
             dispararRisadaLocal(false); criarParticulaFisica();
             kromer += kromerPorClique;
             dadosConquistas.cliques++;
+            registrarProgressoMissoes({ clicks: 1, kromer: kromerPorClique });
             atualizarRotuloKromer();
             salvarDadosNoNavegador();
             salvarConquistas(); verificarConquistas();
@@ -2214,6 +2613,7 @@
         function atualizarKromer() {
             if (cheatDetectado) return;
             kromer += kromerPorSegundo;
+            registrarProgressoMissoes({ kromer: kromerPorSegundo });
             atualizarRotuloKromer();
             produzirPassivoPinkMewMew();
             if (
@@ -2265,7 +2665,7 @@
         botaoPowerUp.addEventListener("click", comprarPowerUp);
         spriteSpamtonImg.addEventListener("click", cliqueManual);
         
-        document.addEventListener("DOMContentLoaded", function() { inicializarControlesVolume(); aplicarIdioma(); carregarDadosDoNavegador(); atualizarSplashDinamico(); gerarItemKPS(); gerarItemKPC(); rolarFalaInicialComPeso(); atualizarPainelTexto(); carregarVersaoGitHub(); });
+        document.addEventListener("DOMContentLoaded", function() { inicializarControlesVolume(); aplicarIdioma(); carregarDadosDoNavegador(); carregarEstadoMissoesTrofeu(); atualizarSplashDinamico(); gerarItemKPS(); gerarItemKPC(); rolarFalaInicialComPeso(); atualizarPainelTexto(); carregarVersaoGitHub(); });
         function inicializarEasterEggSpamdance() {
             if (Math.floor(Math.random() * 1997) !== 0) return;
             const spamdance = document.getElementById("easter-egg-spamdance");
@@ -2307,7 +2707,18 @@
             if (!container) return;
             
             const textoComoJogarPortugues = `*KROMER*\nKromer é a moeda que você usará para progredir nesse jogo, para começar, clique no Spamton para gerar 1 kromer, não se preocupe, conseguir kromer será mais fácil depois\n*LOJA*\nA loja é o lugar onde sua produção de kromer aumentará ao longo do tempo, inicialmente ela tem dois botões, o de cima aumenta KPS (kromer por segundo), o de baixo aumenta KPC (kromer por clique), ocasionalmente um terceiro botão azul vai aparecer e vai conceder um dos 4 power-ups\n*POWER-UPS*\nPower-ups são outros darkners que você pode contratar e evoluir, mas antes de explicar como cada um deles funciona eu vou explicar algo necessário para eles funcionarem\n*PIPIS*\nQuando você gera kromer ao clicar no Spamton, alguns $ aparecem, eles começaram sendo uma decoração durante o desenvolvimento do jogo mais viraram uma função excencial para progredir com power-ups, a cada $ que aparece, há uma pequena chance do $ ser substituído por um pipis, no começo eles parecem um easter egg legal mas em breve terão importância\n*IMAGE_FRIEND*\nEsse darkner é o mais importante para os outros power-ups funcionarem bem, quando um pipis aparece na tela, o FRIEND irá imediatamente pegá-lo para conceder uma quantia de kromer em troca, conforme o FRIEND evolui, a chance de um pipis aparecer no lugar de um $ aumenta levemente, isso ajudará depois\n*LANCER*\nLancer é um ótimo companheiro caso você se sinta sozinho nessa jornada, ele trouxe sua bicicleta motorizada para melhorar a poluição do ambiente e faz um som engraçado quando você clica nele, mas ele não está lá só pra brincar, ocasionalmente ele joga alguns pipis para o FRIEND pegar (eu não disse que ele seria importante?), conforme Lancer evolui, ele joga mais pipis de uma vez (legal né?)\n*GASTER*\nTambém conhecido como Homem Misterioso, Gaster ocasionalmente deixará sua tela monocromática, enquanto joga alguns pipis para o FRIEND pegar, conforme o Gaster evolui, ele joga mais pipis também\n*PINK*\nOu Mew Mew pra quem só joga Undertale, ela é um passo importante para progressão, suponhamos que você gastou muito kromer em KPC, mas quer deixar o jogo rodando afk, não se preocupe! Pink age como o seu mouse, e gera kromer a cada segundo, mas ao invés de gerar a quantia baseada em KPS, ela gera baseada em KPC, ou seja, ela clica por você, conforme a Pink evolui, ela gera mais $ e as chances de pipis gerados por ela aumenta\n*MENUS E CONFIGURAÇÕES*\nVocê acha que eu não ia citar isso? claro que não! eu vou explicar agora!\n*MENU PRINCIPAL*\nO lugar onde tudo começa, aqui tem alguns botões que podem ou não ajudar :)\n*BOTÃO "JOGAR"*\nFaz você jogar\n*BOTÃO "CONFIGURAÇÕES"*\nAqui você pode ligar ou desligar a música e as risadas dos darkners que você contratou, ajustar o volume de cada um pelos controles abaixo dos botões, ativar a tela cheia (se o navegador oferecer suporte), mudar o idioma e também resetar o progresso aqui mas a gente já resetou demais em Undertale\n*BOTÃO "CRÉDITOS"*\nAqui temos os nomes dos criadores desse jogo, que se dedicaram muito para fazer tudo funcionar (não conta pra ninguém mas eu copiei muito código de muitos sites e remendei tudo junto)\n*BOTÃO "COMO JOGAR"*\nTraz você pra esse submenu!\n*MENU DE PAUSA*\nBasicamente uma curta versão do menu principal mas ele fica dentro do jogo pra você acessar enquanto assiste o caos!\n*CONFIGURAÇÃO DE IDIOMA*\nEscolha português ou inglês em Configurações. Sua escolha fica salva neste dispositivo e altera os menus, diálogos, itens da loja e este guia.\n*CONQUISTAS*\nDesbloqueie conquistas acumulando Kromer, clicando no Spamton, melhorando KPS/KPC, contratando e evoluindo Darkners e fazendo Friend coletar Pipis. As conquistas são organizadas por categoria. A cada 20 conquistas, você ganha uma estrela; desbloqueie as 100 para ganhar o troféu acima do Spamton. Suas conquistas são salvas neste dispositivo e apagadas ao deletar o progresso. Spamton comemora cada nova conquista!\n*EXTRAS*\nDaqui pra frente tem algumas features simples que não merecem um tópico maior (que pena)\n*TEXTO DE ABERTURA*\nDe vez em quando, a tela inicial guarda uma surpresa rara para você. Fique de olho!\n*TELEFONE*\nUm simples telefone para mandar você pra algum lugar, clique nele, talvez não\n                        *DIÁLOGO*\nUm texto em cima do Spamton informando o que está acontecendo no jogo, e as vezes é só o Spamton falando com você, quem sabe?\n*ANTI-CHEAT*\nAlguma hora você vai descobrir, ele impede você de ser um trapaceiro sujo (e também atrapalha a conexão telefônica), bem, as coisas tomaram uma rota estranha não é?\n*FIM*\nÉ só isso por enquanto, agora vá jogar e se torne um [[BIG SHOT]]!!1`;
-            const linhas = (idiomaAtual === "en" ? idiomaIngles.howToPlay : textoComoJogarPortugues).split("\n");
+            const textoMissaoTrofeuEn = "*TROPHY MISSIONS*\nAfter earning the trophy, click it above Spamton to open three daily missions and the Pipis shelf. Everyone gets the same missions each UTC day. Every three completed missions earn one randomly colored Pipis; unfinished progress carries over. Collect all ten colors for a random 1,000–10,000 Kromer reward, then fill the shelf again. Progress is saved on this device.";
+            const textoMissaoTrofeuPt = "*MISSÕES DO TROFÉU*\nDepois de ganhar o troféu, clique nele acima do Spamton para abrir três missões diárias e a prateleira de Pipis. Todos recebem as mesmas missões a cada dia UTC. A cada três missões concluídas, você ganha um Pipis de cor aleatória; o progresso restante continua no dia seguinte. Junte as dez cores para ganhar de 1.000 a 10.000 Kromer aleatórios e complete a prateleira novamente. O progresso fica salvo neste dispositivo.";
+            const textoGuia = idiomaAtual === "en" ? idiomaIngles.howToPlay : textoComoJogarPortugues;
+            const secaoMissoesTrofeu = idiomaAtual === "en" ? textoMissaoTrofeuEn : textoMissaoTrofeuPt;
+            const descricaoExtras = idiomaAtual === "en"
+                ? "Some simple features that don't deserve a bigger section of their own (what a shame)."
+                : "Daqui pra frente tem algumas features simples que não merecem um tópico maior (que pena)";
+            const textoGuiaComMissoes = textoGuia.replace(
+                `*EXTRAS*\n${descricaoExtras}`,
+                `*EXTRAS*\n${descricaoExtras}\n${secaoMissoesTrofeu}`
+            );
+            const linhas = textoGuiaComMissoes.split("\n");
             container.innerHTML = "";
             
             linhas.forEach(function(linha) {
