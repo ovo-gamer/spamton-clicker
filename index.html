@@ -930,7 +930,7 @@
         const CHAVE_CONQUISTAS = "save_conquistas";
         const dadosConquistas = {
             desbloqueadas: [], cliques: 0, comprasKPS: 0, comprasKPC: 0, compras: 0,
-            pipisColetados: 0, tempoJogado: 0, menusRapidosAbertos: 0, kromerGastos: 0
+            pipisColetados: 0, tempoJogado: 0, menusRapidosAbertos: 0, kromerGastos: 0, cliquesLancer: 0
         };
         let origemConquistas = "titulo";
         let filaBragConquistas = [];
@@ -994,6 +994,7 @@
             kpc: { pt: "Kromer por clique (KPC)", en: "Kromer per click (KPC)" },
             upgrades: { pt: "Melhorias da loja", en: "Shop Upgrades" },
             pipis: { pt: "Pipis coletados", en: "Pipis Collected" },
+            lateGame: { pt: "Jogo avançado", en: "Late Game" },
             friend: { pt: "Friend", en: "Friend" },
             lancer: { pt: "Lancer", en: "Lancer" },
             pink: { pt: "Pink", en: "Pink" },
@@ -1003,7 +1004,8 @@
             playtime: { pt: "Tempo de jogo", en: "Play Time" },
             quickMenu: { pt: "Menu rápido", en: "Quick Menu" },
             spending: { pt: "Kromer gasto", en: "Kromer Spent" },
-            completion: { pt: "Conclusão", en: "Completion" }
+            completion: { pt: "Conclusão", en: "Completion" },
+            lancerSplats: { pt: "Splats do Lancer", en: "Lancer Splats" }
         };
         const categoriasLegadasPorId = new Map([
             ["krm_1", "kromer"], ["krm_100", "kromer"], ["krm_1k", "kromer"],
@@ -1027,14 +1029,12 @@
         ];
         const marcosKPS = [
             ["kps_1k", 1000, "Fluxo de Kromer", "Kromer Flow"],
-            ["kps_10k", 10000, "Torrente de Kromer", "Kromer Flood"],
-            ["kps_100k", 100000, "Rio de Kromer", "Kromer River"]
+            ["kps_10k", 10000, "Torrente de Kromer", "Kromer Flood"]
         ];
         const marcosKPC = [
             ["kpc_2", 2, "Primeiro grande clique", "First Big Click"],
             ["kpc_500", 500, "Clique poderoso", "Powerful Click"],
-            ["kpc_10k", 10000, "Clique de alto valor", "High-Value Click"],
-            ["kpc_100k", 100000, "Clique colossal", "Colossal Click"]
+            ["kpc_10k", 10000, "Clique de alto valor", "High-Value Click"]
         ];
         const marcosCliques = [
             ["click_25k", 25000, "Cliques em série", "Clicking Spree"],
@@ -1056,13 +1056,13 @@
                 verificar: () => kromer >= meta
             })),
             ...marcosKPS.map(([id, meta, titulo, tituloEn]) => ({
-                id, categoria: "kps", meta, titulo, tituloEn,
+                id, categoria: id === "kps_100k" ? "lateGame" : "kps", meta, titulo, tituloEn,
                 descricao: `Alcance ${meta.toLocaleString("pt-BR")} Kromer por segundo.`,
                 descricaoEn: `Reach ${meta.toLocaleString("en-US")} Kromer per second.`,
                 verificar: () => kromerPorSegundo >= meta
             })),
             ...marcosKPC.map(([id, meta, titulo, tituloEn]) => ({
-                id, categoria: "kpc", meta, titulo, tituloEn,
+                id, categoria: id === "kpc_100k" ? "lateGame" : "kpc", meta, titulo, tituloEn,
                 descricao: meta === 2
                     ? "Alcance 2 Kromer por clique (o padrão é 1)."
                     : `Alcance ${meta.toLocaleString("pt-BR")} Kromer por clique.`,
@@ -1141,22 +1141,12 @@
                 verificar: () => dadosConquistas.cliques >= 500000
             },
             {
-                id: "misc_pipis_250k", categoria: "pipis", meta: 250000, titulo: "Maré de Pipis", tituloEn: "Pipis Tide",
-                descricao: "Faça Friend coletar 250.000 Pipis.", descricaoEn: "Have Friend collect 250,000 Pipis.",
-                verificar: () => dadosConquistas.pipisColetados >= 250000
-            },
-            {
                 id: "misc_playtime_2h", categoria: "playtime", meta: 7200, titulo: "Turno prolongado", tituloEn: "Long Shift",
                 descricao: "Jogue por 2 horas no total.", descricaoEn: "Play for 2 hours in total.",
                 verificar: () => dadosConquistas.tempoJogado >= 7200
             },
             {
-                id: "misc_hires_750", categoria: "hireCount", meta: 750, titulo: "Gerente incansável", tituloEn: "Tireless Manager",
-                descricao: "Contrate ou evolua Darkners 750 vezes.", descricaoEn: "Hire or level up Darkners 750 times.",
-                verificar: () => dadosConquistas.compras >= 750
-            },
-            {
-                id: "misc_quickmenu_1000", categoria: "quickMenu", meta: 1000, titulo: "Pausa para todo negócio", tituloEn: "A Break for Every Deal",
+                id: "misc_quickmenu_1000", categoria: "lateGame", meta: 1000, titulo: "Pausa para todo negócio", tituloEn: "A Break for Every Deal",
                 descricao: "Abra o menu rápido 1.000 vezes.", descricaoEn: "Open the quick menu 1,000 times.",
                 verificar: () => dadosConquistas.menusRapidosAbertos >= 1000
             },
@@ -1176,21 +1166,25 @@
                 verificar: () => dadosConquistas.comprasKPS + dadosConquistas.comprasKPC >= 200
             },
             {
-                id: "misc_spent_5m", categoria: "spending", meta: 5000000, titulo: "Investimento sério", tituloEn: "Serious Investment",
-                descricao: "Gaste 5.000.000 Kromer no total.", descricaoEn: "Spend 5,000,000 Kromer in total.",
-                verificar: () => dadosConquistas.kromerGastos >= 5000000
-            },
-            {
                 id: "misc_playtime_5h", categoria: "playtime", meta: 18000, titulo: "Turno dobrado", tituloEn: "Double Shift",
                 descricao: "Jogue por 5 horas no total.", descricaoEn: "Play for 5 hours in total.",
                 verificar: () => dadosConquistas.tempoJogado >= 18000
             },
-            {
-                id: "misc_quickmenu_2500", categoria: "quickMenu", meta: 2500, titulo: "Pausa recorrente", tituloEn: "Frequent Breaks",
-                descricao: "Abra o menu rápido 2.500 vezes.", descricaoEn: "Open the quick menu 2,500 times.",
-                verificar: () => dadosConquistas.menusRapidosAbertos >= 2500
-            },
             ...[
+                [1, "Primeiro splat", "First Splat"],
+                [25, "Barulho familiar", "Familiar Splat"],
+                [100, "Especialista em splat", "Splat Specialist"],
+                [500, "Splat sem parar", "Splat Machine"],
+                [1000, "Lenda do splat", "Splat Legend"]
+            ].map(([meta, titulo, tituloEn]) => ({
+                id: `lancer_splat_${meta}`, categoria: "lancerSplats", meta,
+                titulo, tituloEn,
+                descricao: `Clique em Lancer ${meta.toLocaleString("pt-BR")} vezes para ouvir o splat.`,
+                descricaoEn: `Click Lancer ${meta.toLocaleString("en-US")} times to hear the splat.`,
+                verificar: () => dadosConquistas.cliquesLancer >= meta
+            })),
+            ...[
+                [1000, "Primeira compra", "First Purchase"],
                 [10000, "Primeiro grande gasto", "First Big Spend"],
                 [100000, "Dinheiro bem investido", "Money Well Spent"],
                 [1000000, "Gastador milionário", "Million-Kromer Spender"]
@@ -1467,6 +1461,7 @@
             dadosConquistas.tempoJogado = 0;
             dadosConquistas.menusRapidosAbertos = 0;
             dadosConquistas.kromerGastos = 0;
+            dadosConquistas.cliquesLancer = 0;
             filaBragConquistas = [];
             bragConquistaAtivo = false;
             bragConquistaAte = 0;
@@ -1482,7 +1477,7 @@
                 dadosConquistas.desbloqueadas = Array.isArray(dados.desbloqueadas)
                     ? [...new Set(dados.desbloqueadas.filter(id => idsValidos.has(id)))]
                     : [];
-                ["cliques", "comprasKPS", "comprasKPC", "compras", "pipisColetados", "tempoJogado", "menusRapidosAbertos", "kromerGastos"].forEach(chave => {
+                ["cliques", "comprasKPS", "comprasKPC", "compras", "pipisColetados", "tempoJogado", "menusRapidosAbertos", "kromerGastos", "cliquesLancer"].forEach(chave => {
                     const valor = Number(dados[chave]);
                     dadosConquistas[chave] = Number.isSafeInteger(valor) && valor >= 0 ? valor : 0;
                 });
@@ -1770,8 +1765,8 @@
                 prateleira.appendChild(slot);
             }
             document.getElementById("recompensa-prateleira-pipis").textContent = idiomaAtual === "en"
-                ? `Collect all 10 colors for a random reward of up to 10,000 Kromer. Completed shelves can be collected again.`
-                : `Junte as 10 cores para ganhar uma recompensa aleatória de até 10.000 Kromer. Você pode completar a prateleira novamente.`;
+                ? `Collect all 10 colors for a random reward of up to 1,000,000 Kromer. Completed shelves can be collected again.`
+                : `Junte as 10 cores para ganhar uma recompensa aleatória de até 1.000.000 Kromer. Você pode completar a prateleira novamente.`;
         }
         function abrirMenuMissoesTrofeu() {
             const possuiTrofeu = dadosConquistas.desbloqueadas.length === listaConquistas.length;
@@ -1789,7 +1784,7 @@
             estadoMissoesTrofeu.pipis.push(cor.id);
             notificacaoMissoesTrofeu = { tipo: "pipis", cor: cor.id };
             if (estadoMissoesTrofeu.pipis.length === 10) {
-                const recompensa = Math.floor(Math.random() * 9001) + 1000;
+                const recompensa = Math.floor(Math.random() * 999001) + 1000;
                 estadoMissoesTrofeu.pipis = [];
                 estadoMissoesTrofeu.conjuntosCompletos++;
                 kromer += recompensa;
@@ -2172,7 +2167,15 @@
             else { definirVolumeRisada(somInstante, 0.5); somInstante.playbackRate = Math.random() * (1.2 - 0.8) + 0.8; }
             somInstante.play().catch(function() {});
         }
-        function cliqueNoLancerSplat() { if (!cheatDetectado) { const splatSom = new Audio('splat.mp3'); splatSom.volume = 0.7; splatSom.play().catch(function() {}); } }
+        function cliqueNoLancerSplat() {
+            if (cheatDetectado || nivelLancer === 0) return;
+            dadosConquistas.cliquesLancer++;
+            salvarConquistas();
+            verificarConquistas();
+            const splatSom = new Audio('splat.mp3');
+            splatSom.volume = 0.7;
+            splatSom.play().catch(function() {});
+        }
         function dispararSomFriend() { if (!risadasMutadas) { const sf = definirVolumeRisada(new Audio('friend_laugh.mp3'), 0.6); sf.play().catch(function() {}); } }
         function dispararSomLancer() { if (!risadasMutadas) { const sl = definirVolumeRisada(new Audio('lancer_laugh.mp3'), 0.6); sl.play().catch(function() {}); } }
         function dispararSomPink() { if (!risadasMutadas) { const sp = definirVolumeRisada(new Audio('pink_laugh.mp3'), 0.6); sp.play().catch(function() {}); } }
@@ -2707,9 +2710,13 @@
             if (!container) return;
             
             const textoComoJogarPortugues = `*KROMER*\nKromer é a moeda que você usará para progredir nesse jogo, para começar, clique no Spamton para gerar 1 kromer, não se preocupe, conseguir kromer será mais fácil depois\n*LOJA*\nA loja é o lugar onde sua produção de kromer aumentará ao longo do tempo, inicialmente ela tem dois botões, o de cima aumenta KPS (kromer por segundo), o de baixo aumenta KPC (kromer por clique), ocasionalmente um terceiro botão azul vai aparecer e vai conceder um dos 4 power-ups\n*POWER-UPS*\nPower-ups são outros darkners que você pode contratar e evoluir, mas antes de explicar como cada um deles funciona eu vou explicar algo necessário para eles funcionarem\n*PIPIS*\nQuando você gera kromer ao clicar no Spamton, alguns $ aparecem, eles começaram sendo uma decoração durante o desenvolvimento do jogo mais viraram uma função excencial para progredir com power-ups, a cada $ que aparece, há uma pequena chance do $ ser substituído por um pipis, no começo eles parecem um easter egg legal mas em breve terão importância\n*IMAGE_FRIEND*\nEsse darkner é o mais importante para os outros power-ups funcionarem bem, quando um pipis aparece na tela, o FRIEND irá imediatamente pegá-lo para conceder uma quantia de kromer em troca, conforme o FRIEND evolui, a chance de um pipis aparecer no lugar de um $ aumenta levemente, isso ajudará depois\n*LANCER*\nLancer é um ótimo companheiro caso você se sinta sozinho nessa jornada, ele trouxe sua bicicleta motorizada para melhorar a poluição do ambiente e faz um som engraçado quando você clica nele, mas ele não está lá só pra brincar, ocasionalmente ele joga alguns pipis para o FRIEND pegar (eu não disse que ele seria importante?), conforme Lancer evolui, ele joga mais pipis de uma vez (legal né?)\n*GASTER*\nTambém conhecido como Homem Misterioso, Gaster ocasionalmente deixará sua tela monocromática, enquanto joga alguns pipis para o FRIEND pegar, conforme o Gaster evolui, ele joga mais pipis também\n*PINK*\nOu Mew Mew pra quem só joga Undertale, ela é um passo importante para progressão, suponhamos que você gastou muito kromer em KPC, mas quer deixar o jogo rodando afk, não se preocupe! Pink age como o seu mouse, e gera kromer a cada segundo, mas ao invés de gerar a quantia baseada em KPS, ela gera baseada em KPC, ou seja, ela clica por você, conforme a Pink evolui, ela gera mais $ e as chances de pipis gerados por ela aumenta\n*MENUS E CONFIGURAÇÕES*\nVocê acha que eu não ia citar isso? claro que não! eu vou explicar agora!\n*MENU PRINCIPAL*\nO lugar onde tudo começa, aqui tem alguns botões que podem ou não ajudar :)\n*BOTÃO "JOGAR"*\nFaz você jogar\n*BOTÃO "CONFIGURAÇÕES"*\nAqui você pode ligar ou desligar a música e as risadas dos darkners que você contratou, ajustar o volume de cada um pelos controles abaixo dos botões, ativar a tela cheia (se o navegador oferecer suporte), mudar o idioma e também resetar o progresso aqui mas a gente já resetou demais em Undertale\n*BOTÃO "CRÉDITOS"*\nAqui temos os nomes dos criadores desse jogo, que se dedicaram muito para fazer tudo funcionar (não conta pra ninguém mas eu copiei muito código de muitos sites e remendei tudo junto)\n*BOTÃO "COMO JOGAR"*\nTraz você pra esse submenu!\n*MENU DE PAUSA*\nBasicamente uma curta versão do menu principal mas ele fica dentro do jogo pra você acessar enquanto assiste o caos!\n*CONFIGURAÇÃO DE IDIOMA*\nEscolha português ou inglês em Configurações. Sua escolha fica salva neste dispositivo e altera os menus, diálogos, itens da loja e este guia.\n*CONQUISTAS*\nDesbloqueie conquistas acumulando Kromer, clicando no Spamton, melhorando KPS/KPC, contratando e evoluindo Darkners e fazendo Friend coletar Pipis. As conquistas são organizadas por categoria. A cada 20 conquistas, você ganha uma estrela; desbloqueie as 100 para ganhar o troféu acima do Spamton. Suas conquistas são salvas neste dispositivo e apagadas ao deletar o progresso. Spamton comemora cada nova conquista!\n*EXTRAS*\nDaqui pra frente tem algumas features simples que não merecem um tópico maior (que pena)\n*TEXTO DE ABERTURA*\nDe vez em quando, a tela inicial guarda uma surpresa rara para você. Fique de olho!\n*TELEFONE*\nUm simples telefone para mandar você pra algum lugar, clique nele, talvez não\n                        *DIÁLOGO*\nUm texto em cima do Spamton informando o que está acontecendo no jogo, e as vezes é só o Spamton falando com você, quem sabe?\n*ANTI-CHEAT*\nAlguma hora você vai descobrir, ele impede você de ser um trapaceiro sujo (e também atrapalha a conexão telefônica), bem, as coisas tomaram uma rota estranha não é?\n*FIM*\nÉ só isso por enquanto, agora vá jogar e se torne um [[BIG SHOT]]!!1`;
-            const textoMissaoTrofeuEn = "*TROPHY MISSIONS*\nAfter earning the trophy, click it above Spamton to open three daily missions and the Pipis shelf. Everyone gets the same missions each UTC day. Every three completed missions earn one randomly colored Pipis; unfinished progress carries over. Collect all ten colors for a random 1,000–10,000 Kromer reward, then fill the shelf again. Progress is saved on this device.";
-            const textoMissaoTrofeuPt = "*MISSÕES DO TROFÉU*\nDepois de ganhar o troféu, clique nele acima do Spamton para abrir três missões diárias e a prateleira de Pipis. Todos recebem as mesmas missões a cada dia UTC. A cada três missões concluídas, você ganha um Pipis de cor aleatória; o progresso restante continua no dia seguinte. Junte as dez cores para ganhar de 1.000 a 10.000 Kromer aleatórios e complete a prateleira novamente. O progresso fica salvo neste dispositivo.";
-            const textoGuia = idiomaAtual === "en" ? idiomaIngles.howToPlay : textoComoJogarPortugues;
+            const textoMissaoTrofeuEn = "*TROPHY MISSIONS*\nAfter earning the trophy, click it above Spamton to open three daily missions and the Pipis shelf. Everyone gets the same missions each UTC day. Every three completed missions earn one randomly colored Pipis; unfinished progress carries over. Collect all ten colors for a random 1,000–1,000,000 Kromer reward, then fill the shelf again. Progress is saved on this device.";
+            const textoMissaoTrofeuPt = "*MISSÕES DO TROFÉU*\nDepois de ganhar o troféu, clique nele acima do Spamton para abrir três missões diárias e a prateleira de Pipis. Todos recebem as mesmas missões a cada dia UTC. A cada três missões concluídas, você ganha um Pipis de cor aleatória; o progresso restante continua no dia seguinte. Junte as dez cores para ganhar de 1.000 a 1.000.000 Kromer aleatórios e complete a prateleira novamente. O progresso fica salvo neste dispositivo.";
+            const textoGuiaBase = idiomaAtual === "en" ? idiomaIngles.howToPlay : textoComoJogarPortugues;
+            const textoGuia = textoGuiaBase.replace(
+                idiomaAtual === "en" ? "unlock all 100 to earn the trophy" : "desbloqueie as 100 para ganhar o troféu",
+                idiomaAtual === "en" ? "unlock every achievement to earn the trophy" : "desbloqueie todas para ganhar o troféu"
+            );
             const secaoMissoesTrofeu = idiomaAtual === "en" ? textoMissaoTrofeuEn : textoMissaoTrofeuPt;
             const descricaoExtras = idiomaAtual === "en"
                 ? "Some simple features that don't deserve a bigger section of their own (what a shame)."
