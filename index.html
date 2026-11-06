@@ -275,12 +275,14 @@
         .missao-progresso { color: white; font-size: 14px; }
         .missoes-notificacao { min-height: 1.3em; margin: 12px 0; color: #00ffcc; font-weight: bold; }
         .pipis-prateleira {
+            --pipis-gap: 8px;
             display: grid;
             grid-template-columns: repeat(5, minmax(0, 1fr));
-            gap: 8px;
-            margin: 12px 0 16px;
+            gap: var(--pipis-gap);
+            margin: 12px 0 22px;
         }
         .pipis-slot {
+            position: relative;
             min-height: 64px;
             display: flex;
             flex-direction: column;
@@ -292,20 +294,41 @@
             color: white;
             font-size: 11px;
         }
+        .pipis-slot::after {
+            content: "";
+            flex: 0 0 10px;
+            width: calc(100% + var(--pipis-gap) + 4px);
+            margin: 3px calc(var(--pipis-gap) / -2 - 2px) -10px;
+            border-top: 2px solid #d5a467;
+            border-bottom: 2px solid #633719;
+            box-sizing: border-box;
+            background: linear-gradient(to bottom, #c58a4a 0%, #a66b35 42%, #805027 100%);
+            box-shadow: 0 3px 0 #4b2b18;
+        }
         .pipis-sprite {
+            position: relative;
             width: 40px;
             height: 30px;
-            background-color: var(--pipis-color, #334);
+            background: url("pipis_blank.png") center / contain no-repeat;
+            image-rendering: pixelated;
+            isolation: isolate;
+        }
+        .pipis-sprite::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: var(--pipis-color, transparent);
+            mix-blend-mode: color;
             -webkit-mask: url("pipis_blank.png") center / contain no-repeat;
             mask: url("pipis_blank.png") center / contain no-repeat;
-            image-rendering: pixelated;
+            pointer-events: none;
         }
         .pipis-slot.vazio .pipis-sprite { opacity: .18; }
         .missoes-recompensa { color: yellow; font-weight: bold; margin: 8px 0 14px; }
         @media (max-width: 700px) {
             #tela-missoes-trofeu { padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)); }
             .missoes-painel { width: 100%; max-height: 90vh; max-height: 90dvh; padding: 12px; }
-            .pipis-prateleira { gap: 5px; }
+            .pipis-prateleira { --pipis-gap: 5px; }
             .pipis-slot { min-height: 54px; font-size: 9px; }
             .pipis-sprite { width: 32px; height: 24px; }
         }
@@ -588,7 +611,7 @@
         <button class="botao-menu" data-i18n="achievements" onclick="abrirConquistas('titulo')">CONQUISTAS</button>
         <button class="botao-menu" data-i18n="credits" onclick="abrirSubTela('tela-creditos')">CRÉDITOS</button>
         <button class="botao-menu" data-i18n="howToPlay" onclick="abrirSubTela('tela-como-jogar')">COMO JOGAR</button>
-        <div id="versao-jogo" aria-live="polite">VERSÃO...</div>
+        <div id="versao-jogo" aria-live="polite">...</div>
     </div>
 
     <div id="tela-config" class="sub-tela">
@@ -744,6 +767,7 @@
                 deleteProgress: "DELETE PROGRESS",
                 back: "BACK",
                 quickMenu: "QUICK MENU",
+                devTestMissions: "DEV TEST: DAILY MISSIONS",
                 resume: "RESUME",
                 mainMenu: "MAIN MENU",
                 clickForKromer: "(CLICK ME TO MAKE [Kromer]!)",
@@ -1578,25 +1602,30 @@
             atualizarVisualProgressoConquistas();
         }
         const CHAVE_MISSOES_TROFEU = "save_missoes_trofeu";
-        const CORES_PIPIS = [
-            { id: "red", nome: "Red", nomePt: "Vermelho", cor: "#ff3b30" },
-            { id: "orange", nome: "Orange", nomePt: "Laranja", cor: "#ff9500" },
-            { id: "yellow", nome: "Yellow", nomePt: "Amarelo", cor: "#ffe600" },
-            { id: "green", nome: "Green", nomePt: "Verde", cor: "#34c759" },
-            { id: "cyan", nome: "Cyan", nomePt: "Ciano", cor: "#00e5ff" },
-            { id: "blue", nome: "Blue", nomePt: "Azul", cor: "#3478f6" },
-            { id: "purple", nome: "Purple", nomePt: "Roxo", cor: "#af52de" },
-            { id: "pink", nome: "Pink", nomePt: "Rosa", cor: "#ff2d91" },
-            { id: "white", nome: "White", nomePt: "Branco", cor: "#f2f2f7" },
-            { id: "gold", nome: "Gold", nomePt: "Dourado", cor: "#d9a400" }
-        ];
+        const CORES_PIPIS_ANTIGAS = new Set([
+            "red", "orange", "yellow", "green", "cyan",
+            "blue", "purple", "pink", "white", "gold"
+        ]);
+        function gerarCorPipis(coresExistentes = []) {
+            let cor;
+            do {
+                const bytes = new Uint8Array(3);
+                if (window.crypto && window.crypto.getRandomValues) {
+                    window.crypto.getRandomValues(bytes);
+                } else {
+                    bytes.forEach((_, indice) => { bytes[indice] = Math.floor(Math.random() * 256); });
+                }
+                cor = `#${Array.from(bytes, byte => byte.toString(16).padStart(2, "0")).join("")}`;
+            } while (coresExistentes.includes(cor));
+            return cor;
+        }
         const TIPOS_MISSAO_DIARIA = [
-            { tipo: "clicks", min: 20, max: 100 },
-            { tipo: "kromer", min: 500, max: 5000, step: 500 },
-            { tipo: "upgrades", min: 1, max: 4 },
-            { tipo: "pipis", min: 1, max: 5 },
-            { tipo: "hires", min: 1, max: 2 },
-            { tipo: "spent", min: 250, max: 3000, step: 250 }
+            { tipo: "clicks", min: 250, max: 1500 },
+            { tipo: "kromer", min: 500000, max: 5000000, step: 500000 },
+            { tipo: "upgrades", min: 25, max: 500 },
+            { tipo: "pipis", min: 50, max: 200 },
+            { tipo: "hires", min: 25, max: 50 },
+            { tipo: "spent", min: 100000, max: 1000000, step: 100000 }
         ];
         let estadoMissoesTrofeu = {
             data: "",
@@ -1610,6 +1639,7 @@
         let cacheDataMissoes = "";
         let cacheMissoesDiarias = [];
         let estadoMissoesCarregado = false;
+        let retornarMissoesAoMenuPausa = false;
         function dataUtcAtual() {
             return new Date().toISOString().slice(0, 10);
         }
@@ -1657,6 +1687,7 @@
         }
         function carregarEstadoMissoesTrofeu() {
             const salvo = localStorage.getItem(CHAVE_MISSOES_TROFEU);
+            let salvamentoMigrado = false;
             if (salvo !== null) {
                 try {
                     const dados = JSON.parse(salvo);
@@ -1672,7 +1703,17 @@
                         progressoPipis: Number.isSafeInteger(dados.progressoPipis) && dados.progressoPipis >= 0 && dados.progressoPipis < 3
                             ? dados.progressoPipis : 0,
                         pipis: Array.isArray(dados.pipis)
-                            ? [...new Set(dados.pipis.filter(id => CORES_PIPIS.some(cor => cor.id === id)))].slice(0, 9)
+                            ? dados.pipis.slice(0, 9).reduce((cores, cor) => {
+                                let corValida = null;
+                                if (typeof cor === "string" && /^#[\da-f]{6}$/i.test(cor)) {
+                                    corValida = cor.toLowerCase();
+                                } else if (CORES_PIPIS_ANTIGAS.has(cor)) {
+                                    corValida = gerarCorPipis(cores);
+                                    salvamentoMigrado = true;
+                                }
+                                if (corValida && !cores.includes(corValida)) cores.push(corValida);
+                                return cores;
+                            }, [])
                             : [],
                         conjuntosCompletos: Number.isSafeInteger(dados.conjuntosCompletos) && dados.conjuntosCompletos >= 0
                             ? dados.conjuntosCompletos : 0
@@ -1689,6 +1730,7 @@
             }
             estadoMissoesCarregado = true;
             garantirDataMissoesAtual();
+            if (salvamentoMigrado) salvarEstadoMissoesTrofeu();
             renderizarMissoesTrofeu();
         }
         function textoMissao(tipo, meta) {
@@ -1707,7 +1749,7 @@
             if (!painel || !estadoMissoesCarregado) return;
             garantirDataMissoesAtual();
             document.getElementById("titulo-missoes-trofeu").textContent =
-                idiomaAtual === "en" ? "TROPHY MISSIONS" : "MISSÕES DO TROFÉU";
+                idiomaAtual === "en" ? "DAILY MISSIONS" : "MISSÕES DIÁRIAS";
             document.getElementById("resumo-missoes-trofeu").textContent = idiomaAtual === "en"
                 ? `Daily missions completed toward a Pipis: ${estadoMissoesTrofeu.progressoPipis}/3`
                 : `Missões diárias concluídas para ganhar um Pipis: ${estadoMissoesTrofeu.progressoPipis}/3`;
@@ -1731,10 +1773,9 @@
             });
             const notificacao = document.getElementById("notificacao-missoes-trofeu");
             if (notificacaoMissoesTrofeu && notificacaoMissoesTrofeu.tipo === "pipis") {
-                const cor = CORES_PIPIS.find(item => item.id === notificacaoMissoesTrofeu.cor);
                 notificacao.textContent = idiomaAtual === "en"
-                    ? `Mission streak complete! You got a ${cor.nome} Pipis.`
-                    : `Sequência de missões completa! Você ganhou um Pipis ${cor.nomePt}.`;
+                    ? "Mission streak complete! You got a Pipis."
+                    : "Sequência de missões completa! Você ganhou um Pipis.";
             } else if (notificacaoMissoesTrofeu && notificacaoMissoesTrofeu.tipo === "shelf") {
                 const valor = notificacaoMissoesTrofeu.recompensa.toLocaleString(idiomaAtual === "en" ? "en-US" : "pt-BR");
                 notificacao.textContent = idiomaAtual === "en"
@@ -1746,23 +1787,20 @@
             const prateleira = document.getElementById("prateleira-pipis");
             prateleira.replaceChildren();
             for (let indice = 0; indice < 10; indice++) {
-                const corId = estadoMissoesTrofeu.pipis[indice];
-                const cor = CORES_PIPIS.find(item => item.id === corId);
+                const cor = estadoMissoesTrofeu.pipis[indice];
                 const slot = document.createElement("div");
                 slot.className = `pipis-slot${cor ? "" : " vazio"}`;
                 const sprite = document.createElement("div");
                 sprite.className = "pipis-sprite";
                 if (cor) {
-                    sprite.style.setProperty("--pipis-color", cor.cor);
+                    sprite.style.setProperty("--pipis-color", cor);
                     sprite.setAttribute("role", "img");
-                    sprite.setAttribute("aria-label", idiomaAtual === "en" ? `${cor.nome} Pipis` : `Pipis ${cor.nomePt}`);
+                    sprite.setAttribute("aria-label", "Pipis");
                 } else {
                     sprite.setAttribute("aria-hidden", "true");
                 }
                 const rotulo = document.createElement("span");
-                rotulo.textContent = cor
-                    ? (idiomaAtual === "en" ? cor.nome : cor.nomePt)
-                    : (idiomaAtual === "en" ? "Empty" : "Vazio");
+                rotulo.textContent = cor ? "Pipis" : (idiomaAtual === "en" ? "Empty" : "Vazio");
                 slot.append(sprite, rotulo);
                 prateleira.appendChild(slot);
             }
@@ -1773,18 +1811,22 @@
         function abrirMenuMissoesTrofeu() {
             const possuiTrofeu = dadosConquistas.desbloqueadas.length === listaConquistas.length;
             if (!possuiTrofeu || cheatDetectado) return;
+            retornarMissoesAoMenuPausa = false;
             notificacaoMissoesTrofeu = null;
             renderizarMissoesTrofeu();
             document.getElementById("tela-missoes-trofeu").style.display = "flex";
         }
         function fecharMenuMissoesTrofeu() {
             document.getElementById("tela-missoes-trofeu").style.display = "none";
+            if (retornarMissoesAoMenuPausa) {
+                document.getElementById("tela-pausa").style.display = "flex";
+                retornarMissoesAoMenuPausa = false;
+            }
         }
         function concederPipisDeMissao() {
-            const coresDisponiveis = CORES_PIPIS.filter(cor => !estadoMissoesTrofeu.pipis.includes(cor.id));
-            const cor = coresDisponiveis[Math.floor(Math.random() * coresDisponiveis.length)];
-            estadoMissoesTrofeu.pipis.push(cor.id);
-            notificacaoMissoesTrofeu = { tipo: "pipis", cor: cor.id };
+            const cor = gerarCorPipis(estadoMissoesTrofeu.pipis);
+            estadoMissoesTrofeu.pipis.push(cor);
+            notificacaoMissoesTrofeu = { tipo: "pipis", cor: cor };
             if (estadoMissoesTrofeu.pipis.length === 10) {
                 const recompensa = Math.floor(Math.random() * 999001) + 1000;
                 estadoMissoesTrofeu.pipis = [];
