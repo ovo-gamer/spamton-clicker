@@ -759,9 +759,12 @@
                 "SECRET TO [Sales]",
                 "KEY TO THE [Dark Basement]"
             ],
-            howToPlay: `*KROMER*\nKromer is the currency you use to progress. Click Spamton to make 1 Kromer. Don't worry, earning Kromer gets easier later.\n*THE SHOP*\nThe shop increases how much Kromer you earn. The top button increases KPS (Kromer per second), and the bottom button increases KPC (Kromer per click). A third blue button occasionally appears and offers one of four power-ups.\n*POWER-UPS*\nPower-ups are other Darkners you can hire and level up. First, here's a mechanic they need to work well.\n*PIPIS*\nClicking Spamton makes little $ appear. They started as decoration during development, but became an important part of power-up progression. Each $ has a small chance to be replaced by a Pipis.\n*IMAGE_FRIEND*\nFriend is important for the other power-ups: whenever a Pipis appears, Friend catches it and gives you Kromer. Leveling up Friend slightly increases the chance that a $ becomes a Pipis.\n*LANCER*\nLancer is a great companion if you get lonely. He brought his motorbike to improve air pollution and makes a funny sound when clicked. He also occasionally throws Pipis for Friend to catch. Higher levels throw more Pipis at once.\n*GASTER*\nAlso known as the Mystery Man, Gaster occasionally turns the screen monochrome while throwing Pipis for Friend. Higher levels throw more Pipis.\n*PINK*\nOr Mew Mew, if you only play Undertale. Pink is useful if you've invested in KPC and want to leave the game running AFK: she acts like your mouse and generates Kromer every second based on KPC instead of KPS. Higher levels generate more $ and increase the chance of throwing Pipis.\n*MENUS AND SETTINGS*\nYou thought I wouldn't explain these? Of course I would!\n*MAIN MENU*\nWhere it all begins. There are a few buttons here that might help :)\n*\"PLAY\" BUTTON*\nPlays the game.\n*\"SETTINGS\" BUTTON*\nTurn music and your hired Darkners' laughs on or off, adjust each volume with the slider below its button, enter fullscreen (if your browser supports it), change the language, or reset your progress. (We've reset enough in Undertale already.)\n*\"CREDITS\" BUTTON*\nShows the names of the people who made this game work. (Don't tell anyone, but I copied and stitched together code from a bunch of websites.)\n*\"HOW TO PLAY\" BUTTON*\nBrings you to this guide!\n*QUICK MENU*\nA shorter version of the main menu inside the game, so you can open it while watching the chaos!\n*LANGUAGE SETTING*\nChoose English or Portuguese in Settings. Your choice is saved on this device and changes the game's menus, dialogue, shop items, and this guide.\n*EXTRAS*\nSome simple features that don't deserve a bigger section of their own (what a shame).\n*PHONE*\nA simple phone that sends you somewhere. Click it... or maybe don't.\n*DIALOGUE*\nText above Spamton that tells you what's happening in the game. Sometimes it's just Spamton talking to you. Who knows?\n*ANTI-CHEAT*\nYou'll find out eventually. It stops you from being a filthy cheater (and messes with the phone connection too). Things took a weird route, huh?\n*THE END*\nThat's all for now. Go play and become a [[BIG SHOT]]!!1`
+            howToPlay: `*KROMER*\nKromer is the currency you use to progress. Click Spamton to make 1 Kromer. Don't worry, earning Kromer gets easier later.\n*THE SHOP*\nThe shop increases how much Kromer you earn. The top button increases KPS (Kromer per second), and the bottom button increases KPC (Kromer per click). A third blue button occasionally appears and offers one of four power-ups.\n*POWER-UPS*\nPower-ups are other Darkners you can hire and level up. First, here's a mechanic they need to work well.\n*PIPIS*\nClicking Spamton makes little $ appear. They started as decoration during development, but became an important part of power-up progression. Each $ has a small chance to be replaced by a Pipis.\n*IMAGE_FRIEND*\nFriend is important for the other power-ups: whenever a Pipis appears, Friend catches it and gives you Kromer. Leveling up Friend slightly increases the chance that a $ becomes a Pipis.\n*LANCER*\nLancer is a great companion if you get lonely. He brought his motorbike to improve air pollution and makes a funny sound when clicked. He also occasionally throws Pipis for Friend to catch. Higher levels throw more Pipis at once.\n*GASTER*\nAlso known as the Mystery Man, Gaster occasionally turns the screen monochrome while throwing Pipis for Friend. Higher levels throw more Pipis.\n*PINK*\nOr Mew Mew, if you only play Undertale. Pink is useful if you've invested in KPC and want to leave the game running AFK: she acts like your mouse and generates Kromer every second based on KPC instead of KPS. Higher levels generate more $ and increase the chance of throwing Pipis.\n*MENUS AND SETTINGS*\nYou thought I wouldn't explain these? Of course I would!\n*MAIN MENU*\nWhere it all begins. There are a few buttons here that might help :)\n*\"PLAY\" BUTTON*\nPlays the game.\n*\"SETTINGS\" BUTTON*\nTurn music and your hired Darkners' laughs on or off, adjust each volume with the slider below its button, enter fullscreen (if your browser supports it), change the language, or reset your progress. (We've reset enough in Undertale already.)\n*\"CREDITS\" BUTTON*\nShows the names of the people who made this game work. (Don't tell anyone, but I copied and stitched together code from a bunch of websites.)\n*\"HOW TO PLAY\" BUTTON*\nBrings you to this guide!\n*QUICK MENU*\nA shorter version of the main menu inside the game, so you can open it while watching the chaos!\n*LANGUAGE SETTING*\nChoose English or Portuguese in Settings. Your choice is saved on this device and changes the game's menus, dialogue, shop items, and this guide.\n*ACHIEVEMENTS*\nUnlock achievements by collecting Kromer, clicking Spamton, improving KPS/KPC, hiring and leveling up Darkners, and having Friend collect Pipis. Achievements are sorted into categories. Every 20 achievements earns a star; unlock all 100 to earn the trophy above Spamton. Your achievements are saved on this device and are erased when progress is deleted. Spamton celebrates each new achievement!\n*EXTRAS*\nSome simple features that don't deserve a bigger section of their own (what a shame).\n*SPLASH TEXT*\nEvery now and then, the title screen has a rare surprise waiting for you. Keep an eye out!\n*PHONE*\nA simple phone that sends you somewhere. Click it... or maybe don't.\n            *DIALOGUE*\nText above Spamton that tells you what's happening in the game. Sometimes it's just Spamton talking to you. Who knows?\n*ANTI-CHEAT*\nYou'll find out eventually. It stops you from being a filthy cheater (and messes with the phone connection too). Things took a weird route, huh?\n*THE END*\nThat's all for now. Go play and become a [[BIG SHOT]]!!1`
         };
         let idiomaAtual = localStorage.getItem("cfg_idioma") === "en" ? "en" : "pt";
+        let estadoSplash = { tipo: "opening", indice: Math.floor(Math.random() * falasAbertura.length) };
+        let estadoFalaSpamton = { tipo: "welcome" };
+        let estadoFalaMorte = { tipo: "notice" };
         function textoIdioma(chave, textoPortugues) {
             return idiomaAtual === "en" ? (idiomaIngles.ui[chave] || textoPortugues) : textoPortugues;
         }
@@ -771,7 +774,7 @@
 
         const kromerLabel = document.getElementById("kromer");
         const textoAbertura = document.getElementById("texto-abertura");
-        textoAbertura.textContent = listaIdioma("opening", falasAbertura)[Math.floor(Math.random() * falasAbertura.length)];
+        textoAbertura.textContent = listaIdioma("opening", falasAbertura)[estadoSplash.indice];
         const preferenciaMovimentoReduzido = window.matchMedia("(prefers-reduced-motion: reduce)");
         const periodoInclinacao = Math.random() * 1800 + 1800;
         const periodoEscala = Math.random() * 2600 + 2200;
@@ -1111,6 +1114,143 @@
             ...conquistasExtras,
             ...conquistasDarkners
         ];
+        const falasConquista = {
+            en: [
+                "CONGRATULATIONS! YOU UNLOCKED [{name}]!",
+                "A NEW [ACHIEVEMENT] FOR OUR BIG SHOT: [{name}]!",
+                "YOU DID IT! [{name}] IS NOW PART OF YOUR [DEAL]!",
+                "LOOK AT YOU, UNLOCKING [{name}] LIKE A TRUE [WINNER]!",
+                "THAT'S A [SWEET DEAL]! YOU GOT [{name}]!",
+                "ANOTHER MILESTONE FOR THE [RECORD BOOK]: [{name}]!"
+            ],
+            pt: [
+                "PARAB3NS! VOCÊ DESBLOQUEOU [{name}]!",
+                "UM NOVO [FEITO] PARA NOSSO BIG SHOT: [{name}]!",
+                "VOCÊ CONSEGUIU! [{name}] AGORA FAZ PARTE DO SEU [ACORDO]!",
+                "OLHA SÓ! DESBLOQUEANDO [{name}] COMO UM [PROFISSIONAL]!",
+                "ISSO SIM É UM [BOM NEGÓCIO]! VOCÊ GANHOU [{name}]!",
+                "MAIS UM MARCO PARA A [HISTÓRIA]: [{name}]!"
+            ]
+        };
+        const falasSplashCheat = {
+            en: [
+                "NICE TRY, [CHEATER]! SPAMTON CAUGHT YOU RED-HANDED!",
+                "YOU CAN'T [Outsmart] A BIG SHOT, [CHEATER]!",
+                "THAT [Cheat Code] DEAL JUST GOT YOU CAUGHT!"
+            ],
+            pt: [
+                "BOA TENTATIVA, [TRAPACEIRO]! SPAMTON PEGOU VOCÊ NO FLAGRA!",
+                "VOCÊ NÃO CONSEGUE [ENGANAR] UM BIG SHOT, [TRAPACEIRO]!",
+                "ESSE [CÓDIGO DE TRAPAÇA] ACABOU ENTREGANDO VOCÊ!"
+            ]
+        };
+        function renderizarSplash() {
+            const splash = estadoSplash;
+            textoAbertura.style.color = splash.tipo === "cheat" ? "red" : "yellow";
+            if (splash.tipo === "cheat") {
+                textoAbertura.textContent = falasSplashCheat[idiomaAtual][splash.indice];
+            } else if (splash.tipo === "opening") {
+                textoAbertura.textContent = listaIdioma("opening", falasAbertura)[splash.indice];
+            } else if (splash.tipo === "time") {
+                const hora = new Date(splash.valor).toLocaleTimeString(
+                    idiomaAtual === "en" ? "en-US" : "pt-BR",
+                    idiomaAtual === "en" ? { hour: "numeric", minute: "2-digit" } : { hour: "2-digit", minute: "2-digit" }
+                );
+                textoAbertura.textContent = idiomaAtual === "en"
+                    ? `IT'S ${hora}... TIME FOR A [DEAL]!`
+                    : `SÃO ${hora}... HORA DE UM [ACORDO]!`;
+            } else if (splash.tipo === "kromer") {
+                const valor = splash.valor.toLocaleString(idiomaAtual === "en" ? "en-US" : "pt-BR");
+                textoAbertura.textContent = idiomaAtual === "en"
+                    ? `YOU HAVE ${valor} KROMER! NICE! NOW GET [MORE]!`
+                    : `VOCÊ TEM ${valor} KROMER! LEGAL! AGORA JUNTE [MAIS]!`;
+            } else if (splash.tipo === "achievements") {
+                textoAbertura.textContent = idiomaAtual === "en"
+                    ? splash.valor === 0
+                        ? "YOU REALLY GOT THE TROPHY? COOL, I DON'T NEED TO COUNT ANYMORE."
+                        : `ONLY ${splash.valor} MORE ${splash.valor === 1 ? "ACHIEVEMENT" : "ACHIEVEMENTS"} UNTIL THAT [TROPHY]!`
+                    : splash.valor === 0
+                        ? "VOCÊ REALMENTE PEGOU O TROFÉU? LEGAL, NÃO PRECISO MAIS CONTAR."
+                        : `SÓ FALTAM ${splash.valor} ${splash.valor === 1 ? "CONQUISTA" : "CONQUISTAS"} PARA O [TROFÉU]!`;
+            }
+        }
+        function atualizarSplashDinamico() {
+            if (sessionStorage.getItem("splash_anti_cheat") === "true") {
+                sessionStorage.removeItem("splash_anti_cheat");
+                estadoSplash = {
+                    tipo: "cheat",
+                    indice: Math.floor(Math.random() * falasSplashCheat.en.length)
+                };
+                renderizarSplash();
+                return;
+            }
+
+            const sorteio = Math.floor(Math.random() * (falasAbertura.length + 3));
+            if (sorteio < falasAbertura.length) {
+                estadoSplash = { tipo: "opening", indice: sorteio };
+            } else {
+                const tipoDinamico = sorteio - falasAbertura.length;
+                if (tipoDinamico === 0) {
+                    estadoSplash = { tipo: "time", valor: Date.now() };
+                } else if (tipoDinamico === 1) {
+                    estadoSplash = { tipo: "kromer", valor: Math.floor(kromer) };
+                } else {
+                    const restantes = Math.max(0, listaConquistas.length - new Set(dadosConquistas.desbloqueadas).size);
+                    estadoSplash = { tipo: "achievements", valor: restantes };
+                }
+            }
+            renderizarSplash();
+        }
+        function renderizarFalaSpamton() {
+            const fala = estadoFalaSpamton;
+            let texto;
+            if (fala.tipo === "welcome") {
+                texto = textoIdioma("welcome", "OLÁ, [Cliente Valioso]!");
+            } else if (fala.tipo === "spamton" || fala.tipo === "success" || fala.tipo === "insufficient" || fala.tipo === "cheatWarning" || fala.tipo === "cheatShout") {
+                const listas = {
+                    spamton: falasSpamton,
+                    success: falasSucessoComprar,
+                    insufficient: falasFaltaDinheiro,
+                    cheatWarning: falasAvisoCheat,
+                    cheatShout: falasGritoCheat
+                };
+                texto = listaIdioma(fala.tipo, listas[fala.tipo])[fala.indice];
+            } else if (fala.tipo === "purchaseKps" || fala.tipo === "purchaseKpc") {
+                const chave = fala.tipo === "purchaseKps" ? "gotKps" : "gotKpc";
+                const padrao = fala.tipo === "purchaseKps" ? "(GANHOU +{amount} KPS)!" : "(GANHOU +{amount} KPC)!";
+                texto = `${listaIdioma("success", falasSucessoComprar)[fala.indice]} ${textoIdioma(chave, padrao).replace("{amount}", fala.valor)}`;
+            } else if (fala.tipo === "achievement") {
+                const nome = idiomaAtual === "en" ? fala.conquista.tituloEn : fala.conquista.titulo;
+                const frase = falasConquista[idiomaAtual === "en" ? "en" : "pt"][fala.indice];
+                texto = frase.replace("{name}", nome);
+            }
+            if (texto !== undefined) falaSpamtonDiv.textContent = texto;
+            falaSpamtonDiv.style.color = fala.cor || (
+                fala.tipo === "cheatWarning" || fala.tipo === "cheatShout" ? "red" :
+                fala.tipo === "success" || fala.tipo === "purchaseKps" || fala.tipo === "purchaseKpc" ? "lightgreen" :
+                fala.tipo === "insufficient" ? "red" : "yellow"
+            );
+        }
+        function definirFalaSpamton(tipo, detalhes) {
+            const listas = {
+                spamton: falasSpamton,
+                success: falasSucessoComprar,
+                insufficient: falasFaltaDinheiro,
+                cheatWarning: falasAvisoCheat,
+                cheatShout: falasGritoCheat
+            };
+            const fala = { tipo, ...(detalhes || {}) };
+            if (listas[tipo] && fala.indice === undefined) fala.indice = Math.floor(Math.random() * listas[tipo].length);
+            estadoFalaSpamton = fala;
+            renderizarFalaSpamton();
+        }
+        function renderizarFalaMorte() {
+            if (estadoFalaMorte.tipo === "death") {
+                textoMorteElement.innerHTML = listaIdioma("death", falasTelaMorte)[estadoFalaMorte.indice];
+            } else {
+                textoMorteElement.innerHTML = textoIdioma("copyrightNotice", "VOCÊ MORREU!<br>[TRAPACEIRO DEFINITIVO]!");
+            }
+        }
     </script>
     <script>
         function abrirSubTela(id) { document.getElementById(id).style.display = "flex"; }
@@ -1294,38 +1434,22 @@
             atualizarVisualProgressoConquistas();
         }
         function anunciarConquista(conquista) {
-            filaBragConquistas.push(conquista);
+            filaBragConquistas.push({
+                conquista,
+                indice: Math.floor(Math.random() * falasConquista.pt.length)
+            });
             if (bragConquistaAtivo) return;
             bragConquistaAtivo = true;
-            const falasConquista = {
-                en: [
-                    "CONGRATULATIONS! YOU UNLOCKED [{name}]!",
-                    "A NEW [ACHIEVEMENT] FOR OUR BIG SHOT: [{name}]!",
-                    "YOU DID IT! [{name}] IS NOW PART OF YOUR [DEAL]!",
-                    "LOOK AT YOU, UNLOCKING [{name}] LIKE A TRUE [WINNER]!",
-                    "THAT'S A [SWEET DEAL]! YOU GOT [{name}]!",
-                    "ANOTHER MILESTONE FOR THE [RECORD BOOK]: [{name}]!"
-                ],
-                pt: [
-                    "PARAB3NS! VOCÊ DESBLOQUEOU [{name}]!",
-                    "UM NOVO [FEITO] PARA NOSSO BIG SHOT: [{name}]!",
-                    "VOCÊ CONSEGUIU! [{name}] AGORA FAZ PARTE DO SEU [ACORDO]!",
-                    "OLHA SÓ! DESBLOQUEANDO [{name}] COMO UM [PROFISSIONAL]!",
-                    "ISSO SIM É UM [BOM NEGÓCIO]! VOCÊ GANHOU [{name}]!",
-                    "MAIS UM MARCO PARA A [HISTÓRIA]: [{name}]!"
-                ]
-            };
             const mostrarProxima = () => {
                 const proxima = filaBragConquistas.shift();
                 if (!proxima) {
                     bragConquistaAtivo = false;
                     return;
                 }
-                const nome = idiomaAtual === "en" ? proxima.tituloEn : proxima.titulo;
-                const falas = idiomaAtual === "en" ? falasConquista.en : falasConquista.pt;
-                const fala = falas[Math.floor(Math.random() * falas.length)];
-                falaSpamtonDiv.textContent = fala.replace("{name}", nome);
-                falaSpamtonDiv.style.color = "yellow";
+                definirFalaSpamton("achievement", {
+                    conquista: proxima.conquista,
+                    indice: proxima.indice
+                });
                 bragConquistaAte = Date.now() + 2600;
                 setTimeout(mostrarProxima, 2600);
             };
@@ -1550,17 +1674,14 @@
 
             atualizarRotulosConfiguracao();
             atualizarRotuloVersao();
-            textoAbertura.textContent = listaIdioma("opening", falasAbertura)[Math.floor(Math.random() * falasAbertura.length)];
+            renderizarSplash();
             document.getElementById("instrucao-clique").textContent = textoIdioma("clickForKromer", "(CLIQUE EM MIM PARA GERAR [Kromer]!)");
             atualizarRotuloKromer();
             atualizarPainelTexto();
             renderizarBotoesLoja();
-            if (!cheatDetectado) {
-                falaSpamtonDiv.textContent = textoIdioma("welcome", "OLÁ, [Cliente Valioso]!");
-                falaSpamtonDiv.style.color = "yellow";
-                if (botaoPowerUp.style.display !== "none") renderizarBotaoPowerUp();
-            }
-            textoMorteElement.innerHTML = textoIdioma("copyrightNotice", "VOCÊ MORREU!<br>[TRAPACEIRO DEFINITIVO]!");
+            renderizarFalaSpamton();
+            if (botaoPowerUp.style.display !== "none") renderizarBotaoPowerUp();
+            renderizarFalaMorte();
             if (typeof renderizarTextoComoJogar === "function") renderizarTextoComoJogar();
             renderizarConquistas();
         }
@@ -1596,14 +1717,13 @@
             document.getElementById("tela-pausa").style.display = "none";
             spriteSpamtonImg.src = "spamton_sprite_frame3.png";
             filterTinta.style.backgroundColor = "rgba(255, 0, 0, 1)";
-            falaSpamtonDiv.textContent = listaIdioma("cheatWarning", falasAvisoCheat)[Math.floor(Math.random() * falasAvisoCheat.length)];
-            falaSpamtonDiv.style.color = "red";
+            definirFalaSpamton("cheatWarning");
             botaoKPS.style.pointerEvents = "none";
             botaoKPC.style.pointerEvents = "none";
             botaoPowerUp.style.pointerEvents = "none";
             
             setTimeout(function() {
-                falaSpamtonDiv.textContent = listaIdioma("cheatShout", falasGritoCheat)[Math.floor(Math.random() * falasGritoCheat.length)];
+                definirFalaSpamton("cheatShout");
                 setTimeout(function() {
                     spriteSpamtonImg.className = "spamton-ataque-frenetico";
                     let loopRapido = setInterval(function() { 
@@ -1626,7 +1746,11 @@
                     
                     setTimeout(function() {
                         clearInterval(loopRapido);
-                        textoMorteElement.innerHTML = listaIdioma("death", falasTelaMorte)[Math.floor(Math.random() * falasTelaMorte.length)];
+                        estadoFalaMorte = {
+                            tipo: "death",
+                            indice: Math.floor(Math.random() * falasTelaMorte.length)
+                        };
+                        renderizarFalaMorte();
                         
                         telaMorte.style.display = "flex";
                         telaDeMorteVisivel = true;
@@ -1639,6 +1763,7 @@
                         dispararSomMorte();
                         
                         setTimeout(function() { 
+                            sessionStorage.setItem("splash_anti_cheat", "true");
                             location.reload();
                         }, 5000);
                     }, 500);
@@ -2023,14 +2148,12 @@
                 else if (tS === "gaster") { nivelGaster++; gasterAsset.style.display = "block"; }
                 dadosConquistas.compras++;
                 botaoPowerUp.style.display = "none";
-                falaSpamtonDiv.textContent = listaIdioma("success", falasSucessoComprar)[Math.floor(Math.random() * falasSucessoComprar.length)];
-                falaSpamtonDiv.style.color = "lightgreen";
+                definirFalaSpamton("success");
                 atualizarRotuloKromer();
                 atualizarPainelTexto(); salvarDadosNoNavegador();
                 salvarConquistas(); verificarConquistas();
             } else {
-                falaSpamtonDiv.textContent = listaIdioma("insufficient", falasFaltaDinheiro)[Math.floor(Math.random() * falasFaltaDinheiro.length)];
-                falaSpamtonDiv.style.color = "red";
+                definirFalaSpamton("insufficient");
             }
             botaoPowerUp.blur();
         }
@@ -2041,15 +2164,16 @@
                 kromer -= custoItemKPS;
                 dadosConquistas.kromerGastos += custoItemKPS;
                 let g = Math.floor(Math.random() * 5) + 1; kromerPorSegundo += g;
-                falaSpamtonDiv.textContent = `${listaIdioma("success", falasSucessoComprar)[Math.floor(Math.random() * falasSucessoComprar.length)]} ${textoIdioma("gotKps", "(GANHOU +{amount} KPS)!").replace("{amount}", g)}`;
-                falaSpamtonDiv.style.color = "lightgreen";
+                definirFalaSpamton("purchaseKps", {
+                    indice: Math.floor(Math.random() * falasSucessoComprar.length),
+                    valor: g
+                });
                 atualizarRotuloKromer();
                 atualizarPainelTexto(); gerarItemKPS(); salvarDadosNoNavegador();
                 dadosConquistas.comprasKPS++;
                 salvarConquistas(); verificarConquistas();
             } else {
-                falaSpamtonDiv.textContent = listaIdioma("insufficient", falasFaltaDinheiro)[Math.floor(Math.random() * falasFaltaDinheiro.length)];
-                falaSpamtonDiv.style.color = "red";
+                definirFalaSpamton("insufficient");
             }
             botaoKPS.blur();
         }
@@ -2061,15 +2185,16 @@
                 kromer -= custoItemKPC;
                 dadosConquistas.kromerGastos += custoItemKPC;
                 let g = Math.floor(Math.random() * 5) + 1; kromerPorClique += g;
-                falaSpamtonDiv.textContent = `${listaIdioma("success", falasSucessoComprar)[Math.floor(Math.random() * falasSucessoComprar.length)]} ${textoIdioma("gotKpc", "(GANHOU +{amount} KPC)!").replace("{amount}", g)}`;
-                falaSpamtonDiv.style.color = "lightgreen";
+                definirFalaSpamton("purchaseKpc", {
+                    indice: Math.floor(Math.random() * falasSucessoComprar.length),
+                    valor: g
+                });
                 atualizarRotuloKromer();
                 atualizarPainelTexto(); gerarItemKPC(); salvarDadosNoNavegador();
                 dadosConquistas.comprasKPC++;
                 salvarConquistas(); verificarConquistas();
             } else {
-                falaSpamtonDiv.textContent = listaIdioma("insufficient", falasFaltaDinheiro)[Math.floor(Math.random() * falasFaltaDinheiro.length)];
-                falaSpamtonDiv.style.color = "red";
+                definirFalaSpamton("insufficient");
             }
             botaoKPC.blur();
         }
@@ -2124,11 +2249,13 @@
             localStorage.setItem("cfg_idioma", idiomaAtual);
             location.reload();
         }
-        function atualizarFalaSpamton() { if (!cheatDetectado && Date.now() >= bragConquistaAte) { falaSpamtonDiv.textContent = listaIdioma("spamton", falasSpamton)[Math.floor(Math.random() * falasSpamton.length)]; falaSpamtonDiv.style.color = "yellow"; } }
+        function atualizarFalaSpamton() {
+            if (!cheatDetectado && Date.now() >= bragConquistaAte) definirFalaSpamton("spamton");
+        }
         
         function rolarFalaInicialComPeso() {
             if (!cheatDetectado) {
-                if (Math.random() <= 0.70) { falaSpamtonDiv.textContent = textoIdioma("welcome", "OLÁ, [Cliente Valioso]!"); falaSpamtonDiv.style.color = "yellow"; }
+                if (Math.random() <= 0.70) definirFalaSpamton("welcome");
                 else { atualizarFalaSpamton(); }
             }
         }
@@ -2138,7 +2265,7 @@
         botaoPowerUp.addEventListener("click", comprarPowerUp);
         spriteSpamtonImg.addEventListener("click", cliqueManual);
         
-        document.addEventListener("DOMContentLoaded", function() { inicializarControlesVolume(); aplicarIdioma(); carregarDadosDoNavegador(); gerarItemKPS(); gerarItemKPC(); rolarFalaInicialComPeso(); atualizarPainelTexto(); carregarVersaoGitHub(); });
+        document.addEventListener("DOMContentLoaded", function() { inicializarControlesVolume(); aplicarIdioma(); carregarDadosDoNavegador(); atualizarSplashDinamico(); gerarItemKPS(); gerarItemKPC(); rolarFalaInicialComPeso(); atualizarPainelTexto(); carregarVersaoGitHub(); });
         function inicializarEasterEggSpamdance() {
             if (Math.floor(Math.random() * 1997) !== 0) return;
             const spamdance = document.getElementById("easter-egg-spamdance");
@@ -2179,17 +2306,8 @@
             const container = document.getElementById("conteudo-como-jogar");
             if (!container) return;
             
-            const textoComoJogarPortugues = `*KROMER*\nKromer é a moeda que você usará para progredir nesse jogo, para começar, clique no Spamton para gerar 1 kromer, não se preocupe, conseguir kromer será mais fácil depois\n*LOJA*\nA loja é o lugar onde sua produção de kromer aumentará ao longo do tempo, inicialmente ela tem dois botões, o de cima aumenta KPS (kromer por segundo), o de baixo aumenta KPC (kromer por clique), ocasionalmente um terceiro botão azul vai aparecer e vai conceder um dos 4 power-ups\n*POWER-UPS*\nPower-ups são outros darkners que você pode contratar e evoluir, mas antes de explicar como cada um deles funciona eu vou explicar algo necessário para eles funcionarem\n*PIPIS*\nQuando você gera kromer ao clicar no Spamton, alguns $ aparecem, eles começaram sendo uma decoração durante o desenvolvimento do jogo mais viraram uma função excencial para progredir com power-ups, a cada $ que aparece, há uma pequena chance do $ ser substituído por um pipis, no começo eles parecem um easter egg legal mas em breve terão importância\n*IMAGE_FRIEND*\nEsse darkner é o mais importante para os outros power-ups funcionarem bem, quando um pipis aparece na tela, o FRIEND irá imediatamente pegá-lo para conceder uma quantia de kromer em troca, conforme o FRIEND evolui, a chance de um pipis aparecer no lugar de um $ aumenta levemente, isso ajudará depois\n*LANCER*\nLancer é um ótimo companheiro caso você se sinta sozinho nessa jornada, ele trouxe sua bicicleta motorizada para melhorar a poluição do ambiente e faz um som engraçado quando você clica nele, mas ele não está lá só pra brincar, ocasionalmente ele joga alguns pipis para o FRIEND pegar (eu não disse que ele seria importante?), conforme Lancer evolui, ele joga mais pipis de uma vez (legal né?)\n*GASTER*\nTambém conhecido como Homem Misterioso, Gaster ocasionalmente deixará sua tela monocromática, enquanto joga alguns pipis para o FRIEND pegar, conforme o Gaster evolui, ele joga mais pipis também\n*PINK*\nOu Mew Mew pra quem só joga Undertale, ela é um passo importante para progressão, suponhamos que você gastou muito kromer em KPC, mas quer deixar o jogo rodando afk, não se preocupe! Pink age como o seu mouse, e gera kromer a cada segundo, mas ao invés de gerar a quantia baseada em KPS, ela gera baseada em KPC, ou seja, ela clica por você, conforme a Pink evolui, ela gera mais $ e as chances de pipis gerados por ela aumenta\n*MENUS E CONFIGURAÇÕES*\nVocê acha que eu não ia citar isso? claro que não! eu vou explicar agora!\n*MENU PRINCIPAL*\nO lugar onde tudo começa, aqui tem alguns botões que podem ou não ajudar :)\n*BOTÃO "JOGAR"*\nFaz você jogar\n*BOTÃO "CONFIGURAÇÕES"*\nAqui você pode ligar ou desligar a música e as risadas dos darkners que você contratou, ajustar o volume de cada um pelos controles abaixo dos botões, ativar a tela cheia (se o navegador oferecer suporte), mudar o idioma e também resetar o progresso aqui mas a gente já resetou demais em Undertale\n*BOTÃO "CRÉDITOS"*\nAqui temos os nomes dos criadores desse jogo, que se dedicaram muito para fazer tudo funcionar (não conta pra ninguém mas eu copiei muito código de muitos sites e remendei tudo junto)\n*BOTÃO "COMO JOGAR"*\nTraz você pra esse submenu!\n*MENU DE PAUSA*\nBasicamente uma curta versão do menu principal mas ele fica dentro do jogo pra você acessar enquanto assiste o caos!\n*CONFIGURAÇÃO DE IDIOMA*\nEscolha português ou inglês em Configurações. Sua escolha fica salva neste dispositivo e altera os menus, diálogos, itens da loja e este guia.\n*EXTRAS*\nDaqui pra frente tem algumas features simples que não merecem um tópico maior (que pena)\n*TELEFONE*\nUm simples telefone para mandar você pra algum lugar, clique nele, talvez não\n*DIÁLOGO*\nUm texto em cima do Spamton informando o que está acontecendo no jogo, e as vezes é só o Spamton falando com você, quem sabe?\n*ANTI-CHEAT*\nAlguma hora você vai descobrir, ele impede você de ser um trapaceiro sujo (e também atrapalha a conexão telefônica), bem, as coisas tomaram uma rota estranha não é?\n*FIM*\nÉ só isso por enquanto, agora vá jogar e se torne um [[BIG SHOT]]!!1`;
+            const textoComoJogarPortugues = `*KROMER*\nKromer é a moeda que você usará para progredir nesse jogo, para começar, clique no Spamton para gerar 1 kromer, não se preocupe, conseguir kromer será mais fácil depois\n*LOJA*\nA loja é o lugar onde sua produção de kromer aumentará ao longo do tempo, inicialmente ela tem dois botões, o de cima aumenta KPS (kromer por segundo), o de baixo aumenta KPC (kromer por clique), ocasionalmente um terceiro botão azul vai aparecer e vai conceder um dos 4 power-ups\n*POWER-UPS*\nPower-ups são outros darkners que você pode contratar e evoluir, mas antes de explicar como cada um deles funciona eu vou explicar algo necessário para eles funcionarem\n*PIPIS*\nQuando você gera kromer ao clicar no Spamton, alguns $ aparecem, eles começaram sendo uma decoração durante o desenvolvimento do jogo mais viraram uma função excencial para progredir com power-ups, a cada $ que aparece, há uma pequena chance do $ ser substituído por um pipis, no começo eles parecem um easter egg legal mas em breve terão importância\n*IMAGE_FRIEND*\nEsse darkner é o mais importante para os outros power-ups funcionarem bem, quando um pipis aparece na tela, o FRIEND irá imediatamente pegá-lo para conceder uma quantia de kromer em troca, conforme o FRIEND evolui, a chance de um pipis aparecer no lugar de um $ aumenta levemente, isso ajudará depois\n*LANCER*\nLancer é um ótimo companheiro caso você se sinta sozinho nessa jornada, ele trouxe sua bicicleta motorizada para melhorar a poluição do ambiente e faz um som engraçado quando você clica nele, mas ele não está lá só pra brincar, ocasionalmente ele joga alguns pipis para o FRIEND pegar (eu não disse que ele seria importante?), conforme Lancer evolui, ele joga mais pipis de uma vez (legal né?)\n*GASTER*\nTambém conhecido como Homem Misterioso, Gaster ocasionalmente deixará sua tela monocromática, enquanto joga alguns pipis para o FRIEND pegar, conforme o Gaster evolui, ele joga mais pipis também\n*PINK*\nOu Mew Mew pra quem só joga Undertale, ela é um passo importante para progressão, suponhamos que você gastou muito kromer em KPC, mas quer deixar o jogo rodando afk, não se preocupe! Pink age como o seu mouse, e gera kromer a cada segundo, mas ao invés de gerar a quantia baseada em KPS, ela gera baseada em KPC, ou seja, ela clica por você, conforme a Pink evolui, ela gera mais $ e as chances de pipis gerados por ela aumenta\n*MENUS E CONFIGURAÇÕES*\nVocê acha que eu não ia citar isso? claro que não! eu vou explicar agora!\n*MENU PRINCIPAL*\nO lugar onde tudo começa, aqui tem alguns botões que podem ou não ajudar :)\n*BOTÃO "JOGAR"*\nFaz você jogar\n*BOTÃO "CONFIGURAÇÕES"*\nAqui você pode ligar ou desligar a música e as risadas dos darkners que você contratou, ajustar o volume de cada um pelos controles abaixo dos botões, ativar a tela cheia (se o navegador oferecer suporte), mudar o idioma e também resetar o progresso aqui mas a gente já resetou demais em Undertale\n*BOTÃO "CRÉDITOS"*\nAqui temos os nomes dos criadores desse jogo, que se dedicaram muito para fazer tudo funcionar (não conta pra ninguém mas eu copiei muito código de muitos sites e remendei tudo junto)\n*BOTÃO "COMO JOGAR"*\nTraz você pra esse submenu!\n*MENU DE PAUSA*\nBasicamente uma curta versão do menu principal mas ele fica dentro do jogo pra você acessar enquanto assiste o caos!\n*CONFIGURAÇÃO DE IDIOMA*\nEscolha português ou inglês em Configurações. Sua escolha fica salva neste dispositivo e altera os menus, diálogos, itens da loja e este guia.\n*CONQUISTAS*\nDesbloqueie conquistas acumulando Kromer, clicando no Spamton, melhorando KPS/KPC, contratando e evoluindo Darkners e fazendo Friend coletar Pipis. As conquistas são organizadas por categoria. A cada 20 conquistas, você ganha uma estrela; desbloqueie as 100 para ganhar o troféu acima do Spamton. Suas conquistas são salvas neste dispositivo e apagadas ao deletar o progresso. Spamton comemora cada nova conquista!\n*EXTRAS*\nDaqui pra frente tem algumas features simples que não merecem um tópico maior (que pena)\n*TEXTO DE ABERTURA*\nDe vez em quando, a tela inicial guarda uma surpresa rara para você. Fique de olho!\n*TELEFONE*\nUm simples telefone para mandar você pra algum lugar, clique nele, talvez não\n                        *DIÁLOGO*\nUm texto em cima do Spamton informando o que está acontecendo no jogo, e as vezes é só o Spamton falando com você, quem sabe?\n*ANTI-CHEAT*\nAlguma hora você vai descobrir, ele impede você de ser um trapaceiro sujo (e também atrapalha a conexão telefônica), bem, as coisas tomaram uma rota estranha não é?\n*FIM*\nÉ só isso por enquanto, agora vá jogar e se torne um [[BIG SHOT]]!!1`;
             const linhas = (idiomaAtual === "en" ? idiomaIngles.howToPlay : textoComoJogarPortugues).split("\n");
-            const indiceAntiCheat = linhas.indexOf("*ANTI-CHEAT*");
-            if (indiceAntiCheat >= 0) linhas.splice(indiceAntiCheat, 2);
-            const indiceExtras = linhas.indexOf("*EXTRAS*");
-            linhas.splice(indiceExtras < 0 ? linhas.length : indiceExtras, 0,
-                idiomaAtual === "en" ? "*ACHIEVEMENTS*" : "*CONQUISTAS*",
-                idiomaAtual === "en"
-                    ? "Unlock achievements by collecting Kromer, clicking Spamton, improving KPS/KPC, hiring and leveling up Darkners, and having Friend collect Pipis. Achievements are sorted into categories. Every 20 achievements earns a star; unlock all 100 to earn the trophy above Spamton. Your achievements are saved on this device and are erased when progress is deleted. Spamton celebrates each new achievement!"
-                    : "Desbloqueie conquistas acumulando Kromer, clicando no Spamton, melhorando KPS/KPC, contratando e evoluindo Darkners e fazendo Friend coletar Pipis. As conquistas são organizadas por categoria. A cada 20 conquistas, você ganha uma estrela; desbloqueie as 100 para ganhar o troféu acima do Spamton. Suas conquistas são salvas neste dispositivo e apagadas ao deletar o progresso. Spamton comemora cada nova conquista!"
-            );
             container.innerHTML = "";
             
             linhas.forEach(function(linha) {
