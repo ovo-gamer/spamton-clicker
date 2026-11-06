@@ -375,8 +375,20 @@
             50% { transform: translateY(-80%); }
             100% { transform: translateY(-50%); }
         }
-        #tela-morte { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: black; z-index: 99999995 !important; display: none; opacity: 0; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease-in-out !important; }
+        #tela-morte { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: black; z-index: 2147483647 !important; display: none; opacity: 0; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease-in-out !important; }
         #texto-morte { color: red; font-size: 40px; font-weight: bold; text-shadow: 3px 3px 0px #300; font-family: 'Courier New', Courier, monospace; line-height: 1.5; transition: opacity 0.5s ease-in-out !important; }
+        #easter-egg-spamdance {
+            position: fixed;
+            right: 12px;
+            bottom: 12px;
+            z-index: 2147483646;
+            display: none;
+            width: clamp(88px, 16vw, 150px);
+            max-height: 28vh;
+            object-fit: contain;
+            image-rendering: pixelated;
+            pointer-events: none;
+        }
         #sprite-telefone { transition: filter 0.5s ease-in-out !important; }
     </style>
     <style>
@@ -481,6 +493,7 @@
     <div id="filtro-tinta-vermelha"></div>
     <div id="filtro-tinta-preto-e-branco"></div>
     <div id="tela-morte"><div id="texto-morte">VOCÊ MORREU!<br>[TRAPACEIRO DEFINITIVO]!</div></div>
+    <img id="easter-egg-spamdance" alt="" aria-hidden="true">
 
     <div id="tela-titulo">
         <div id="titulo-jogo" data-i18n-html="gameTitle">Mini Lojinha de Kromer<br>[BIG SHOT EDITION!]</div>
@@ -839,9 +852,8 @@
             { id: "kps_100", titulo: "Impressora de Kromer", tituloEn: "Kromer Printer", descricao: "Alcance 100 Kromer por segundo.", descricaoEn: "Reach 100 Kromer per second.", verificar: () => kromerPorSegundo >= 100 },
             { id: "kps_500", titulo: "A economia enlouqueceu", tituloEn: "The Economy Is Broken", descricao: "Alcance 500 Kromer por segundo.", descricaoEn: "Reach 500 Kromer per second.", verificar: () => kromerPorSegundo >= 500 },
             { id: "kpc_10", titulo: "Clique lucrativo", tituloEn: "Profitable Click", descricao: "Alcance 10 Kromer por clique.", descricaoEn: "Reach 10 Kromer per click.", verificar: () => kromerPorClique >= 10 },
-            { id: "kpc_25", titulo: "Mão de ouro", tituloEn: "Golden Touch", descricao: "Alcance 25 Kromer por clique.", descricaoEn: "Reach 25 Kromer per click.", verificar: () => kromerPorClique >= 25 },
+            { id: "kpc_5", titulo: "Clique em crescimento", tituloEn: "Growing Click", descricao: "Alcance 5 Kromer por clique.", descricaoEn: "Reach 5 Kromer per click.", verificar: () => kromerPorClique >= 5 },
             { id: "kpc_100", titulo: "Um clique, muito Kromer", tituloEn: "One Click, Big Kromer", descricao: "Alcance 100 Kromer por clique.", descricaoEn: "Reach 100 Kromer per click.", verificar: () => kromerPorClique >= 100 },
-            { id: "kpc_250", titulo: "Clique de ouro", tituloEn: "Click of Gold", descricao: "Alcance 250 Kromer por clique.", descricaoEn: "Reach 250 Kromer per click.", verificar: () => kromerPorClique >= 250 },
             { id: "kpc_1k", titulo: "O clique definitivo", tituloEn: "The Ultimate Click", descricao: "Alcance 1.000 Kromer por clique.", descricaoEn: "Reach 1,000 Kromer per click.", verificar: () => kromerPorClique >= 1000 },
             { id: "buy_kps_10", titulo: "Especialista em KPS", tituloEn: "KPS Specialist", descricao: "Compre 10 melhorias de KPS.", descricaoEn: "Buy 10 KPS upgrades.", verificar: () => dadosConquistas.comprasKPS >= 10 },
             { id: "buy_kps_50", titulo: "Investidor de KPS", tituloEn: "KPS Investor", descricao: "Compre 50 melhorias de KPS.", descricaoEn: "Buy 50 KPS upgrades.", verificar: () => dadosConquistas.comprasKPS >= 50 },
@@ -899,8 +911,8 @@
             ["click_1k", "clicks"], ["click_10k", "clicks"], ["click_2500", "clicks"],
             ["kps_1", "kps"], ["kps_5", "kps"], ["kps_10", "kps"], ["kps_50", "kps"],
             ["kps_100", "kps"], ["kps_500", "kps"],
-            ["kpc_1", "kpc"], ["kpc_10", "kpc"], ["kpc_25", "kpc"],
-            ["kpc_100", "kpc"], ["kpc_250", "kpc"], ["kpc_1k", "kpc"],
+            ["kpc_1", "kpc"], ["kpc_5", "kpc"], ["kpc_10", "kpc"],
+            ["kpc_50", "kpc"], ["kpc_100", "kpc"], ["kpc_1k", "kpc"],
             ["buy_kps_10", "upgrades"], ["buy_kps_50", "upgrades"],
             ["buy_kpc_10", "upgrades"], ["buy_kpc_50", "upgrades"],
             ["pipis_1", "pipis"], ["pipis_100", "pipis"], ["pipis_500", "pipis"],
@@ -925,12 +937,12 @@
         ];
         const marcosKPC = [
             ["kpc_2", 2, "Primeiro grande clique", "First Big Click"],
+            ["kpc_500", 500, "Clique poderoso", "Powerful Click"],
             ["kpc_10k", 10000, "Clique de alto valor", "High-Value Click"],
             ["kpc_100k", 100000, "Clique colossal", "Colossal Click"],
             ["kpc_1m", 1000000, "Clique milionário", "Million-Kromer Click"],
             ["kpc_50m", 50000000, "Toque de Midas", "Midas Touch"],
             ["kpc_1b", 1000000000, "Um clique bilionário", "One-Billion-Kromer Click"],
-            ["kpc_10b", 10000000000, "O último clique", "The Ultimate Click"]
         ];
         const marcosCliques = [
             ["click_25k", 25000, "Cliques em série", "Clicking Spree"],
@@ -1071,7 +1083,7 @@
         const idsConquistasLegadas = new Set([
             ...categoriasLegadasPorId.keys(),
             "krm_10k", "krm_500", "click_2500", "kps_5", "kps_50",
-            "kpc_25", "kpc_250", "kpc_1k", "buy_kps_50", "buy_kpc_50",
+            "kpc_5", "kpc_50", "kpc_1k", "buy_kps_50", "buy_kpc_50",
             "pipis_1", "pipis_100", "pipis_500",
             "buy_1", "buy_10", "buy_25"
         ]);
@@ -2127,6 +2139,30 @@
         spriteSpamtonImg.addEventListener("click", cliqueManual);
         
         document.addEventListener("DOMContentLoaded", function() { inicializarControlesVolume(); aplicarIdioma(); carregarDadosDoNavegador(); gerarItemKPS(); gerarItemKPC(); rolarFalaInicialComPeso(); atualizarPainelTexto(); carregarVersaoGitHub(); });
+        function inicializarEasterEggSpamdance() {
+            if (Math.floor(Math.random() * 1997) !== 0) return;
+            const spamdance = document.getElementById("easter-egg-spamdance");
+            if (!spamdance) return;
+            spamdance.src = "spamdance.gif";
+
+            const telasDeMenu = Array.from(document.querySelectorAll(
+                "#tela-titulo, .sub-tela, #tela-pausa, #tela-config-pausa"
+            ));
+            const telaMorteElement = document.getElementById("tela-morte");
+            function atualizarVisibilidadeSpamdance() {
+                const menuVisivel = telasDeMenu.some(tela => getComputedStyle(tela).display !== "none");
+                const morteVisivel = getComputedStyle(telaMorteElement).display !== "none";
+                spamdance.style.display = menuVisivel && !morteVisivel ? "block" : "none";
+            }
+
+            const observer = new MutationObserver(atualizarVisibilidadeSpamdance);
+            telasDeMenu.concat(telaMorteElement).forEach(tela => observer.observe(tela, {
+                attributes: true,
+                attributeFilter: ["class", "style"]
+            }));
+            atualizarVisibilidadeSpamdance();
+        }
+        document.addEventListener("DOMContentLoaded", inicializarEasterEggSpamdance);
         document.addEventListener("visibilitychange", function() { if (document.hidden) cliquesNesseSegundo = 0; });
         
         setInterval(atualizarKromer, 1000);
