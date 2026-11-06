@@ -1534,7 +1534,10 @@
             document.getElementById("resumo-conquistas").textContent = textoProgresso;
             lista.replaceChildren();
 
-            Object.keys(categoriasConquistas).forEach(categoria => {
+            const ordemCategorias = Object.keys(categoriasConquistas)
+                .filter(categoria => categoria !== "completion")
+                .concat("completion");
+            ordemCategorias.forEach(categoria => {
                 const conquistasDaCategoria = listaConquistas
                     .filter(conquista => conquista.categoria === categoria)
                     .sort((a, b) => a.meta - b.meta);
