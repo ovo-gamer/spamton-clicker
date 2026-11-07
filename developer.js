@@ -12,6 +12,7 @@
             right: 12px;
             bottom: 0;
             width: min(440px, calc(100vw - 24px));
+            max-height: 85vh;
             color: white;
             background: rgba(15, 15, 20, .97);
             border: 2px solid #ffcc00;
@@ -42,6 +43,8 @@
             grid-template-columns: minmax(0, 1fr) auto;
             gap: 8px;
             padding: 12px;
+            max-height: calc(85vh - 45px);
+            overflow-y: auto;
         }
         #developer-controls label { grid-column: 1 / -1; }
         #developer-controls input {
@@ -79,6 +82,18 @@
             <label for="developer-kpc">Set Kromer per click (KPC)</label>
             <input id="developer-kpc" type="number" min="0" step="1" value="1">
             <button id="developer-set-kpc" type="button">Set KPC</button>
+            <label for="developer-friend-level">Set Friend level (0–100)</label>
+            <input id="developer-friend-level" type="number" min="0" max="100" step="1" value="0">
+            <button type="button" data-darkner="friend">Set Friend</button>
+            <label for="developer-lancer-level">Set Lancer level (0–100)</label>
+            <input id="developer-lancer-level" type="number" min="0" max="100" step="1" value="0">
+            <button type="button" data-darkner="lancer">Set Lancer</button>
+            <label for="developer-pink-level">Set Pink level (0–100)</label>
+            <input id="developer-pink-level" type="number" min="0" max="100" step="1" value="0">
+            <button type="button" data-darkner="pink">Set Pink</button>
+            <label for="developer-gaster-level">Set Gaster level (0–100)</label>
+            <input id="developer-gaster-level" type="number" min="0" max="100" step="1" value="0">
+            <button type="button" data-darkner="gaster">Set Gaster</button>
             <button id="developer-unlock-achievements" class="developer-wide" type="button">Unlock all achievements</button>
             <label for="developer-pipis-count">Spawn Pipis (1–25)</label>
             <input id="developer-pipis-count" type="number" min="1" max="25" step="1" value="1">
@@ -123,6 +138,13 @@
     panel.querySelector("#developer-set-kpc").addEventListener("click", () => {
         const value = panel.querySelector("#developer-kpc").value;
         run(() => window.gameDeveloperTools.setKpc(value), total => `KPC set to ${total.toLocaleString()}.`);
+    });
+    panel.querySelectorAll("[data-darkner]").forEach(button => {
+        button.addEventListener("click", () => {
+            const name = button.dataset.darkner;
+            const value = panel.querySelector(`#developer-${name}-level`).value;
+            run(() => window.gameDeveloperTools.setDarknerLevel(name, value), level => `${name[0].toUpperCase()}${name.slice(1)} set to level ${level}.`);
+        });
     });
     panel.querySelector("#developer-unlock-achievements").addEventListener("click", () => {
         run(() => window.gameDeveloperTools.unlockAllAchievements(), total => `Unlocked ${total} achievements.`);

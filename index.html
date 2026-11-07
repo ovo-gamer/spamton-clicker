@@ -2909,6 +2909,32 @@
                     verificarConquistas();
                     return kromerPorClique;
                 },
+                setDarknerLevel(name, value) {
+                    const amount = Number(value);
+                    if (!Number.isSafeInteger(amount) || amount < 0 || amount > 100) {
+                        throw new RangeError("Darkner levels must be whole numbers from 0 to 100.");
+                    }
+                    if (cheatDetectado) throw new Error("Developer tools are unavailable after cheat detection.");
+
+                    if (name === "friend") {
+                        nivelPowerUpPipis = amount;
+                        chancePipisBase = 0.1997 * Math.max(1, amount);
+                        friendAsset.style.display = amount > 0 ? "block" : "none";
+                        friendAsset.style.bottom = amount > 0 ? "10px" : "-150px";
+                    } else {
+                        if (name === "lancer") nivelLancer = amount;
+                        else if (name === "pink") nivelPink = amount;
+                        else if (name === "gaster") nivelGaster = amount;
+                        else throw new TypeError("Choose Friend, Lancer, Pink, or Gaster.");
+                        const assets = { lancer: lancerAsset, pink: pinkAsset, gaster: gasterAsset };
+                        assets[name].style.display = amount > 0 ? "block" : "none";
+                    }
+
+                    atualizarPainelTexto();
+                    salvarDadosNoNavegador();
+                    verificarConquistas();
+                    return amount;
+                },
                 unlockAllAchievements() {
                     if (cheatDetectado) throw new Error("Developer tools are unavailable after cheat detection.");
                     dadosConquistas.desbloqueadas = listaConquistas.map(conquista => conquista.id);
