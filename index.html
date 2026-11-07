@@ -1392,12 +1392,12 @@
                     : `VOCÊ CONCLUIU A MISSÃO ${fala.numero}!`;
             } else if (fala.tipo === "missionPipis") {
                 texto = idiomaAtual === "en"
-                    ? "YOU GOT A DEAL PIPIS!"
-                    : "VOCÊ GANHOU UM PIPIS DE NEGÓCIO!";
+                    ? "YOU GOT A MISSION PIPIS!"
+                    : "VOCÊ GANHOU UM PIPIS DE MISSÃO!";
             } else if (fala.tipo === "missionRewardReady") {
                 texto = idiomaAtual === "en"
-                    ? "10 DEAL PIPIS! YOUR REWARD IS READY!"
-                    : "10 PIPIS DE NEGÓCIO! SUA RECOMPENSA ESTÁ PRONTA!";
+                    ? "10 MISSION PIPIS! YOUR REWARD IS READY!"
+                    : "10 PIPIS DE MISSÃO! SUA RECOMPENSA ESTÁ PRONTA!";
             }
             if (texto !== undefined) falaSpamtonDiv.textContent = texto;
             falaSpamtonDiv.style.color = fala.cor || (
@@ -1766,8 +1766,8 @@
             document.getElementById("titulo-missoes-trofeu").textContent =
                 idiomaAtual === "en" ? "DAILY MISSIONS" : "MISSÕES DIÁRIAS";
             document.getElementById("resumo-missoes-trofeu").textContent = idiomaAtual === "en"
-                ? `Daily missions completed toward a Deal Pipis: ${estadoMissoesTrofeu.progressoPipis}/3`
-                : `Missões diárias concluídas para ganhar um Pipis de Negócio: ${estadoMissoesTrofeu.progressoPipis}/3`;
+                ? `Daily missions completed toward a Mission Pipis: ${estadoMissoesTrofeu.progressoPipis}/3`
+                : `Missões diárias concluídas para ganhar um Pipis de Missão: ${estadoMissoesTrofeu.progressoPipis}/3`;
             const lista = document.getElementById("lista-missoes-diarias");
             lista.replaceChildren();
             obterMissoesDiarias(estadoMissoesTrofeu.data).forEach(missao => {
@@ -1789,13 +1789,13 @@
             const notificacao = document.getElementById("notificacao-missoes-trofeu");
             if (notificacaoMissoesTrofeu && notificacaoMissoesTrofeu.tipo === "pipis") {
                 notificacao.textContent = idiomaAtual === "en"
-                    ? "Mission streak complete! You got a Deal Pipis."
-                    : "Sequência de missões completa! Você ganhou um Pipis de Negócio.";
+                    ? "Mission streak complete! You got a Mission Pipis."
+                    : "Sequência de missões completa! Você ganhou um Pipis de Missão.";
             } else if (notificacaoMissoesTrofeu && notificacaoMissoesTrofeu.tipo === "shelf") {
                 const valor = notificacaoMissoesTrofeu.recompensa.toLocaleString(idiomaAtual === "en" ? "en-US" : "pt-BR");
                 notificacao.textContent = idiomaAtual === "en"
-                    ? `You claimed ${valor} Kromer from the Deal Pipis shelf!`
-                    : `Você resgatou ${valor} Kromer da prateleira de Pipis de Negócio!`;
+                    ? `You claimed ${valor} Kromer from the Mission Pipis shelf!`
+                    : `Você resgatou ${valor} Kromer da prateleira de Pipis de Missão!`;
             } else {
                 notificacao.textContent = "";
             }
@@ -1810,20 +1810,20 @@
                 if (cor) {
                     sprite.style.setProperty("--pipis-color", cor);
                     sprite.setAttribute("role", "img");
-                    sprite.setAttribute("aria-label", idiomaAtual === "en" ? "Deal Pipis" : "Pipis de Negócio");
+                    sprite.setAttribute("aria-label", idiomaAtual === "en" ? "Mission Pipis" : "Pipis de Missão");
                 } else {
                     sprite.setAttribute("aria-hidden", "true");
                 }
                 const rotulo = document.createElement("span");
                 rotulo.textContent = cor
-                    ? (idiomaAtual === "en" ? "Deal Pipis" : "Pipis de Negócio")
+                    ? (idiomaAtual === "en" ? "Mission Pipis" : "Pipis de Missão")
                     : (idiomaAtual === "en" ? "Empty" : "Vazio");
                 slot.append(sprite, rotulo);
                 prateleira.appendChild(slot);
             }
             document.getElementById("recompensa-prateleira-pipis").textContent = idiomaAtual === "en"
-                ? "Collect 10 Deal Pipis to unlock a random reward of up to 1,000,000 Kromer."
-                : "Junte 10 Pipis de Negócio para liberar uma recompensa aleatória de até 1.000.000 Kromer.";
+                ? "Collect 10 Mission Pipis to unlock a random reward of up to 1,000,000 Kromer."
+                : "Junte 10 Pipis de Missão para liberar uma recompensa aleatória de até 1.000.000 Kromer.";
             const botaoResgate = document.getElementById("botao-resgatar-recompensa-missoes");
             botaoResgate.hidden = estadoMissoesTrofeu.pipis.length < 10;
             botaoResgate.textContent = idiomaAtual === "en" ? "CLAIM REWARD" : "RESGATAR RECOMPENSA";
