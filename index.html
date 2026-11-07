@@ -2412,8 +2412,10 @@
             document.body.appendChild(tx);
 
             requestAnimationFrame(function() {
-                tx.style.transform = "translate(-50%, -25px)";
-                tx.style.opacity = "0";
+                requestAnimationFrame(function() {
+                    tx.style.transform = "translate(-50%, -25px)";
+                    tx.style.opacity = "0";
+                });
             });
             setTimeout(function() {
                 tx.remove();
@@ -2798,12 +2800,26 @@
 
                 let fundoAlt = document.createElement("div");
                 fundoAlt.className = "fundo-camada-alt";
-                if (areaJogoCorreta) {
-                    areaJogoCorreta.insertBefore(fundoAlt, areaJogoCorreta.firstChild);
-                    setTimeout(function() {
-                        fundoAlt.style.opacity = "1";
-                    }, 20);
-                }
+                areaJogoCorreta.insertBefore(fundoAlt, areaJogoCorreta.firstChild);
+                const imagemFundoAlt = new Image();
+                imagemFundoAlt.onload = function() {
+                    requestAnimationFrame(function() {
+                        requestAnimationFrame(function() {
+                            fundoAlt.style.opacity = "1";
+                            setTimeout(function() {
+                                fundoAlt.style.opacity = "0";
+                                setTimeout(function() {
+                                    fundoAlt.remove();
+                                }, 500);
+                            }, 2500);
+                        });
+                    });
+                };
+                imagemFundoAlt.onerror = function() {
+                    console.error("Could not load the alternate Weird Route background.");
+                    fundoAlt.remove();
+                };
+                imagemFundoAlt.src = "loja_background_alt.png";
 
                 if (!risadasMutadas) {
                     somJingle = new Audio('weird_route_jingle.mp3');
@@ -2847,12 +2863,6 @@
                 }, 16);
 
                 setTimeout(function() {
-                    if (fundoAlt) {
-                        fundoAlt.style.opacity = "0";
-                        setTimeout(function() {
-                            fundoAlt.remove();
-                        }, 500);
-                    }
                     if (somJingle) {
                         somJingle.pause();
                         somJingle.remove();
@@ -2860,6 +2870,94 @@
                 }, 3000);
             }
         }
+
+        if (new URLSearchParams(window.location.search).get("developer") === "1") {
+            window.gameDeveloperTools = {
+                addKromer(value) {
+                    const amount = Number(value);
+                    if (!Number.isSafeInteger(amount) || amount < 1 || !Number.isSafeInteger(kromer + amount)) {
+                        throw new RangeError("Enter a positive whole number of Kromer within the safe integer range.");
+                    }
+                    kromer += amount;
+                    atualizarRotuloKromer();
+                    registrarProgressoMissoes({ kromer: amount });
+                    salvarDadosNoNavegador();
+                    verificarConquistas();
+                    return kromer;
+                },
+                setKps(value) {
+                    const amount = Number(value);
+                    if (!Number.isSafeInteger(amount) || amount < 0) {
+                        throw new RangeError("KPS must be a non-negative whole number.");
+                    }
+                    kromerPorSegundo = amount;
+                    atualizarPainelTexto();
+                    gerarItemKPS();
+                    salvarDadosNoNavegador();
+                    verificarConquistas();
+                    return kromerPorSegundo;
+                },
+                setKpc(value) {
+                    const amount = Number(value);
+                    if (!Number.isSafeInteger(amount) || amount < 0) {
+                        throw new RangeError("KPC must be a non-negative whole number.");
+                    }
+                    kromerPorClique = amount;
+                    atualizarPainelTexto();
+                    gerarItemKPC();
+                    salvarDadosNoNavegador();
+                    verificarConquistas();
+                    return kromerPorClique;
+                },
+                unlockAllAchievements() {
+                    if (cheatDetectado) throw new Error("Developer tools are unavailable after cheat detection.");
+                    dadosConquistas.desbloqueadas = listaConquistas.map(conquista => conquista.id);
+                    salvarConquistas();
+                    renderizarConquistas();
+                    atualizarVisualProgressoConquistas();
+                    return dadosConquistas.desbloqueadas.length;
+                },
+                spawnPipis(value) {
+                    const count = Number(value);
+                    if (!Number.isSafeInteger(count) || count < 1 || count > 25) {
+                        throw new RangeError("Spawn between 1 and 25 Pipis at a time.");
+                    }
+                    if (cheatDetectado) throw new Error("Developer tools are unavailable after cheat detection.");
+                    entrarNoJogo();
+                    for (let index = 0; index < count; index++) {
+                        setTimeout(() => {
+                            const pipis = document.createElement("img");
+                            pipis.src = "pipis.png";
+                            pipis.className = "pipis-particle";
+                            pipis.style.transform = "translate(-1000px, -1000px)";
+                            document.getElementById("area-jogo").appendChild(pipis);
+                            let x = Math.max(0, Math.min(window.innerWidth - 32, window.innerWidth / 2 + (Math.random() - 0.5) * 180));
+                            let y = 0;
+                            let vy = 0;
+                            let rotation = 0;
+                            const gravity = 0.15;
+                            const rotationSpeed = Math.random() * 6 - 3;
+                            const fallLoop = setInterval(() => {
+                                vy += gravity;
+                                y += vy;
+                                rotation += rotationSpeed;
+                                pipis.style.transform = `translate(${x}px, ${y}px) rotate(${rotation}deg)`;
+                                if (nivelPowerUpPipis > 0 && vy > 0) {
+                                    clearInterval(fallLoop);
+                                    pipis.ehAlt = false;
+                                    executarMecanicaFriendDuplicavel(pipis, x, y, 0, vy, gravity, rotation, rotationSpeed);
+                                } else if (y > window.innerHeight + 50) {
+                                    clearInterval(fallLoop);
+                                    pipis.remove();
+                                }
+                            }, 16);
+                        }, index * 180);
+                    }
+                    return count;
+                }
+            };
+        }
     </script>
+    <script src="developer.js"></script>
 </body>
 </html>
