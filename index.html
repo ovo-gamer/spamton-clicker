@@ -325,6 +325,8 @@
         }
         .pipis-slot.vazio .pipis-sprite { opacity: .18; }
         .missoes-recompensa { color: yellow; font-weight: bold; margin: 8px 0 14px; }
+        .botao-recompensa-missoes { display: block; margin: 0 auto 14px; }
+        .botao-recompensa-missoes[hidden] { display: none; }
         @media (max-width: 700px) {
             #tela-missoes-trofeu { padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)); }
             .missoes-painel { width: 100%; max-height: 90vh; max-height: 90dvh; padding: 12px; }
@@ -708,6 +710,7 @@
             <div class="missoes-notificacao" id="notificacao-missoes-trofeu" aria-live="polite"></div>
             <div class="pipis-prateleira" id="prateleira-pipis"></div>
             <div class="missoes-recompensa" id="recompensa-prateleira-pipis"></div>
+            <button class="botao-menu botao-recompensa-missoes" id="botao-resgatar-recompensa-missoes" type="button" onclick="resgatarRecompensaMissoes()" hidden></button>
             <button class="botao-menu" data-i18n="back" style="background-color:#444" onclick="fecharMenuMissoesTrofeu()">VOLTAR</button>
         </div>
     </div>
@@ -957,9 +960,9 @@
             pipisColetados: 0, tempoJogado: 0, menusRapidosAbertos: 0, kromerGastos: 0, cliquesLancer: 0
         };
         let origemConquistas = "titulo";
-        let filaBragConquistas = [];
-        let bragConquistaAtivo = false;
-        let bragConquistaAte = 0;
+        let filaAnunciosSpamton = [];
+        let anuncioSpamtonAtivo = false;
+        let anuncioSpamtonAte = 0;
         const conquistasLegadas = [
             { id: "krm_1", titulo: "Primeiro Kromer", tituloEn: "First Kromer", descricao: "Tenha 1 Kromer.", descricaoEn: "Have 1 Kromer.", verificar: () => kromer >= 1 },
             { id: "krm_100", titulo: "Começando a negociar", tituloEn: "Getting Down to Business", descricao: "Tenha 100 Kromer.", descricaoEn: "Have 100 Kromer.", verificar: () => kromer >= 100 },
@@ -1383,6 +1386,18 @@
                 const nome = idiomaAtual === "en" ? fala.conquista.tituloEn : fala.conquista.titulo;
                 const frase = falasConquista[idiomaAtual === "en" ? "en" : "pt"][fala.indice];
                 texto = frase.replace("{name}", nome);
+            } else if (fala.tipo === "missionComplete") {
+                texto = idiomaAtual === "en"
+                    ? `YOU COMPLETED MISSION ${fala.numero}!`
+                    : `VOCÊ CONCLUIU A MISSÃO ${fala.numero}!`;
+            } else if (fala.tipo === "missionPipis") {
+                texto = idiomaAtual === "en"
+                    ? "YOU GOT A DEAL PIPIS!"
+                    : "VOCÊ GANHOU UM PIPIS DE NEGÓCIO!";
+            } else if (fala.tipo === "missionRewardReady") {
+                texto = idiomaAtual === "en"
+                    ? "10 DEAL PIPIS! YOUR REWARD IS READY!"
+                    : "10 PIPIS DE NEGÓCIO! SUA RECOMPENSA ESTÁ PRONTA!";
             }
             if (texto !== undefined) falaSpamtonDiv.textContent = texto;
             falaSpamtonDiv.style.color = fala.cor || (
@@ -1485,9 +1500,9 @@
             dadosConquistas.menusRapidosAbertos = 0;
             dadosConquistas.kromerGastos = 0;
             dadosConquistas.cliquesLancer = 0;
-            filaBragConquistas = [];
-            bragConquistaAtivo = false;
-            bragConquistaAte = 0;
+            filaAnunciosSpamton = [];
+            anuncioSpamtonAtivo = false;
+            anuncioSpamtonAte = 0;
             localStorage.removeItem(CHAVE_CONQUISTAS);
             renderizarConquistas();
         }
@@ -1703,7 +1718,7 @@
                         progressoPipis: Number.isSafeInteger(dados.progressoPipis) && dados.progressoPipis >= 0 && dados.progressoPipis < 3
                             ? dados.progressoPipis : 0,
                         pipis: Array.isArray(dados.pipis)
-                            ? dados.pipis.slice(0, 9).reduce((cores, cor) => {
+                            ? dados.pipis.slice(0, 10).reduce((cores, cor) => {
                                 let corValida = null;
                                 if (typeof cor === "string" && /^#[\da-f]{6}$/i.test(cor)) {
                                     corValida = cor.toLowerCase();
@@ -1751,8 +1766,8 @@
             document.getElementById("titulo-missoes-trofeu").textContent =
                 idiomaAtual === "en" ? "DAILY MISSIONS" : "MISSÕES DIÁRIAS";
             document.getElementById("resumo-missoes-trofeu").textContent = idiomaAtual === "en"
-                ? `Daily missions completed toward a Pipis: ${estadoMissoesTrofeu.progressoPipis}/3`
-                : `Missões diárias concluídas para ganhar um Pipis: ${estadoMissoesTrofeu.progressoPipis}/3`;
+                ? `Daily missions completed toward a Deal Pipis: ${estadoMissoesTrofeu.progressoPipis}/3`
+                : `Missões diárias concluídas para ganhar um Pipis de Negócio: ${estadoMissoesTrofeu.progressoPipis}/3`;
             const lista = document.getElementById("lista-missoes-diarias");
             lista.replaceChildren();
             obterMissoesDiarias(estadoMissoesTrofeu.data).forEach(missao => {
@@ -1774,13 +1789,13 @@
             const notificacao = document.getElementById("notificacao-missoes-trofeu");
             if (notificacaoMissoesTrofeu && notificacaoMissoesTrofeu.tipo === "pipis") {
                 notificacao.textContent = idiomaAtual === "en"
-                    ? "Mission streak complete! You got a Pipis."
-                    : "Sequência de missões completa! Você ganhou um Pipis.";
+                    ? "Mission streak complete! You got a Deal Pipis."
+                    : "Sequência de missões completa! Você ganhou um Pipis de Negócio.";
             } else if (notificacaoMissoesTrofeu && notificacaoMissoesTrofeu.tipo === "shelf") {
                 const valor = notificacaoMissoesTrofeu.recompensa.toLocaleString(idiomaAtual === "en" ? "en-US" : "pt-BR");
                 notificacao.textContent = idiomaAtual === "en"
-                    ? `All 10 colors collected! The shelf paid ${valor} Kromer!`
-                    : `Todas as 10 cores coletadas! A prateleira pagou ${valor} Kromer!`;
+                    ? `You claimed ${valor} Kromer from the Deal Pipis shelf!`
+                    : `Você resgatou ${valor} Kromer da prateleira de Pipis de Negócio!`;
             } else {
                 notificacao.textContent = "";
             }
@@ -1795,18 +1810,23 @@
                 if (cor) {
                     sprite.style.setProperty("--pipis-color", cor);
                     sprite.setAttribute("role", "img");
-                    sprite.setAttribute("aria-label", "Pipis");
+                    sprite.setAttribute("aria-label", idiomaAtual === "en" ? "Deal Pipis" : "Pipis de Negócio");
                 } else {
                     sprite.setAttribute("aria-hidden", "true");
                 }
                 const rotulo = document.createElement("span");
-                rotulo.textContent = cor ? "Pipis" : (idiomaAtual === "en" ? "Empty" : "Vazio");
+                rotulo.textContent = cor
+                    ? (idiomaAtual === "en" ? "Deal Pipis" : "Pipis de Negócio")
+                    : (idiomaAtual === "en" ? "Empty" : "Vazio");
                 slot.append(sprite, rotulo);
                 prateleira.appendChild(slot);
             }
             document.getElementById("recompensa-prateleira-pipis").textContent = idiomaAtual === "en"
-                ? `Collect all 10 colors for a random reward of up to 1,000,000 Kromer. Completed shelves can be collected again.`
-                : `Junte as 10 cores para ganhar uma recompensa aleatória de até 1.000.000 Kromer. Você pode completar a prateleira novamente.`;
+                ? "Collect 10 Deal Pipis to unlock a random reward of up to 1,000,000 Kromer."
+                : "Junte 10 Pipis de Negócio para liberar uma recompensa aleatória de até 1.000.000 Kromer.";
+            const botaoResgate = document.getElementById("botao-resgatar-recompensa-missoes");
+            botaoResgate.hidden = estadoMissoesTrofeu.pipis.length < 10;
+            botaoResgate.textContent = idiomaAtual === "en" ? "CLAIM REWARD" : "RESGATAR RECOMPENSA";
         }
         function abrirMenuMissoesTrofeu() {
             const possuiTrofeu = dadosConquistas.desbloqueadas.length === listaConquistas.length;
@@ -1827,28 +1847,22 @@
             const cor = gerarCorPipis(estadoMissoesTrofeu.pipis);
             estadoMissoesTrofeu.pipis.push(cor);
             notificacaoMissoesTrofeu = { tipo: "pipis", cor: cor };
-            if (estadoMissoesTrofeu.pipis.length === 10) {
-                const recompensa = Math.floor(Math.random() * 999001) + 1000;
-                estadoMissoesTrofeu.pipis = [];
-                estadoMissoesTrofeu.conjuntosCompletos++;
-                kromer += recompensa;
-                atualizarRotuloKromer();
-                salvarDadosNoNavegador();
-                notificacaoMissoesTrofeu = { tipo: "shelf", recompensa: recompensa };
-            }
+            enfileirarAnuncioSpamton({ tipo: "missionPipis" });
+            if (estadoMissoesTrofeu.pipis.length === 10) enfileirarAnuncioSpamton({ tipo: "missionRewardReady" });
         }
         function registrarProgressoMissoes(ganhos) {
             if (!estadoMissoesCarregado || cheatDetectado || dadosConquistas.desbloqueadas.length !== listaConquistas.length) return;
             garantirDataMissoesAtual();
             let alterou = false;
             const missoes = obterMissoesDiarias(estadoMissoesTrofeu.data);
-            missoes.forEach(missao => {
+            missoes.forEach((missao, indiceMissao) => {
                 const quantidade = Number(ganhos[missao.tipo]) || 0;
                 if (quantidade <= 0 || estadoMissoesTrofeu.concluidas.includes(missao.tipo)) return;
                 estadoMissoesTrofeu.progressoDiario[missao.tipo] =
                     (estadoMissoesTrofeu.progressoDiario[missao.tipo] || 0) + quantidade;
                 if (estadoMissoesTrofeu.progressoDiario[missao.tipo] >= missao.meta) {
                     estadoMissoesTrofeu.concluidas.push(missao.tipo);
+                    enfileirarAnuncioSpamton({ tipo: "missionComplete", numero: indiceMissao + 1 });
                     estadoMissoesTrofeu.progressoPipis++;
                     if (estadoMissoesTrofeu.progressoPipis >= 3) {
                         estadoMissoesTrofeu.progressoPipis = 0;
@@ -1864,27 +1878,47 @@
                 }
             }
         }
-        function anunciarConquista(conquista) {
-            filaBragConquistas.push({
-                conquista,
-                indice: Math.floor(Math.random() * falasConquista.pt.length)
-            });
-            if (bragConquistaAtivo) return;
-            bragConquistaAtivo = true;
+        function resgatarRecompensaMissoes() {
+            if (cheatDetectado || estadoMissoesTrofeu.pipis.length < 10) return;
+            const recompensa = Math.floor(Math.random() * 999001) + 1000;
+            estadoMissoesTrofeu.pipis = [];
+            estadoMissoesTrofeu.conjuntosCompletos++;
+            kromer += recompensa;
+            atualizarRotuloKromer();
+            salvarDadosNoNavegador();
+            salvarEstadoMissoesTrofeu();
+            notificacaoMissoesTrofeu = { tipo: "shelf", recompensa };
+            renderizarMissoesTrofeu();
+        }
+        function enfileirarAnuncioSpamton(anuncio) {
+            filaAnunciosSpamton.push(anuncio);
+            if (anuncioSpamtonAtivo) return;
+            anuncioSpamtonAtivo = true;
             const mostrarProxima = () => {
-                const proxima = filaBragConquistas.shift();
+                const proxima = filaAnunciosSpamton.shift();
                 if (!proxima) {
-                    bragConquistaAtivo = false;
+                    anuncioSpamtonAtivo = false;
                     return;
                 }
-                definirFalaSpamton("achievement", {
-                    conquista: proxima.conquista,
-                    indice: proxima.indice
-                });
-                bragConquistaAte = Date.now() + 2600;
+                if (proxima.tipo === "achievement") {
+                    definirFalaSpamton("achievement", {
+                        conquista: proxima.conquista,
+                        indice: proxima.indice
+                    });
+                } else {
+                    definirFalaSpamton(proxima.tipo, proxima);
+                }
+                anuncioSpamtonAte = Date.now() + 2600;
                 setTimeout(mostrarProxima, 2600);
             };
             mostrarProxima();
+        }
+        function anunciarConquista(conquista) {
+            enfileirarAnuncioSpamton({
+                tipo: "achievement",
+                conquista,
+                indice: Math.floor(Math.random() * falasConquista.pt.length)
+            });
         }
         function verificarConquistas() {
             if (cheatDetectado) return;
@@ -2699,7 +2733,7 @@
             location.reload();
         }
         function atualizarFalaSpamton() {
-            if (!cheatDetectado && Date.now() >= bragConquistaAte) definirFalaSpamton("spamton");
+            if (!cheatDetectado && Date.now() >= anuncioSpamtonAte) definirFalaSpamton("spamton");
         }
         
         function rolarFalaInicialComPeso() {
