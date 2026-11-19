@@ -102,6 +102,10 @@
             background-color: rgba(0, 17, 136, 0.55);
             backdrop-filter: blur(4px);
         }
+        #tela-certificado.pausa-transparente {
+            background-color: rgba(0, 17, 136, 0.55);
+            backdrop-filter: blur(4px);
+        }
         .menu-scroll {
             width: 80%;
             max-width: 600px;
@@ -579,19 +583,15 @@
     </div>
 
     <div id="tela-certificado" class="sub-tela">
-        <h2 style="color: cyan; text-shadow: 2px 2px black;">CERTIFICADO</h2>
+        <h2 style="color: #001188; text-shadow: none;">ACHIEVEMENT CERTIFICATE</h2>
         <div id="certificado-tsunami" style="position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:1;"></div>
-        <div class="menu-scroll" style="max-height: 60vh;">
-            <div style="border: 4px solid white; background: rgba(255,255,255,0.05); padding: 30px; text-align: center; margin: 20px 0;">
-                <div style="font-size: 32px; color: yellow; text-shadow: 2px 2px black; margin-bottom: 10px;">CERTIFICADO DE CONQUISTA</div>
-                <div style="font-size: 18px; color: white; text-shadow: 1px 1px black; margin-bottom: 20px;">Este certificado confirma que</div>
-                <input id="certificado-nome" type="text" maxlength="20" style="font-size: 24px; color: cyan; text-shadow: 1px 1px black; text-align: center; border: 2px solid white; background: transparent; width: 200px;" placeholder="Seu Nome">
-                <div style="font-size: 18px; color: white; text-shadow: 1px 1px black; margin-top: 20px;">foi oficialmente reconhecido por</div>
-                <div style="font-size: 24px; color: yellow; text-shadow: 2px 2px black; margin-bottom: 10px;">desbloquear todas as conquistas</div>
-                <div style="font-size: 16px; color: white; text-shadow: 1px 1px black;">no Spamton Clicker</div>
-            </div>
-            <button class="botao-menu" onclick="salvarCertificado()" style="background-color: #0055ff;">ASSINAR CERTIFICADO</button>
-            <div id="certificado-assinado" style="color: #00ffcc; font-weight: bold; margin-top: 15px; text-shadow: 1px 1px black;"></div>
+        <div style="border: 4px solid #001188; background: white; padding: 40px; text-align: center; margin: 20px 0; max-width: 520px;">
+            <div style="font-size: 28px; color: #001188; font-weight: bold; margin-bottom: 20px;">CERTIFICATE OF ACHIEVEMENT</div>
+            <div style="font-size: 16px; color: #001188; margin-bottom: 20px;">This certificate confirms that</div>
+            <input id="certificado-nome" type="text" maxlength="20" style="font-size: 24px; color: #001188; font-weight: bold; text-align: center; border: 2px solid #001188; background: white; width: 220px;" placeholder="Your Name">
+            <div style="font-size: 16px; color: #001188; margin-top: 20px;">has been officially recognized for</div>
+            <div style="font-size: 20px; color: #001188; font-weight: bold; margin-bottom: 10px;">unlocking all achievements</div>
+            <div style="font-size: 14px; color: #001188;">in Spamton clicker</div>
         </div>
         <button class="botao-menu" data-i18n="back" style="background-color: #444; margin-top: 20px;" onclick="fecharCertificado()">VOLTAR</button>
     </div>
@@ -1411,21 +1411,22 @@
             if (!possuiTrofeu || cheatDetectado) return;
             document.getElementById("tela-conquistas").style.display = "none";
             document.getElementById("tela-certificado").style.display = "flex";
+            if (origemConquistas === "pausa") {
+                document.getElementById("tela-certificado").classList.add("pausa-transparente");
+            }
             const salvo = localStorage.getItem("save_certificado_nome");
-            document.getElementById("certificado-nome").value = salvo || "";
-            document.getElementById("certificado-assinado").textContent = salvo ? "Certificado assinado para " + salvo + "!" : "";
+            const inputNome = document.getElementById("certificado-nome");
+            inputNome.value = salvo || "";
+            inputNome.addEventListener("input", function() {
+                const nome = inputNome.value.trim();
+                if (nome) localStorage.setItem("save_certificado_nome", nome);
+            });
             iniciarTsunamiZumbis();
         }
         function fecharCertificado() {
             document.getElementById("tela-certificado").style.display = "none";
-            document.getElementById("tela-conquistas").style.display = "flex";
+            document.getElementById("tela-certificado").classList.remove("pausa-transparente");
             pararTsunamiZumbis();
-        }
-        function salvarCertificado() {
-            const nome = document.getElementById("certificado-nome").value.trim();
-            if (!nome) return;
-            localStorage.setItem("save_certificado_nome", nome);
-            document.getElementById("certificado-assinado").textContent = "Certificado assinado para " + nome + "!";
         }
         let tsunamiTimer = null;
         let tsunamiZumbis = [];
