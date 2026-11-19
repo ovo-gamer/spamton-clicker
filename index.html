@@ -583,15 +583,15 @@
     </div>
 
     <div id="tela-certificado" class="sub-tela">
-        <h2 style="color: #001188; text-shadow: none;">ACHIEVEMENT CERTIFICATE</h2>
+        <h2 style="color: cyan; text-shadow: 2px 2px black;">ACHIEVEMENT CERTIFICATE</h2>
         <div id="certificado-tsunami" style="position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:1;"></div>
-        <div style="border: 4px solid #001188; background: white; padding: 40px; text-align: center; margin: 20px 0; max-width: 520px;">
-            <div style="font-size: 28px; color: #001188; font-weight: bold; margin-bottom: 20px;">CERTIFICATE OF ACHIEVEMENT</div>
-            <div style="font-size: 16px; color: #001188; margin-bottom: 20px;">This certificate confirms that</div>
-            <input id="certificado-nome" type="text" maxlength="20" style="font-size: 24px; color: #001188; font-weight: bold; text-align: center; border: 2px solid #001188; background: white; width: 220px;" placeholder="Your Name">
-            <div style="font-size: 16px; color: #001188; margin-top: 20px;">has been officially recognized for</div>
-            <div style="font-size: 20px; color: #001188; font-weight: bold; margin-bottom: 10px;">unlocking all achievements</div>
-            <div style="font-size: 14px; color: #001188;">in Spamton clicker</div>
+        <div style="border: 4px solid white; background: white; padding: 40px; text-align: center; margin: 20px 0; max-width: 520px;">
+            <div id="certificado-titulo" style="font-size: 32px; color: #d4af37; font-weight: bold; text-shadow: 2px 2px black; margin-bottom: 10px;">CERTIFICATE OF ACHIEVEMENT</div>
+            <div id="certificado-confirma" style="font-size: 18px; color: #333333; text-shadow: 1px 1px white; margin-bottom: 20px;">This certificate confirms that</div>
+            <input id="certificado-nome" type="text" maxlength="20" style="font-size: 24px; color: #000000; font-weight: bold; text-align: center; border: 2px solid #d4af37; background: white; width: 200px;" placeholder="Your Name">
+            <div id="certificado-reconhecido" style="font-size: 18px; color: #333333; text-shadow: 1px 1px white; margin-top: 20px;">has been officially recognized for</div>
+            <div id="certificado-desbloqueou" style="font-size: 24px; color: #d4af37; font-weight: bold; text-shadow: 2px 2px black; margin-bottom: 10px;">unlocking all achievements</div>
+            <div id="certificado-em" style="font-size: 16px; color: #333333; text-shadow: 1px 1px white;">in Spamton clicker</div>
         </div>
         <button class="botao-menu" data-i18n="back" style="background-color: #444; margin-top: 20px;" onclick="fecharCertificado()">VOLTAR</button>
     </div>
@@ -1413,7 +1413,16 @@
             document.getElementById("tela-certificado").style.display = "flex";
             if (origemConquistas === "pausa") {
                 document.getElementById("tela-certificado").classList.add("pausa-transparente");
+            } else {
+                document.getElementById("tela-certificado").classList.remove("pausa-transparente");
             }
+            const en = idiomaAtual === "en";
+            document.getElementById("certificado-titulo").textContent = en ? "CERTIFICATE OF ACHIEVEMENT" : "CERTIFICADO DE CONQUISTA";
+            document.getElementById("certificado-confirma").textContent = en ? "This certificate confirms that" : "Este certificado confirma que";
+            document.getElementById("certificado-nome").placeholder = en ? "Your Name" : "Seu Nome";
+            document.getElementById("certificado-reconhecido").textContent = en ? "has been officially recognized for" : "foi oficialmente reconhecido por";
+            document.getElementById("certificado-desbloqueou").textContent = en ? "unlocking all achievements" : "desbloquear todas as conquistas";
+            document.getElementById("certificado-em").textContent = en ? "in Spamton clicker" : "no Spamton clicker";
             const salvo = localStorage.getItem("save_certificado_nome");
             const inputNome = document.getElementById("certificado-nome");
             inputNome.value = salvo || "";
