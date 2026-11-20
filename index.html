@@ -910,6 +910,7 @@
             pipisColetados: 0, tempoJogado: 0, menusRapidosAbertos: 0, kromerGastos: 0, cliquesLancer: 0
         };
         let origemConquistas = "titulo";
+        let origemCertificado = null;
         let filaAnunciosSpamton = [];
         let anuncioSpamtonAtivo = false;
         let anuncioSpamtonAte = 0;
@@ -1425,6 +1426,7 @@
             if (origemConquistas === "pausa") document.getElementById("tela-pausa").style.display = "flex";
         }
         function abrirCertificado(origem) {
+            origemCertificado = origem;
             const possuiTrofeu = dadosConquistas.desbloqueadas.length === listaConquistas.length;
             if (!possuiTrofeu || cheatDetectado) return;
             document.getElementById("tela-conquistas").style.display = "none";
@@ -1458,6 +1460,9 @@
         function fecharCertificado() {
             document.getElementById("tela-certificado").style.display = "none";
             document.getElementById("tela-certificado").classList.remove("pausa-transparente");
+            if (origemCertificado !== "jogo") {
+                document.getElementById("tela-conquistas").style.display = "flex";
+            }
             pararTsunamiZumbis();
         }
         let tsunamiTimer = null;
