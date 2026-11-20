@@ -575,7 +575,9 @@
         <h2 data-i18n="achievements" style="color: cyan; text-shadow: 2px 2px black;">CONQUISTAS</h2>
         <div class="menu-scroll conquistas-scroll">
             <div class="estrelas-conquistas" id="estrelas-conquistas" aria-label="0 de 5 estrelas"></div>
-            <img class="trofeu-conquistas" id="trofeu-conquistas" src="golden_certain_crt.png" alt="Troféu de todas as conquistas" hidden>
+            <button id="trofeu-conquistas-btn" type="button" onclick="abrirCertificado(origemConquistas)">
+                <img src="golden_certain_crt.png" alt="Troféu de todas as conquistas" style="width: 44px; height: 44px; object-fit: contain; image-rendering: pixelated;">
+            </button>
             <div class="conquistas-resumo" id="resumo-conquistas"></div>
             <div class="conquistas-grade" id="lista-conquistas"></div>
         </div>
@@ -588,7 +590,7 @@
         <div style="border: 6px solid #ff0000; background: #ffffff; padding: 24px 16px; text-align: center; margin: 16px auto; max-width: 400px; box-shadow: 0 4px 0 #000000;">
             <div id="certificado-titulo" style="font-size: 26px; color: yellow; font-weight: bold; text-shadow: 2px 2px black; margin-bottom: 12px; letter-spacing: 1px;">CERTIFICATE OF ACHIEVEMENT</div>
             <div id="certificado-confirma" style="font-size: 15px; color: #000000; text-shadow: 1px 1px #ffffff; margin-bottom: 14px;">This certificate confirms that</div>
-            <div id="certificado-nome-display" style="font-size: 26px; color: cyan; font-weight: bold; text-shadow: 2px 2px black; margin-bottom: 20px; display: inline-block; padding: 6px 14px; background: #ffffff; image-rendering: pixelated;">OVO GAMER</div>
+            <input id="certificado-nome-input" type="text" maxlength="20" style="font-size: 26px; color: cyan; font-weight: bold; text-align: center; border: 3px solid #ff0000; background: #ffffff; width: 200px; image-rendering: pixelated;" value="ovo gamer">
             <div id="certificado-reconhecido" style="font-size: 14px; color: #000000; text-shadow: 1px 1px #ffffff; margin-bottom: 12px;">has been officially recognized for</div>
             <div id="certificado-desbloqueou" style="font-size: 20px; color: yellow; font-weight: bold; text-shadow: 2px 2px black; margin-bottom: 12px; letter-spacing: 1px;">unlocking all achievements</div>
             <div id="certificado-em" style="font-size: 13px; color: #000000; text-shadow: 1px 1px #ffffff;">in Spamton clicker</div>
@@ -647,7 +649,7 @@
             <button class="btn-game-control" data-i18n="quickMenu" style="border-color: cyan;" onclick="abrirMenuDePausaOpa()">MENU RÁPIDO</button>
         </div>
         <div class="container">
-            <button id="trofeu-spamton" type="button" aria-label="Abrir certificado" title="Certificado" onclick="abrirCertificado()">
+            <button id="trofeu-spamton" type="button" aria-label="Abrir certificado" title="Certificado" onclick="abrirCertificado('jogo')">
                 <img src="golden_certain_crt.png" alt="" aria-hidden="true">
             </button>
             <div id="fala-spamton">OLÁ, [Cliente Valioso]!</div>
@@ -1422,15 +1424,15 @@
             document.getElementById("tela-conquistas").classList.remove("pausa-transparente");
             if (origemConquistas === "pausa") document.getElementById("tela-pausa").style.display = "flex";
         }
-        function abrirCertificado() {
+        function abrirCertificado(origem) {
             const possuiTrofeu = dadosConquistas.desbloqueadas.length === listaConquistas.length;
             if (!possuiTrofeu || cheatDetectado) return;
             document.getElementById("tela-conquistas").style.display = "none";
             document.getElementById("tela-certificado").style.display = "flex";
-            if (origemConquistas === "pausa") {
-                document.getElementById("tela-certificado").classList.add("pausa-transparente");
-            } else {
+            if (origem === 'titulo') {
                 document.getElementById("tela-certificado").classList.remove("pausa-transparente");
+            } else {
+                document.getElementById("tela-certificado").classList.add("pausa-transparente");
             }
             const en = idiomaAtual === "en";
             document.getElementById("certificado-titulo-h2").textContent = en ? "ACHIEVEMENT CERTIFICATE" : "CERTIFICADO DE CONQUISTA";
@@ -1444,16 +1446,13 @@
             document.getElementById("certificado-sig-left-sub").textContent = en ? "Big Shot" : "Big Shot";
             document.getElementById("certificado-sig-right").textContent = en ? "ovo gamer" : "ovo gamer";
             document.getElementById("certificado-sig-right-sub").textContent = en ? "CEO of Everything" : "CEO de Tudo";
-            const nomeDisplay = document.getElementById("certificado-nome-display");
-            nomeDisplay.textContent = "";
-            const pausaa = document.getElementById("tela-conquistas").classList.contains("pausa-transparente");
-            document.getElementById("tela-conquistas").style.display = "none";
-            document.getElementById("tela-certificado").style.display = "flex";
-            if (pausaa) {
-                document.getElementById("tela-certificado").classList.add("pausa-transparente");
-            } else {
-                document.getElementById("tela-certificado").classList.remove("pausa-transparente");
-            }
+            const nomeInput = document.getElementById("certificado-nome-input");
+            const salvo = localStorage.getItem("save_certificado_nome") || "ovo gamer";
+            nomeInput.value = salvo;
+            nomeInput.addEventListener("input", function() {
+                const nome = nomeInput.value.trim();
+                if (nome) localStorage.setItem("save_certificado_nome", nome);
+            });
             iniciarTsunamiZumbis();
         }
         function fecharCertificado() {
