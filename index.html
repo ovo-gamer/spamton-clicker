@@ -533,7 +533,7 @@
     <div id="filtro-tinta-vermelha"></div>
     <div id="filtro-tinta-preto-e-branco"></div>
     <div id="tela-morte"><div id="texto-morte">VOCÊ MORREU!<br>[TRAPACEIRO DEFINITIVO]!</div></div>
-    <img id="easter-egg-spamdance" alt="" aria-hidden="true">
+    <img id="easter-egg-spamdance" aria-hidden="true">
 
     <div id="tela-titulo">
         <div id="titulo-jogo" data-i18n-html="gameTitle">Mini Lojinha de Kromer<br>[BIG SHOT EDITION!]</div>
@@ -575,7 +575,7 @@
         <h2 data-i18n="achievements" style="color: cyan; text-shadow: 2px 2px black;">CONQUISTAS</h2>
         <div class="menu-scroll conquistas-scroll">
             <div class="estrelas-conquistas" id="estrelas-conquistas" aria-label="0 de 5 estrelas"></div>
-            <img class="trofeu-conquistas" id="trofeu-conquistas" src="golden_certain_crt.png" alt="Troféu de todas as conquistas" style="width: 44px; height: 44px; object-fit: contain; image-rendering: pixelated; cursor: pointer;" onclick="abrirCertificado(origemConquistas)" title="Certificado" hidden>
+            <img class="trofeu-conquistas" id="trofeu-conquistas" src="golden_certain_crt.png" style="width: 44px; height: 44px; object-fit: contain; image-rendering: pixelated; cursor: pointer;" onclick="abrirCertificado(origemConquistas)" title="Certificado" hidden>
             <div class="conquistas-resumo" id="resumo-conquistas"></div>
             <div class="conquistas-grade" id="lista-conquistas"></div>
         </div>
@@ -600,7 +600,7 @@
                     <div style="font-size: 9px; color: #666666; text-shadow: 1px 1px #ffffff;" id="certificado-sig-left-sub">Big Shot</div>
                 </div>
                 <div style="text-align:center; margin-top:-8px;">
-                    <img src="spamdance.gif" style="width: 88px; height: auto; image-rendering: pixelated;" alt="Spamton">
+                    <img src="spamdance.gif" style="width: 88px; height: auto; image-rendering: pixelated;">
                 </div>
                 <div style="text-align:center;">
                     <div id="certificado-sig-right" style="font-size: 12px; color: #000000; text-shadow: 1px 1px #ffffff; margin-bottom: 4px;">ovo gamer</div>
@@ -634,25 +634,25 @@
     </div>
     <div id="area-jogo">
         <div id="telefone_p">
-            <img src="telefone.png" id="sprite-telefone" class="tel-camada" onclick="cliqueNoTelefone()" alt="Telefone" data-i18n-alt="phone">
-            <img src="telefone_alt.png" id="sprite-telefone-alt" class="tel-camada" onclick="cliqueNoTelefone()" alt="Telefone Alternativo" data-i18n-alt="alternatePhone">
+            <img src="telefone.png" id="sprite-telefone" class="tel-camada" onclick="cliqueNoTelefone()" data-i18n-alt="phone">
+            <img src="telefone_alt.png" id="sprite-telefone-alt" class="tel-camada" onclick="cliqueNoTelefone()" data-i18n-alt="alternatePhone">
         </div>
         
-        <img src="friend.png" id="friend-asset" class="friend-catcher" alt="Friend" data-i18n-alt="friend">
-        <img src="lancer.gif" id="lancer-asset" class="lancer-bike" onclick="cliqueNoLancerSplat()" alt="Lancer" data-i18n-alt="lancer">
-        <img src="pink.png" id="pink-asset" class="pink-mewmew" alt="Pink" data-i18n-alt="pink">
-        <img src="gaster.png" id="gaster-asset" class="gaster-body" alt="Gaster">
+        <img src="friend.png" id="friend-asset" class="friend-catcher" data-i18n-alt="friend">
+        <img src="lancer.gif" id="lancer-asset" class="lancer-bike" onclick="cliqueNoLancerSplat()" data-i18n-alt="lancer">
+        <img src="pink.png" id="pink-asset" class="pink-mewmew" data-i18n-alt="pink">
+        <img src="gaster.png" id="gaster-asset" class="gaster-body">
         
         <div id="area-botoes-config-jogo">
             <button class="btn-game-control" data-i18n="quickMenu" style="border-color: cyan;" onclick="abrirMenuDePausaOpa()">MENU RÁPIDO</button>
         </div>
         <div class="container">
             <button id="trofeu-spamton" type="button" aria-label="Abrir certificado" title="Certificado" onclick="abrirCertificado('jogo')">
-                <img src="golden_certain_crt.png" alt="" aria-hidden="true">
+                <img src="golden_certain_crt.png" aria-hidden="true">
             </button>
             <div id="fala-spamton">OLÁ, [Cliente Valioso]!</div>
             <small id="instrucao-clique" data-i18n="clickForKromer" style="color: #bbb; text-shadow: 1px 1px black; font-size: 14px;">(CLIQUE EM MIM PARA GERAR [Kromer]!)</small>
-            <img id="sprite-spamton" src="spamton_sprite_frame1.png" alt="Sprite do Spamton" data-i18n-alt="spamtonSprite">
+            <img id="sprite-spamton" src="spamton_sprite_frame1.png" data-i18n-alt="spamtonSprite">
             <div id="kromer">Kromer: 0</div>
             <div id="painel-melhorias">Melhorias: (+0 kromer por segundo), (+1 kromer por clique)</div>
             <div class="loja-container">
@@ -2522,18 +2522,8 @@
             if (!container) return;
             
             const textoComoJogarPortugues = `*KROMER*\nKromer é a moeda que você usará para progredir nesse jogo, para começar, clique no Spamton para gerar 1 kromer, não se preocupe, conseguir kromer será mais fácil depois\n*LOJA*\nA loja é o lugar onde sua produção de kromer aumentará ao longo do tempo, inicialmente ela tem dois botões, o de cima aumenta KPS (kromer por segundo), o de baixo aumenta KPC (kromer por clique), ocasionalmente um terceiro botão azul vai aparecer e vai conceder um dos 4 power-ups\n*POWER-UPS*\nPower-ups são outros darkners que você pode contratar e evoluir, mas antes de explicar como cada um deles funciona eu vou explicar algo necessário para eles funcionarem\n*PIPIS*\nQuando você gera kromer ao clicar no Spamton, alguns $ aparecem, eles começaram sendo uma decoração durante o desenvolvimento do jogo mais viraram uma função excencial para progredir com power-ups, a cada $ que aparece, há uma pequena chance do $ ser substituído por um pipis, no começo eles parecem um easter egg legal mas em breve terão importância\n*IMAGE_FRIEND*\nEsse darkner é o mais importante para os outros power-ups funcionarem bem, quando um pipis aparece na tela, o FRIEND irá imediatamente pegá-lo para conceder uma quantia de kromer em troca, conforme o FRIEND evolui, a chance de um pipis aparecer no lugar de um $ aumenta levemente, isso ajudará depois\n*LANCER*\nLancer é um ótimo companheiro caso você se sinta sozinho nessa jornada, ele trouxe sua bicicleta motorizada para melhorar a poluição do ambiente e faz um som engraçado quando você clica nele, mas ele não está lá só pra brincar, ocasionalmente ele joga alguns pipis para o FRIEND pegar (eu não disse que ele seria importante?), conforme Lancer evolui, ele joga mais pipis de uma vez (legal né?)\n*GASTER*\nTambém conhecido como Homem Misterioso, Gaster ocasionalmente deixará sua tela monocromática, enquanto joga alguns pipis para o FRIEND pegar, conforme o Gaster evolui, ele joga mais pipis também\n*PINK*\nOu Mew Mew pra quem só joga Undertale, ela é um passo importante para progressão, suponhamos que você gastou muito kromer em KPC, mas quer deixar o jogo rodando afk, não se preocupe! Pink age como o seu mouse, e gera kromer a cada segundo, mas ao invés de gerar a quantia baseada em KPS, ela gera baseada em KPC, ou seja, ela clica por você, conforme a Pink evolui, ela gera mais $ e as chances de pipis gerados por ela aumenta\n*MENUS E CONFIGURAÇÕES*\nVocê acha que eu não ia citar isso? claro que não! eu vou explicar agora!\n*MENU PRINCIPAL*\nO lugar onde tudo começa, aqui tem alguns botões que podem ou não ajudar :)\n*BOTÃO "JOGAR"*\nFaz você jogar\n*BOTÃO "CONFIGURAÇÕES"*\nAqui você pode ligar ou desligar a música e as risadas dos darkners que você contratou, ajustar o volume de cada um pelos controles abaixo dos botões, ativar a tela cheia (se o navegador oferecer suporte), mudar o idioma e também resetar o progresso aqui mas a gente já resetou demais em Undertale\n*BOTÃO "CRÉDITOS"*\nAqui temos os nomes dos criadores desse jogo, que se dedicaram muito para fazer tudo funcionar (não conta pra ninguém mas eu copiei muito código de muitos sites e remendei tudo junto)\n*BOTÃO "COMO JOGAR"*\nTraz você pra esse submenu!\n*MENU DE PAUSA*\nBasicamente uma curta versão do menu principal mas ele fica dentro do jogo pra você acessar enquanto assiste o caos!\n*CONFIGURAÇÃO DE IDIOMA*\nEscolha português ou inglês em Configurações. Sua escolha fica salva neste dispositivo e altera os menus, diálogos, itens da loja e este guia.\n*CONQUISTAS*\nDesbloqueie conquistas acumulando Kromer, clicando no Spamton, melhorando KPS/KPC, contratando e evoluindo Darkners e fazendo Friend coletar Pipis. As conquistas são organizadas por categoria. A cada 20 conquistas, você ganha uma estrela; desbloqueie as 100 para ganhar o troféu acima do Spamton. Suas conquistas são salvas neste dispositivo e apagadas ao deletar o progresso. Spamton comemora cada nova conquista!\n*EXTRAS*\nDaqui pra frente tem algumas features simples que não merecem um tópico maior (que pena)\n*TEXTO DE ABERTURA*\nDe vez em quando, a tela inicial guarda uma surpresa rara para você. Fique de olho!\n*TELEFONE*\nUm simples telefone para mandar você pra algum lugar, clique nele, talvez não\n                        *DIÁLOGO*\nUm texto em cima do Spamton informando o que está acontecendo no jogo, e as vezes é só o Spamton falando com você, quem sabe?\n*ANTI-CHEAT*\nAlguma hora você vai descobrir, ele impede você de ser um trapaceiro sujo (e também atrapalha a conexão telefônica), bem, as coisas tomaram uma rota estranha não é?\n*FIM*\nÉ só isso por enquanto, agora vá jogar e se torne um [[BIG SHOT]]!!1`;
-            const textoGuiaBase = idiomaAtual === "en" ? idiomaIngles.howToPlay : textoComoJogarPortugues;
-            const textoGuia = textoGuiaBase.replace(
-                idiomaAtual === "en" ? "unlock all 100 to earn the trophy" : "desbloqueie as 100 para ganhar o troféu",
-                idiomaAtual === "en" ? "unlock every achievement to earn the trophy" : "desbloqueie todas para ganhar o troféu"
-            );
-            const descricaoExtras = idiomaAtual === "en"
-                ? "Some simple features that don't deserve a bigger section of their own (what a shame)."
-                : "Daqui pra frente tem algumas features simples que não merecem um tópico maior (que pena)";
-            const linhas = textoGuia.replace(
-                `*EXTRAS*\n${descricaoExtras}`,
-                `*EXTRAS*\n${descricaoExtras}`
-            ).split("\n");
+            const textoGuia = idiomaAtual === "en" ? idiomaIngles.howToPlay : textoComoJogarPortugues;
+            const linhas = textoGuia.split("\n");
             container.innerHTML = "";
             
             linhas.forEach(function(linha) {
