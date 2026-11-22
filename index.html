@@ -575,9 +575,7 @@
         <h2 data-i18n="achievements" style="color: cyan; text-shadow: 2px 2px black;">CONQUISTAS</h2>
         <div class="menu-scroll conquistas-scroll">
             <div class="estrelas-conquistas" id="estrelas-conquistas" aria-label="0 de 5 estrelas"></div>
-            <button id="trofeu-conquistas-btn" type="button" onclick="abrirCertificado(origemConquistas)">
-                <img src="golden_certain_crt.png" alt="Troféu de todas as conquistas" style="width: 44px; height: 44px; object-fit: contain; image-rendering: pixelated;">
-            </button>
+            <img class="trofeu-conquistas" id="trofeu-conquistas" src="golden_certain_crt.png" alt="Troféu de todas as conquistas" style="width: 44px; height: 44px; object-fit: contain; image-rendering: pixelated; cursor: pointer;" onclick="abrirCertificado(origemConquistas)" title="Certificado" hidden>
             <div class="conquistas-resumo" id="resumo-conquistas"></div>
             <div class="conquistas-grade" id="lista-conquistas"></div>
         </div>
