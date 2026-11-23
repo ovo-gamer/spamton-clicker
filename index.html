@@ -574,7 +574,7 @@
     <div id="tela-conquistas" class="sub-tela">
         <h2 data-i18n="achievements" style="color: cyan; text-shadow: 2px 2px black;">CONQUISTAS</h2>
         <div class="menu-scroll conquistas-scroll">
-            <div class="estrelas-conquistas" id="estrelas-conquistas" aria-label="0 de 5 estrelas"></div>
+            <div class="estrelas-conquistas" id="estrelas-conquistas"></div>
             <img class="trofeu-conquistas" id="trofeu-conquistas" src="golden_certain_crt.png" style="width: 44px; height: 44px; object-fit: contain; image-rendering: pixelated; cursor: pointer;" onclick="abrirCertificado(origemConquistas)" title="Certificado" hidden>
             <div class="conquistas-resumo" id="resumo-conquistas"></div>
             <div class="conquistas-grade" id="lista-conquistas"></div>
@@ -634,25 +634,25 @@
     </div>
     <div id="area-jogo">
         <div id="telefone_p">
-            <img src="telefone.png" id="sprite-telefone" class="tel-camada" onclick="cliqueNoTelefone()" data-i18n-alt="phone">
-            <img src="telefone_alt.png" id="sprite-telefone-alt" class="tel-camada" onclick="cliqueNoTelefone()" data-i18n-alt="alternatePhone">
+            <img src="telefone.png" id="sprite-telefone" class="tel-camada" onclick="cliqueNoTelefone()">
+            <img src="telefone_alt.png" id="sprite-telefone-alt" class="tel-camada" onclick="cliqueNoTelefone()">
         </div>
         
-        <img src="friend.png" id="friend-asset" class="friend-catcher" data-i18n-alt="friend">
-        <img src="lancer.gif" id="lancer-asset" class="lancer-bike" onclick="cliqueNoLancerSplat()" data-i18n-alt="lancer">
-        <img src="pink.png" id="pink-asset" class="pink-mewmew" data-i18n-alt="pink">
+        <img src="friend.png" id="friend-asset" class="friend-catcher">
+        <img src="lancer.gif" id="lancer-asset" class="lancer-bike" onclick="cliqueNoLancerSplat()">
+        <img src="pink.png" id="pink-asset" class="pink-mewmew">
         <img src="gaster.png" id="gaster-asset" class="gaster-body">
         
         <div id="area-botoes-config-jogo">
             <button class="btn-game-control" data-i18n="quickMenu" style="border-color: cyan;" onclick="abrirMenuDePausaOpa()">MENU RÁPIDO</button>
         </div>
         <div class="container">
-            <button id="trofeu-spamton" type="button" aria-label="Abrir certificado" title="Certificado" onclick="abrirCertificado('jogo')">
+            <button id="trofeu-spamton" type="button" title="Certificado" onclick="abrirCertificado('jogo')">
                 <img src="golden_certain_crt.png" aria-hidden="true">
             </button>
             <div id="fala-spamton">OLÁ, [Cliente Valioso]!</div>
             <small id="instrucao-clique" data-i18n="clickForKromer" style="color: #bbb; text-shadow: 1px 1px black; font-size: 14px;">(CLIQUE EM MIM PARA GERAR [Kromer]!)</small>
-            <img id="sprite-spamton" src="spamton_sprite_frame1.png" data-i18n-alt="spamtonSprite">
+            <img id="sprite-spamton" src="spamton_sprite_frame1.png">
             <div id="kromer">Kromer: 0</div>
             <div id="painel-melhorias">Melhorias: (+0 kromer por segundo), (+1 kromer por clique)</div>
             <div class="loja-container">
@@ -718,16 +718,9 @@
                 deleteProgress: "DELETE PROGRESS",
                 back: "BACK",
                 quickMenu: "QUICK MENU",
-                devTestMissions: "DEV TEST: DAILY MISSIONS",
                 resume: "RESUME",
                 mainMenu: "MAIN MENU",
                 clickForKromer: "(CLICK ME TO MAKE [Kromer]!)",
-                phone: "Phone",
-                alternatePhone: "Alternate Phone",
-                spamtonSprite: "Spamton sprite",
-                friend: "Friend",
-                lancer: "Lancer",
-                pink: "Pink",
                 musicOn: "MUSIC: ON",
                 musicOff: "MUSIC: OFF",
                 laughsOn: "LAUGHS: ON",
@@ -1548,30 +1541,17 @@
 
             if (estrelas) {
                 estrelas.replaceChildren();
-                estrelas.setAttribute(
-                    "aria-label",
-                    idiomaAtual === "en"
-                        ? `${estrelasDesbloqueadas} of 5 achievement stars`
-                        : `${estrelasDesbloqueadas} de 5 estrelas de conquistas`
-                );
                 for (let indice = 0; indice < 5; indice++) {
                     const estrela = document.createElement("img");
                     const ativa = indice < estrelasDesbloqueadas;
                     estrela.className = "estrela-conquista";
                     estrela.src = ativa ? "star_on.png" : "star_off.png";
-                    estrela.alt = idiomaAtual === "en"
-                        ? `Star ${indice + 1}: ${ativa ? "earned" : "not earned"}`
-                        : `Estrela ${indice + 1}: ${ativa ? "conquistada" : "não conquistada"}`;
                     estrelas.appendChild(estrela);
                 }
             }
             if (trofeuMenu) trofeuMenu.hidden = !possuiTrofeu;
             if (trofeuJogo) {
                 trofeuJogo.style.display = possuiTrofeu ? "block" : "none";
-                trofeuJogo.setAttribute(
-                    "aria-label",
-                    idiomaAtual === "en" ? "Open certificate" : "Abrir certificado"
-                );
                 trofeuJogo.title = idiomaAtual === "en" ? "Certificate" : "Certificado";
             }
         }
@@ -1607,7 +1587,6 @@
                     cartao.className = `conquista-cartao${desbloqueada ? "" : " bloqueada"}`;
                     const icone = document.createElement("img");
                     icone.src = "conquista.png";
-                    icone.alt = "";
                     icone.setAttribute("aria-hidden", "true");
                     const texto = document.createElement("div");
                     texto.className = "conquista-texto";
@@ -1870,13 +1849,6 @@
                     ? textoIdioma(elemento.dataset.i18nHtml, elemento.dataset.htmlPortugues)
                     : elemento.dataset.htmlPortugues;
             });
-            document.querySelectorAll("[data-i18n-alt]").forEach(function(elemento) {
-                if (!elemento.dataset.altPortugues) elemento.dataset.altPortugues = elemento.alt;
-                elemento.alt = idiomaAtual === "en"
-                    ? textoIdioma(elemento.dataset.i18nAlt, elemento.dataset.altPortugues)
-                    : elemento.dataset.altPortugues;
-            });
-
             atualizarRotulosConfiguracao();
             atualizarRotuloVersao();
             renderizarSplash();
