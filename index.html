@@ -2508,7 +2508,7 @@
             lancer: localStorage.getItem("silly_lancer") !== "false",
             pink: localStorage.getItem("silly_pink") !== "false",
             gaster: localStorage.getItem("silly_gaster") !== "false",
-            strings: localStorage.getItem("silly_strings") !== "false",
+            strings: localStorage.getItem("silly_strings") === "true",
             flash: localStorage.getItem("silly_flash") !== "false"
         };
         musicaNativa.src = cfgSilly.musica;
@@ -2622,27 +2622,32 @@
 
         const dadosCordasRagdoll = [];
         function inicializarCeilingStrings() {
-            const svg = document.getElementById("silly-strings-ceiling");
-            if (!svg) return;
+            const container = document.getElementById("silly-strings-ceiling");
+            if (!container) return;
             const cores = ["#647c00", "#73b000", "#00ff00"];
             const total = Math.floor(Math.random() * 7) + 10;
-            svg.replaceChildren();
+            const numSegs = 12;
+            container.replaceChildren();
             dadosCordasRagdoll.length = 0;
 
             for (let i = 0; i < total; i++) {
-                const path = document.createElementNS("http://w3.org", "path");
                 const cor = cores[Math.floor(Math.random() * cores.length)];
                 const largura = Math.floor(Math.random() * 4) + 2;
-                path.setAttribute("fill", "none");
-                path.setAttribute("stroke", cor);
-                path.setAttribute("stroke-width", String(largura));
-                path.setAttribute("stroke-linecap", "round");
-                svg.appendChild(path);
+                const xPct = ((i + 0.5) / total) * 94 + (Math.random() * 4 - 2) + 3;
+                const lenPct = Math.random() * 48 + 28;
+                const segs = [];
+
+                for (let s = 0; s < numSegs; s++) {
+                    const seg = document.createElement("div");
+                    seg.style.cssText = `position:fixed; top:0; left:0; width:${largura}px; background:${cor}; pointer-events:none; transform-origin:top center; box-shadow:1px 1px 0 #000;`;
+                    container.appendChild(seg);
+                    segs.push(seg);
+                }
 
                 dadosCordasRagdoll.push({
-                    el: path,
-                    xPct: ((i + 0.5) / total) * 94 + (Math.random() * 4 - 2) + 3,
-                    lenPct: Math.random() * 48 + 28,
+                    segs,
+                    xPct,
+                    lenPct,
                     freq: Math.random() * 0.0014 + 0.0012,
                     phase: Math.random() * Math.PI * 2,
                     amp: Math.random() * 24 + 14
@@ -2653,29 +2658,42 @@
         }
 
         function atualizarVisibilidadeCeilingStrings() {
-            const svg = document.getElementById("silly-strings-ceiling");
-            if (!svg) return;
+            const container = document.getElementById("silly-strings-ceiling");
+            if (!container) return;
             const possuiTrofeu = dadosConquistas.desbloqueadas.length === listaConquistas.length;
-            svg.style.display = (possuiTrofeu && cfgSilly.strings) ? "block" : "none";
+            container.style.display = (possuiTrofeu && cfgSilly.strings) ? "block" : "none";
         }
 
         function animarCeilingStrings(tempo) {
-            const svg = document.getElementById("silly-strings-ceiling");
-            if (svg && svg.style.display !== "none" && !preferenciaMovimentoReduzido.matches) {
+            const container = document.getElementById("silly-strings-ceiling");
+            if (container && container.style.display !== "none" && !preferenciaMovimentoReduzido.matches) {
                 const w = window.innerWidth;
                 const h = window.innerHeight;
                 for (let i = 0; i < dadosCordasRagdoll.length; i++) {
                     const c = dadosCordasRagdoll[i];
                     const baseX = (c.xPct / 100) * w;
                     const totalH = (c.lenPct / 100) * h;
+                    const n = c.segs.length;
+                    const segH = totalH / n;
                     const t = tempo * c.freq + c.phase;
-                    const x1 = baseX + Math.sin(t) * (c.amp * 0.35);
-                    const y1 = totalH * 0.33;
-                    const x2 = baseX + Math.sin(t - 0.9) * (c.amp * 0.75);
-                    const y2 = totalH * 0.66;
-                    const x3 = baseX + Math.sin(t - 1.8) * c.amp;
-                    const y3 = totalH;
-                    c.el.setAttribute("d", `M ${baseX.toFixed(1)} 0 C ${x1.toFixed(1)} ${y1.toFixed(1)}, ${x2.toFixed(1)} ${y2.toFixed(1)}, ${x3.toFixed(1)} ${y3.toFixed(1)}`);
+
+                    let prevX = baseX;
+                    let prevY = 0;
+                    for (let s = 0; s < n; s++) {
+                        const frac = (s + 1) / n;
+                        const curX = baseX + Math.sin(t - frac * 2.2) * (c.amp * frac);
+                        const curY = segH * (s + 1);
+                        const dx = curX - prevX;
+                        const dy = curY - prevY;
+                        const dist = Math.hypot(dx, dy);
+                        const ang = -Math.atan2(dx, dy) * (180 / Math.PI);
+
+                        const seg = c.segs[s];
+                        seg.style.height = `${dist.toFixed(1)}px`;
+                        seg.style.transform = `translate(${prevX.toFixed(1)}px, ${prevY.toFixed(1)}px) rotate(${ang.toFixed(2)}deg)`;
+                        prevX = curX;
+                        prevY = curY;
+                    }
                 }
             }
             requestAnimationFrame(animarCeilingStrings);
