@@ -408,7 +408,7 @@
             display: none;
             position: absolute; top: 90px; left: 20px;
             width: 60px; height: 60px; z-index: 20;
-            image-rendering: pixelated; filter: drop-shadow(2px 2px 0px black);
+            image-rendering: pixelated;
             cursor: pointer; object-fit: contain;
         }
         #silly-strings-ceiling {
@@ -665,7 +665,7 @@
         <button class="botao-menu" data-i18n="back" style="background-color: #444; margin-top: 8px;" onclick="fecharSillyStrings()">VOLTAR</button>
     </div>
     <div id="area-jogo">
-        <svg id="silly-strings-ceiling" xmlns="http://w3.org"></svg>
+        <div id="silly-strings-ceiling"></div>
         <div id="telefone_p">
             <img src="telefone.png" id="sprite-telefone" class="tel-camada" onclick="cliqueNoTelefone()">
             <img src="telefone_alt.png" id="sprite-telefone-alt" class="tel-camada" onclick="cliqueNoTelefone()">
@@ -1552,6 +1552,9 @@
             const scarfBtn = document.getElementById("puppet-scarf-btn");
             if (scarfBtn) {
                 scarfBtn.style.display = possuiTrofeu ? "block" : "none";
+            }
+            if (typeof atualizarVisibilidadeCeilingStrings === "function") {
+                atualizarVisibilidadeCeilingStrings();
             }
         }
         function renderizarConquistas() {
@@ -2492,11 +2495,11 @@
             { arquivo: "dialtone.ogg", nome: "Dialtone" },
             { arquivo: "HEY_EVERY.ogg", nome: "HEY EVERY !" },
             { arquivo: "spamton.ogg", nome: "Spamton" },
-            { arquivo: "NOWS_YOU_CHANCE_TO_BE_A.ogg", nome: "NOW'S YOUR CHANCE" },
+            { arquivo: "NOWS_YOU_CHANCE_TO_BE_A.ogg", nome: "NOW'S YOUR CHANCE TO BE A" },
             { arquivo: "KEYGEN.ogg", nome: "KEYGEN" },
             { arquivo: "deal_gone_wrong.ogg", nome: "Deal Gone Wrong" },
             { arquivo: "BIG_SHOT.ogg", nome: "BIG SHOT" },
-            { arquivo: "a_real_boy.ogg", nome: "A Real Boy" },
+            { arquivo: "a_real_boy.ogg", nome: "A Real Boy!" },
             { arquivo: "digital_roots.ogg", nome: "Digital Roots" }
         ];
         const cfgSilly = {
