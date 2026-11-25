@@ -330,8 +330,8 @@
             font-weight: bold; min-width: 380px; box-shadow: 4px 4px 0px black;
             text-align: center; text-shadow: 2px 2px 0px #000; transition: background-color 0.3s ease;
         }
-        .cor-rosa { background-color: #ffaec9 !important; }
-        .cor-amarela { background-color: #fff200 !important; color: white !important; }
+        .cor-rosa { background-color: #ff007f !important; }
+        .cor-amarela { background-color: #e6b800 !important; color: white !important; }
         .cor-azul { background-color: #0055ff !important; color: white !important; display: none; }
     </style>
     <style>
@@ -404,6 +404,52 @@
             pointer-events: none;
         }
         #sprite-telefone { transition: filter 0.5s ease-in-out !important; }
+        #puppet-scarf-btn {
+            display: none;
+            position: absolute; top: 90px; left: 20px;
+            width: 60px; height: 60px; z-index: 20;
+            image-rendering: pixelated; filter: drop-shadow(2px 2px 0px black);
+            cursor: pointer; object-fit: contain;
+        }
+        #silly-strings-ceiling {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2; pointer-events: none; overflow: hidden;
+        }
+        #tela-silly-strings {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
+            background-color: rgba(0, 17, 136, 0.55);
+            z-index: 99999982;
+            display: none; flex-direction: column;
+            align-items: center; justify-content: center; gap: 16px;
+            backdrop-filter: blur(4px);
+        }
+        .silly-section-title {
+            color: yellow; font-size: 17px; font-weight: bold;
+            text-shadow: 2px 2px black; margin: 10px 0 4px;
+            width: 100%; text-align: center;
+        }
+        .silly-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 8px; width: 100%;
+        }
+        .silly-btn {
+            background-color: #0055ff; color: white;
+            border: 2px solid white; padding: 9px 10px;
+            font-size: 13px; cursor: pointer;
+            font-family: 'Courier New', monospace; font-weight: bold;
+            box-shadow: 3px 3px 0px black; text-shadow: 1px 1px 0px #000;
+            transition: background-color 0.15s;
+        }
+        .silly-btn:hover { background-color: #0033cc; }
+        .silly-btn.ativo {
+            background-color: #009933; border-color: yellow; color: yellow;
+        }
+        .silly-btn.desativado {
+            background-color: #661111; border-color: #aaa; color: #ccc;
+        }
+
     </style>
     <style>
         @media (max-width: 700px) {
@@ -550,7 +596,7 @@
         <h2 data-i18n="achievements" style="color: cyan; text-shadow: 2px 2px black;">CONQUISTAS</h2>
         <div class="menu-scroll conquistas-scroll">
             <div class="estrelas-conquistas" id="estrelas-conquistas"></div>
-            <img class="trofeu-conquistas" id="trofeu-conquistas" src="golden_certain_crt.png" style="width: 44px; height: 44px; object-fit: contain; image-rendering: pixelated; cursor: pointer;" onclick="abrirCertificado(origemConquistas)" title="Certificado" hidden>
+            <img class="trofeu-conquistas" id="trofeu-conquistas" src="golden_certain_crt.png" style="width: 44px; height: 44px; object-fit: contain; image-rendering: pixelated; cursor: pointer;" onclick="abrirCertificado(origemConquistas)" hidden>
             <div class="conquistas-resumo" id="resumo-conquistas"></div>
             <div class="conquistas-grade" id="lista-conquistas"></div>
         </div>
@@ -558,15 +604,15 @@
     </div>
 
     <div id="tela-certificado" class="sub-tela">
-        <h2 id="certificado-titulo-h2" style="color: cyan; text-shadow: 2px 2px black; margin-bottom: 18px;">ACHIEVEMENT CERTIFICATE</h2>
+        <h2 id="certificado-titulo-h2" style="color: cyan; text-shadow: 2px 2px black; margin-bottom: 18px;">CERTIFICADO DE CONQUISTA</h2>
         <div style="border: 6px solid #ff0000; background: #ffffff; padding: 24px 16px; text-align: center; margin: 16px auto; max-width: 400px; box-shadow: 0 4px 0 #000000;">
-            <div id="certificado-titulo" style="font-size: 26px; color: yellow; font-weight: bold; text-shadow: 2px 2px black; margin-bottom: 12px; letter-spacing: 1px;">CERTIFICATE OF ACHIEVEMENT</div>
-            <div id="certificado-confirma" style="font-size: 15px; color: #000000; text-shadow: 1px 1px #ffffff; margin-bottom: 14px;">This certificate confirms that</div>
+            <div id="certificado-titulo" style="font-size: 26px; color: yellow; font-weight: bold; text-shadow: 2px 2px black; margin-bottom: 12px; letter-spacing: 1px;">CERTIFICADO DE CONQUISTA</div>
+            <div id="certificado-confirma" style="font-size: 15px; color: #000000; text-shadow: 1px 1px #ffffff; margin-bottom: 14px;">Este certificado confirma que</div>
             <input id="certificado-nome-input" type="text" maxlength="20" style="font-size: 26px; color: cyan; font-weight: bold; text-align: center; border: 3px solid #ff0000; background: #ffffff; width: 200px; image-rendering: pixelated;" value="ovo gamer">
-            <div id="certificado-reconhecido" style="font-size: 14px; color: #000000; text-shadow: 1px 1px #ffffff; margin-bottom: 12px;">has been officially recognized for</div>
-            <div id="certificado-desbloqueou" style="font-size: 20px; color: yellow; font-weight: bold; text-shadow: 2px 2px black; margin-bottom: 12px; letter-spacing: 1px;">unlocking all achievements</div>
-            <div id="certificado-em" style="font-size: 13px; color: #000000; text-shadow: 1px 1px #ffffff;">in Spamton clicker</div>
-            <div style="margin-top: 24px; font-size: 11px; color: #666666; text-shadow: 1px 1px #ffffff;" id="certificado-assinado">Signed by Spamton on this device</div>
+            <div id="certificado-reconhecido" style="font-size: 14px; color: #000000; text-shadow: 1px 1px #ffffff; margin-bottom: 12px;">foi oficialmente reconhecido por</div>
+            <div id="certificado-desbloqueou" style="font-size: 20px; color: yellow; font-weight: bold; text-shadow: 2px 2px black; margin-bottom: 12px; letter-spacing: 1px;">desbloquear todas as conquistas</div>
+            <div id="certificado-em" style="font-size: 13px; color: #000000; text-shadow: 1px 1px #ffffff;">no Spamton clicker</div>
+            <div style="margin-top: 24px; font-size: 11px; color: #666666; text-shadow: 1px 1px #ffffff;" id="certificado-assinado">Assinado pelo Spamton neste dispositivo</div>
             <div style="display:flex; justify-content:center; gap:20px; margin-top: 20px; flex-wrap: wrap;">
                 <div style="text-align:center;">
                     <div id="certificado-sig-left" style="font-size: 12px; color: #000000; text-shadow: 1px 1px #ffffff; margin-bottom: 4px;">Spamton G. Spamton</div>
@@ -579,7 +625,7 @@
                 <div style="text-align:center;">
                     <div id="certificado-sig-right" style="font-size: 12px; color: #000000; text-shadow: 1px 1px #ffffff; margin-bottom: 4px;">ovo gamer</div>
                     <div style="width:100px; height:2px; background:#000000; margin:0 auto 3px auto;"></div>
-                    <div style="font-size: 9px; color: #666666; text-shadow: 1px 1px #ffffff;" id="certificado-sig-right-sub">CEO of Everything</div>
+                    <div style="font-size: 9px; color: #666666; text-shadow: 1px 1px #ffffff;" id="certificado-sig-right-sub">CEO de Tudo</div>
                 </div>
             </div>
         </div>
@@ -606,12 +652,27 @@
         </div>
         <button class="botao-menu" data-i18n="back" style="background-color: #444; margin-top: 20px;" onclick="fecharConfiguracoesDaPausa()">VOLTAR</button>
     </div>
+    <div id="tela-silly-strings">
+        <div class="titulo-menu-pausa" id="silly-titulo" style="color: cyan; margin-bottom: 4px;">CORDINHAS MALUCAS</div>
+        <div class="menu-scroll settings-scroll" style="max-height: 62vh; width: min(92vw, 700px);">
+            <div class="silly-section-title" id="silly-sec-musica">JUKEBOX [BIG SHOT]</div>
+            <div class="silly-grid" id="silly-lista-musicas"></div>
+            <div class="silly-section-title" id="silly-sec-darkners">PODERES DOS DARKNERS</div>
+            <div class="silly-grid" id="silly-lista-darkners"></div>
+            <div class="silly-section-title" id="silly-sec-visuais">VISUAIS E EXTRAS</div>
+            <div class="silly-grid" id="silly-lista-visuais"></div>
+        </div>
+        <button class="botao-menu" data-i18n="back" style="background-color: #444; margin-top: 8px;" onclick="fecharSillyStrings()">VOLTAR</button>
+    </div>
     <div id="area-jogo">
+        <svg id="silly-strings-ceiling" xmlns="http://w3.org"></svg>
         <div id="telefone_p">
             <img src="telefone.png" id="sprite-telefone" class="tel-camada" onclick="cliqueNoTelefone()">
             <img src="telefone_alt.png" id="sprite-telefone-alt" class="tel-camada" onclick="cliqueNoTelefone()">
         </div>
         
+        <img src="puppetscarf.png" id="puppet-scarf-btn" onclick="abrirSillyStrings()">
+
         <img src="friend.png" id="friend-asset" class="friend-catcher">
         <img src="lancer.gif" id="lancer-asset" class="lancer-bike" onclick="cliqueNoLancerSplat()">
         <img src="pink.png" id="pink-asset" class="pink-mewmew">
@@ -621,7 +682,7 @@
             <button class="btn-game-control" data-i18n="quickMenu" style="border-color: cyan;" onclick="abrirMenuDePausaOpa()">MENU RÁPIDO</button>
         </div>
         <div class="container">
-            <button id="trofeu-spamton" type="button" title="Certificado" onclick="abrirCertificado('jogo')">
+            <button id="trofeu-spamton" type="button" onclick="abrirCertificado('jogo')">
                 <img src="golden_certain_crt.png" aria-hidden="true">
             </button>
             <div id="fala-spamton">OLÁ, [Cliente Valioso]!</div>
@@ -636,7 +697,7 @@
             </div>
         </div>
     </div>
-    <audio id="som-ambiente" src="dialtone.mp3" loop></audio>
+    <audio id="som-ambiente" src="dialtone.ogg" loop></audio>
     <script src="config.js"></script>
     <script src="morte.js"></script>
     <script>
@@ -659,7 +720,7 @@
             "VENHA CONHECER A [Loja] COM AS MELHORES 0F3RTAS DUVIDOSAS!",
             "OLÁ, [Cliente]! EU SABIA QUE VOCÊ IA APAR3CER!",
             "PREPARE-SE PARA VIRAR UM [BIG SHOT] EM T3MPO REC0RDE... MAIS OU MENOS!",
-            "AQUI T3M [KROMER], [pipis] E ZERO GARANTIAS!",
+            "AQUI T3M [KROMER], [pipis] E ZERO GARANTTIAS!",
             "FICHA L1MPA, BOLS0S VAZIOS? VOCÊ ESTÁ NO LUGAR C3RTO!",
             "NÃO SEJA TÍMIDO! OS [Botões] NÃO M0RDEM!",
             "SEU FUTUR0 É BR1LHANTE! E MINHA [Comissão] TAMBÉM!",
@@ -731,13 +792,13 @@
                         "HELLO! THE [PLAY] BUTTON WON'T CL1CK ITSELF!",
                         "COME IN N0W! NO NEED TO READ THE [tiny!] LETTERS!",
                         "TODAY IS A GREAT D4Y TO MAKE A [DE4L]!",
-                        "[F0RTUN3] IS ONE CL1CK AWAY!!1 MORE OR LESS THAT!",
+                        "[F0RTUN3] IS ONE CL1CK AWAY!!1 SOMETHING LIKE THAT!",
                         "WELCOME! IS YOUR W4LLET READY TO [Suffer]?",
                         "YOU MADE IT! NOW YOU JUST L@CK [M0ney]!",
                         "COME CHECK OUT THE [Shop] WITH THE BEST SH4DY 0FFERS!",
                         "HELLO, [Customer]! I KNEW YOU'D SH0W UP!",
-                        "GET READY TO BECOME A [BIG SHOT] IN REC0RD T1ME... MORE OR LESS!",
-                        "WE H4VE [KROMER], [pipis] AND ZERO GUARANTEES!",
+                        "GET READY TO BECOME A [BIG SHOT] IN REC0RD T1ME... KIND OF!",
+                        "WE H4VE [KROMER], [pipis] AND ZERO GUARANTTEES!",
                         "CL3AN RECORD, EMPTY P0CKETS? YOU'RE IN THE R1GHT PLACE!",
                         "DON'T BE SHY! THE [Buttons] DON'T B1TE!",
                         "YOUR FUTUR3 IS BR1GHT! AND SO IS MY [Commission]!",
@@ -767,7 +828,7 @@
             ],
             "insufficient": [
                         "L4CKING [M0ney]! COME BACK WHEN YOU'RE A [BIG SHOT]!",
-                        "GOT NO [Kromer]? HOW RE_AL SAD HAHAHA!!1",
+                        "GOT NO [Kromer]? RE_AL SAD HAHAHA!!1",
                         "COME BACK WITH P0CKETS FULL OF [Fast Cash]!"
             ],
             "cheatWarning": [
@@ -1487,7 +1548,10 @@
             if (trofeuMenu) trofeuMenu.hidden = !possuiTrofeu;
             if (trofeuJogo) {
                 trofeuJogo.style.display = possuiTrofeu ? "block" : "none";
-                trofeuJogo.title = idiomaAtual === "en" ? "Certificate" : "Certificado";
+            }
+            const scarfBtn = document.getElementById("puppet-scarf-btn");
+            if (scarfBtn) {
+                scarfBtn.style.display = possuiTrofeu ? "block" : "none";
             }
         }
         function renderizarConquistas() {
@@ -1922,7 +1986,7 @@
                 if (posX < 0 && velX < 0) { posX = 0; velX = -velX; }
                 if (posX > window.innerWidth - larguraElem && velX > 0) { posX = window.innerWidth - larguraElem; velX = -velX; }
                 elemento.style.transform = `translate(${posX}px, ${posY}px) rotate(${iRot}deg)`;
-                if (ehPipis === true && nivelPowerUpPipis > 0 && velY > 0) { clearInterval(loopFisico); executarMecanicaFriendDuplicavel(elemento, posX, posY, velX, velY, gravidade, iRot, velRot); return; }
+                if (ehPipis === true && nivelPowerUpPipis > 0 && cfgSilly.friend && velY > 0) { clearInterval(loopFisico); executarMecanicaFriendDuplicavel(elemento, posX, posY, velX, velY, gravidade, iRot, velRot); return; }
                 if (posY > window.innerHeight + 50) { clearInterval(loopFisico); elemento.remove(); }
             }, 16);
         }
@@ -1941,7 +2005,7 @@
         }
 
         function lancarPipisDoLancer() {
-            if (cheatDetectado || nivelLancer === 0) return;
+            if (cheatDetectado || nivelLancer === 0 || !cfgSilly.lancer) return;
             if (document.getElementById("area-jogo").style.display !== "block") return;
             lancerSaltoEfeito();
             dispararSomLancer();
@@ -1967,7 +2031,7 @@
                         if (posX < 0 && velX < 0) { posX = 0; velX = -velX; }
                         if (posX > window.innerWidth - 32 && velX > 0) { posX = window.innerWidth - 32; velX = -velX; }
                         elLancer.style.transform = `translate(${posX}px, ${posY}px) rotate(${iRot}deg)`;
-                        if (nivelPowerUpPipis > 0 && velY > 0) {
+                        if (nivelPowerUpPipis > 0 && cfgSilly.friend && velY > 0) {
                             clearInterval(loopLancerPipis);
                             executarMecanicaFriendDuplicavel(elLancer, posX, posY, velX, velY, gravidade, iRot, velRot);
                             return;
@@ -1981,7 +2045,7 @@
             }
         }
         function produzirPassivoPinkMewMew() {
-            if (cheatDetectado || nivelPink === 0) return;
+            if (cheatDetectado || nivelPink === 0 || !cfgSilly.pink) return;
             if (document.getElementById("area-jogo").style.display !== "block") return;
             pinkSaltoEfeito();
             const ganhoPink = kromerPorClique * nivelPink;
@@ -2012,7 +2076,7 @@
                         if (posX < 0 && velX < 0) { posX = 0; velX = -velX; }
                         if (posX > window.innerWidth - larguraPinkElem && velX > 0) { posX = window.innerWidth - larguraPinkElem; velX = -larguraPinkElem; }
                         elPink.style.transform = `translate(${posX}px, ${posY}px) rotate(${iRot}deg)`;
-                        if (ehPipisPink === true && nivelPowerUpPipis > 0 && velY > 0) {
+                        if (ehPipisPink === true && nivelPowerUpPipis > 0 && cfgSilly.friend && velY > 0) {
                             clearInterval(loopPinkParticula);
                             executarMecanicaFriendDuplicavel(elPink, posX, posY, velX, velY, gravidade, iRot, velRot);
                             return;
@@ -2027,7 +2091,7 @@
         }
 
         function dispararEventoMonocromaticoGaster() {
-            if (cheatDetectado || nivelGaster === 0) return;
+            if (cheatDetectado || nivelGaster === 0 || !cfgSilly.gaster) return;
             if (document.getElementById("area-jogo").style.display !== "block") return;
             let m = !musicaNativa.paused;
             if (m) musicaNativa.pause();
@@ -2058,7 +2122,7 @@
                         if (pX < 0 && vX < 0) { pX = 0; vX = -vX; }
                         if (pX > window.innerWidth - 32 && vX > 0) { pX = window.innerWidth - 32; vX = -vX; }
                         el.style.transform = `translate(${pX}px, ${pY}px) rotate(${r}deg)`;
-                        if (nivelPowerUpPipis > 0 && vY > 0) {
+                        if (nivelPowerUpPipis > 0 && cfgSilly.friend && vY > 0) {
                             clearInterval(lp);
                             executarMecanicaFriendDuplicavel(el, pX, pY, vX, vY, g, r, vr);
                             return;
@@ -2228,7 +2292,7 @@
                 `Melhorias: (+${kromerPorSegundo} kromer por segundo), (+${kromerPorClique} kromer por clique)`
             ).replace("{kps}", kromerPorSegundo).replace("{kpc}", kromerPorClique);
         }
-        function alternarCoresBotoes() { if (!cheatDetectado) { let c = botaoKPS.classList.contains("cor-rosa"); botaoKPS.className = c ? "botao-loja cor-amarela" : "botao-loja cor-rosa" ; botaoKPC.className = c ? "botao-loja cor-rosa" : "botao-loja cor-amarela" ; } }
+        function alternarCoresBotoes() { if (!cheatDetectado && cfgSilly.flash) { let c = botaoKPS.classList.contains("cor-rosa"); botaoKPS.className = c ? "botao-loja cor-amarela" : "botao-loja cor-rosa" ; botaoKPC.className = c ? "botao-loja cor-rosa" : "botao-loja cor-amarela" ; } }
         
         function dispararAparicaoBotaoAzul() {
             if (cheatDetectado || document.getElementById("area-jogo").style.display !== "block") return;
@@ -2424,6 +2488,198 @@
         setInterval(dispararEventoMonocromaticoGaster, 60000);
         setInterval(verificarSorteioWeirdRoute, 1000);
 
+        const faixasSillyStrings = [
+            { arquivo: "dialtone.ogg", nome: "Dialtone" },
+            { arquivo: "HEY_EVERY.ogg", nome: "HEY EVERY !" },
+            { arquivo: "spamton.ogg", nome: "Spamton" },
+            { arquivo: "NOWS_YOU_CHANCE_TO_BE_A.ogg", nome: "NOW'S YOUR CHANCE" },
+            { arquivo: "KEYGEN.ogg", nome: "KEYGEN" },
+            { arquivo: "deal_gone_wrong.ogg", nome: "Deal Gone Wrong" },
+            { arquivo: "BIG_SHOT.ogg", nome: "BIG SHOT" },
+            { arquivo: "a_real_boy.ogg", nome: "A Real Boy" },
+            { arquivo: "digital_roots.ogg", nome: "Digital Roots" }
+        ];
+        const cfgSilly = {
+            musica: localStorage.getItem("silly_musica") || "dialtone.ogg",
+            friend: localStorage.getItem("silly_friend") !== "false",
+            lancer: localStorage.getItem("silly_lancer") !== "false",
+            pink: localStorage.getItem("silly_pink") !== "false",
+            gaster: localStorage.getItem("silly_gaster") !== "false",
+            strings: localStorage.getItem("silly_strings") !== "false",
+            flash: localStorage.getItem("silly_flash") !== "false"
+        };
+        musicaNativa.src = cfgSilly.musica;
+
+        function salvarCfgSilly() {
+            localStorage.setItem("silly_musica", cfgSilly.musica);
+            localStorage.setItem("silly_friend", cfgSilly.friend);
+            localStorage.setItem("silly_lancer", cfgSilly.lancer);
+            localStorage.setItem("silly_pink", cfgSilly.pink);
+            localStorage.setItem("silly_gaster", cfgSilly.gaster);
+            localStorage.setItem("silly_strings", cfgSilly.strings);
+            localStorage.setItem("silly_flash", cfgSilly.flash);
+        }
+
+        function trocarMusicaSilly(arquivo) {
+            cfgSilly.musica = arquivo;
+            salvarCfgSilly();
+            const estavaTocando = musicaHabilitada && !cheatDetectado;
+            musicaNativa.pause();
+            musicaNativa.src = arquivo;
+            musicaNativa.currentTime = 0;
+            if (estavaTocando && document.getElementById("area-jogo").style.display === "block") {
+                aplicarVolumeMusica();
+                musicaNativa.play().catch(function() {});
+            }
+            renderizarSillyStrings();
+        }
+
+        function tocarMusicaAleatoriaSilly() {
+            const outras = faixasSillyStrings.filter(f => f.arquivo !== cfgSilly.musica);
+            const escolha = outras[Math.floor(Math.random() * outras.length)] || faixasSillyStrings;
+            trocarMusicaSilly(escolha.arquivo);
+        }
+
+        function abrirSillyStrings() {
+            if (cheatDetectado) return;
+            const possuiTrofeu = dadosConquistas.desbloqueadas.length === listaConquistas.length;
+            if (!possuiTrofeu) return;
+            renderizarSillyStrings();
+            document.getElementById("tela-silly-strings").style.display = "flex";
+        }
+
+        function fecharSillyStrings() {
+            document.getElementById("tela-silly-strings").style.display = "none";
+        }
+
+        function renderizarSillyStrings() {
+            const en = idiomaAtual === "en";
+            document.getElementById("silly-titulo").textContent = en ? "SILLY STRINGS" : "CORDINHAS MALUCAS";
+            document.getElementById("silly-sec-musica").textContent = "JUKEBOX [BIG SHOT]";
+            document.getElementById("silly-sec-darkners").textContent = en ? "DARKNER POWERS" : "PODERES DOS DARKNERS";
+            document.getElementById("silly-sec-visuais").textContent = en ? "VISUALS & QOL" : "VISUAIS E EXTRAS";
+
+            const gridMusicas = document.getElementById("silly-lista-musicas");
+            gridMusicas.replaceChildren();
+            faixasSillyStrings.forEach(faixa => {
+                const btn = document.createElement("button");
+                const ativa = cfgSilly.musica === faixa.arquivo;
+                btn.className = `silly-btn${ativa ? " ativo" : ""}`;
+                btn.textContent = `${ativa ? "▶ " : ""}${faixa.nome}`;
+                btn.onclick = () => trocarMusicaSilly(faixa.arquivo);
+                gridMusicas.appendChild(btn);
+            });
+            const btnRand = document.createElement("button");
+            btnRand.className = "silly-btn";
+            btnRand.textContent = en ? "RANDOM TRACK" : "MÚSICA ALEATÓRIA";
+            btnRand.onclick = tocarMusicaAleatoriaSilly;
+            gridMusicas.appendChild(btnRand);
+
+            const darkners = [
+                { key: "friend", label: "FRIEND" },
+                { key: "lancer", label: "LANCER" },
+                { key: "pink", label: "PINK" },
+                { key: "gaster", label: "GASTER" }
+            ];
+            const gridDarkners = document.getElementById("silly-lista-darkners");
+            gridDarkners.replaceChildren();
+            darkners.forEach(d => {
+                const on = cfgSilly[d.key];
+                const btn = document.createElement("button");
+                btn.className = `silly-btn ${on ? "ativo" : "desativado"}`;
+                btn.textContent = `${d.label}: ${on ? "ON" : "OFF"}`;
+                btn.onclick = () => {
+                    cfgSilly[d.key] = !cfgSilly[d.key];
+                    salvarCfgSilly();
+                    renderizarSillyStrings();
+                };
+                gridDarkners.appendChild(btn);
+            });
+
+            const visuais = [
+                { key: "strings", pt: "CORDAS NO TETO", en: "CEILING STRINGS" },
+                { key: "flash", pt: "PISCAR BOTÕES", en: "BUTTON FLASH" }
+            ];
+            const gridVisuais = document.getElementById("silly-lista-visuais");
+            gridVisuais.replaceChildren();
+            visuais.forEach(v => {
+                const on = cfgSilly[v.key];
+                const btn = document.createElement("button");
+                btn.className = `silly-btn ${on ? "ativo" : "desativado"}`;
+                btn.textContent = `${en ? v.en : v.pt}: ${on ? "ON" : "OFF"}`;
+                btn.onclick = () => {
+                    cfgSilly[v.key] = !cfgSilly[v.key];
+                    salvarCfgSilly();
+                    atualizarVisibilidadeCeilingStrings();
+                    renderizarSillyStrings();
+                };
+                gridVisuais.appendChild(btn);
+            });
+        }
+
+        const dadosCordasRagdoll = [];
+        function inicializarCeilingStrings() {
+            const svg = document.getElementById("silly-strings-ceiling");
+            if (!svg) return;
+            const cores = ["#647c00", "#73b000", "#00ff00"];
+            const total = Math.floor(Math.random() * 7) + 10;
+            svg.replaceChildren();
+            dadosCordasRagdoll.length = 0;
+
+            for (let i = 0; i < total; i++) {
+                const path = document.createElementNS("http://w3.org", "path");
+                const cor = cores[Math.floor(Math.random() * cores.length)];
+                const largura = Math.floor(Math.random() * 4) + 2;
+                path.setAttribute("fill", "none");
+                path.setAttribute("stroke", cor);
+                path.setAttribute("stroke-width", String(largura));
+                path.setAttribute("stroke-linecap", "round");
+                svg.appendChild(path);
+
+                dadosCordasRagdoll.push({
+                    el: path,
+                    xPct: ((i + 0.5) / total) * 94 + (Math.random() * 4 - 2) + 3,
+                    lenPct: Math.random() * 48 + 28,
+                    freq: Math.random() * 0.0014 + 0.0012,
+                    phase: Math.random() * Math.PI * 2,
+                    amp: Math.random() * 24 + 14
+                });
+            }
+            atualizarVisibilidadeCeilingStrings();
+            requestAnimationFrame(animarCeilingStrings);
+        }
+
+        function atualizarVisibilidadeCeilingStrings() {
+            const svg = document.getElementById("silly-strings-ceiling");
+            if (!svg) return;
+            const possuiTrofeu = dadosConquistas.desbloqueadas.length === listaConquistas.length;
+            svg.style.display = (possuiTrofeu && cfgSilly.strings) ? "block" : "none";
+        }
+
+        function animarCeilingStrings(tempo) {
+            const svg = document.getElementById("silly-strings-ceiling");
+            if (svg && svg.style.display !== "none" && !preferenciaMovimentoReduzido.matches) {
+                const w = window.innerWidth;
+                const h = window.innerHeight;
+                for (let i = 0; i < dadosCordasRagdoll.length; i++) {
+                    const c = dadosCordasRagdoll[i];
+                    const baseX = (c.xPct / 100) * w;
+                    const totalH = (c.lenPct / 100) * h;
+                    const t = tempo * c.freq + c.phase;
+                    const x1 = baseX + Math.sin(t) * (c.amp * 0.35);
+                    const y1 = totalH * 0.33;
+                    const x2 = baseX + Math.sin(t - 0.9) * (c.amp * 0.75);
+                    const y2 = totalH * 0.66;
+                    const x3 = baseX + Math.sin(t - 1.8) * c.amp;
+                    const y3 = totalH;
+                    c.el.setAttribute("d", `M ${baseX.toFixed(1)} 0 C ${x1.toFixed(1)} ${y1.toFixed(1)}, ${x2.toFixed(1)} ${y2.toFixed(1)}, ${x3.toFixed(1)} ${y3.toFixed(1)}`);
+                }
+            }
+            requestAnimationFrame(animarCeilingStrings);
+        }
+        document.addEventListener("DOMContentLoaded", inicializarCeilingStrings);
+
+
         function renderizarTextoComoJogar() {
             const container = document.getElementById("conteudo-como-jogar");
             if (!container) return;
@@ -2508,7 +2764,7 @@
                     iRot += velRot;
                     elPipis.style.transform = `translate(${posX}px, ${posY}px) rotate(${iRot}deg)`;
 
-                    if (nivelPowerUpPipis > 0 && velY > 0) {
+                    if (nivelPowerUpPipis > 0 && cfgSilly.friend && velY > 0) {
                         clearInterval(loopQuedaPipis);
                         elPipis.ehAlt = true;
                         executarMecanicaFriendDuplicavel(elPipis, posX, posY, velX, velY, gravidade, iRot, velRot);
