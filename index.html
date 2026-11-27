@@ -664,6 +664,19 @@
         </div>
         <button class="botao-menu" data-i18n="back" style="background-color: #444; margin-top: 8px;" onclick="fecharSillyStrings()">VOLTAR</button>
     </div>
+    <div id="tela-fila-musica" style="position:fixed; inset:0; background-color:rgba(0,17,136,0.65); z-index:99999984; display:none; flex-direction:column; align-items:center; justify-content:center; gap:14px; backdrop-filter:blur(4px);">
+        <div class="titulo-menu-pausa" id="fila-titulo" style="color: cyan; margin-bottom: 4px;">FILA DE MÚSICAS</div>
+        <div class="menu-scroll settings-scroll" style="max-height: 60vh; width: min(92vw, 620px);">
+            <div class="silly-section-title" id="fila-sec-atual">PRÓXIMAS NA FILA</div>
+            <div id="fila-lista-atual" style="display:flex; flex-direction:column; gap:6px; width:100%;"></div>
+            <div class="silly-section-title" id="fila-sec-adicionar">ADICIONAR À FILA</div>
+            <div class="silly-grid" id="fila-lista-adicionar"></div>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
+            <button class="botao-menu" id="fila-btn-limpar" style="background-color:#a00; min-width:180px;" onclick="limparFilaMusica()">LIMPAR FILA</button>
+            <button class="botao-menu" data-i18n="back" style="background-color:#444; min-width:180px;" onclick="fecharFilaMusica()">VOLTAR</button>
+        </div>
+    </div>
     <div id="area-jogo">
         <div id="silly-strings-ceiling"></div>
         <div id="telefone_p">
@@ -2573,10 +2586,17 @@
                 gridMusicas.appendChild(btn);
             });
             const btnRand = document.createElement("button");
-            btnRand.className = "silly-btn";
-            btnRand.textContent = en ? "RANDOM TRACK" : "MÚSICA ALEATÓRIA";
-            btnRand.onclick = tocarMusicaAleatoriaSilly;
+            btnRand.className = `silly-btn ${cfgSilly.random ? "ativo" : "desativado"}`;
+            btnRand.textContent = `${en ? "RANDOM" : "ALEATÓRIO"}: ${cfgSilly.random ? "ON" : "OFF"}`;
+            btnRand.onclick = alternarRandomSilly;
             gridMusicas.appendChild(btnRand);
+
+            const btnQueue = document.createElement("button");
+            btnQueue.className = `silly-btn${filaMusicasSilly.length > 0 ? " ativo" : ""}`;
+            const qCount = filaMusicasSilly.length > 0 ? ` (${filaMusicasSilly.length})` : "";
+            btnQueue.textContent = `${en ? "QUEUE" : "FILA"}${qCount}`;
+            btnQueue.onclick = abrirFilaMusica;
+            gridMusicas.appendChild(btnQueue);
 
             const darkners = [
                 { key: "friend", label: "FRIEND" },
