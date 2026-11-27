@@ -2513,10 +2513,12 @@
             { arquivo: "deal_gone_wrong.ogg", nome: "Deal Gone Wrong" },
             { arquivo: "BIG_SHOT.ogg", nome: "BIG SHOT" },
             { arquivo: "a_real_boy.ogg", nome: "A Real Boy!" },
-            { arquivo: "digital_roots.ogg", nome: "Digital Roots" }
+            { arquivo: "digital_roots.ogg", nome: "Digital Roots" },
+            { arquivo: "spamton_house.ogg", nome: "Spamton House" }
         ];
         const cfgSilly = {
             musica: localStorage.getItem("silly_musica") || "dialtone.ogg",
+            random: localStorage.getItem("silly_random") === "true",
             friend: localStorage.getItem("silly_friend") !== "false",
             lancer: localStorage.getItem("silly_lancer") !== "false",
             pink: localStorage.getItem("silly_pink") !== "false",
@@ -2524,10 +2526,32 @@
             strings: localStorage.getItem("silly_strings") === "true",
             flash: localStorage.getItem("silly_flash") !== "false"
         };
+        let filaMusicasSilly = [];
         musicaNativa.src = cfgSilly.musica;
+
+        function atualizarModoLoopMusica() {
+            musicaNativa.loop = !(cfgSilly.random || filaMusicasSilly.length > 0);
+        }
+        atualizarModoLoopMusica();
+
+        musicaNativa.addEventListener("ended", function() {
+            if (cheatDetectado || !musicaHabilitada) return;
+            if (filaMusicasSilly.length > 0) {
+                const proxima = filaMusicasSilly.shift();
+                renderizarFilaMusica();
+                trocarMusicaSilly(proxima);
+                return;
+            }
+            if (cfgSilly.random) {
+                const outras = faixasSillyStrings.filter(f => f.arquivo !== cfgSilly.musica);
+                const escolha = outras[Math.floor(Math.random() * outras.length)] || faixasSillyStrings[0];
+                trocarMusicaSilly(escolha.arquivo);
+            }
+        });
 
         function salvarCfgSilly() {
             localStorage.setItem("silly_musica", cfgSilly.musica);
+            localStorage.setItem("silly_random", cfgSilly.random);
             localStorage.setItem("silly_friend", cfgSilly.friend);
             localStorage.setItem("silly_lancer", cfgSilly.lancer);
             localStorage.setItem("silly_pink", cfgSilly.pink);
@@ -2539,6 +2563,7 @@
         function trocarMusicaSilly(arquivo) {
             cfgSilly.musica = arquivo;
             salvarCfgSilly();
+            atualizarModoLoopMusica();
             const estavaTocando = musicaHabilitada && !cheatDetectado;
             musicaNativa.pause();
             musicaNativa.src = arquivo;
@@ -2550,10 +2575,76 @@
             renderizarSillyStrings();
         }
 
-        function tocarMusicaAleatoriaSilly() {
-            const outras = faixasSillyStrings.filter(f => f.arquivo !== cfgSilly.musica);
-            const escolha = outras[Math.floor(Math.random() * outras.length)] || faixasSillyStrings;
-            trocarMusicaSilly(escolha.arquivo);
+        function alternarRandomSilly() {
+            cfgSilly.random = !cfgSilly.random;
+            salvarCfgSilly();
+            atualizarModoLoopMusica();
+            renderizarSillyStrings();
+        }
+
+        function abrirFilaMusica() {
+            renderizarFilaMusica();
+            document.getElementById("tela-fila-musica").style.display = "flex";
+        }
+
+        function fecharFilaMusica() {
+            document.getElementById("tela-fila-musica").style.display = "none";
+            renderizarSillyStrings();
+        }
+
+        function adicionarNaFilaMusica(arquivo) {
+            filaMusicasSilly.push(arquivo);
+            atualizarModoLoopMusica();
+            renderizarFilaMusica();
+        }
+
+        function removerDaFilaMusica(indice) {
+            filaMusicasSilly.splice(indice, 1);
+            atualizarModoLoopMusica();
+            renderizarFilaMusica();
+        }
+
+        function limparFilaMusica() {
+            filaMusicasSilly = [];
+            atualizarModoLoopMusica();
+            renderizarFilaMusica();
+        }
+
+        function renderizarFilaMusica() {
+            const en = idiomaAtual === "en";
+            document.getElementById("fila-titulo").textContent = en ? "MUSIC QUEUE" : "FILA DE MÚSICAS";
+            document.getElementById("fila-sec-atual").textContent = en ? `UP NEXT (${filaMusicasSilly.length})` : `PRÓXIMAS NA FILA (${filaMusicasSilly.length})`;
+            document.getElementById("fila-sec-adicionar").textContent = en ? "ADD TO QUEUE" : "ADICIONAR À FILA";
+            document.getElementById("fila-btn-limpar").textContent = en ? "CLEAR QUEUE" : "LIMPAR FILA";
+
+            const listaAtual = document.getElementById("fila-lista-atual");
+            listaAtual.replaceChildren();
+            if (filaMusicasSilly.length === 0) {
+                const vazio = document.createElement("div");
+                vazio.style.cssText = "color:#bbb; font-size:13px; padding:6px;";
+                vazio.textContent = en ? "Queue is empty." : "A fila está vazia.";
+                listaAtual.appendChild(vazio);
+            } else {
+                filaMusicasSilly.forEach((arq, idx) => {
+                    const faixa = faixasSillyStrings.find(f => f.arquivo === arq);
+                    const item = document.createElement("button");
+                    item.className = "silly-btn";
+                    item.style.cssText = "display:flex; justify-content:space-between; align-items:center; width:100%;";
+                    item.textContent = `${idx + 1}. ${faixa ? faixa.nome : arq}   [X]`;
+                    item.onclick = () => removerDaFilaMusica(idx);
+                    listaAtual.appendChild(item);
+                });
+            }
+
+            const gridAdd = document.getElementById("fila-lista-adicionar");
+            gridAdd.replaceChildren();
+            faixasSillyStrings.forEach(faixa => {
+                const btn = document.createElement("button");
+                btn.className = "silly-btn";
+                btn.textContent = `+ ${faixa.nome}`;
+                btn.onclick = () => adicionarNaFilaMusica(faixa.arquivo);
+                gridAdd.appendChild(btn);
+            });
         }
 
         function abrirSillyStrings() {
